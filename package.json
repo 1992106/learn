@@ -1,0 +1,68 @@
+{
+  "name": "learn",
+  "version": "1.0.0",
+  "description": "cli and Some utility functions(ts/js)",
+  "main": "index.js",
+  "scripts": {
+    "lint": "npm run lint:ts && npm run lint:style",
+    "lint:ts": "eslint src --ext .js,.ts,.tsx --fix",
+    "lint:style": "stylelint src/**/*.less --syntax less --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/1992106/utils.git"
+  },
+  "keywords": [
+    "cli",
+    "utils",
+    "ts/js"
+  ],
+  "author": "王会俊",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/1992106/utils/issues"
+  },
+  "homepage": "https://github.com/1992106/utils#readme",
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@typescript-eslint/eslint-plugin": "^3.3.0",
+    "@typescript-eslint/parser": "^3.3.0",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.2.0",
+    "eslint-config-alloy": "^3.7.2",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.11",
+    "prettier": "^2.0.5",
+    "stylelint": "^13.6.0",
+    "stylelint-config-prettier": "^8.0.1",
+    "stylelint-config-standard": "^20.0.0",
+    "typescript": "^3.9.5"
+  },
+  "lint-staged": {
+    "src/**/*.js": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.ts": [
+      "npm run lint:ts",
+      "git add"
+    ],
+    "src/**/*.less": [
+      "npm run lint:style",
+      "git add"
+    ]
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  }
+}
