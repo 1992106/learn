@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/1992106/utils.git"
+    "url": "git+https://github.com/1992106/learn.git"
   },
   "keywords": [
     "cli",
@@ -21,9 +21,9 @@
   "author": "王会俊",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/1992106/utils/issues"
+    "url": "https://github.com/1992106/learn/issues"
   },
-  "homepage": "https://github.com/1992106/utils#readme",
+  "homepage": "https://github.com/1992106/learn#readme",
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
