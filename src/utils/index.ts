@@ -19,3 +19,52 @@ const curring = (fn: any) => {
   return curried;
 }
 
+// 偏函数
+const partial = (fn: any, ...args: any[]) => {
+  return function() {
+    const newArgs = args.concat([].slice.call(arguments));
+    // eslint-disable-next-line no-invalid-this
+    return fn.apply(this, newArgs);
+  };
+}
+
+// 偏函数，占位符'_'
+const partial2 = (fn: any, ...args: any[]) => {
+    return function() {
+      let position = 0;
+      const len = args.length;
+        for(let i = 0; i < len; i++) {
+            args[i] = args[i] === '_' ? arguments[position++] : args[i]
+        }
+        while(position < arguments.length) args.push(arguments[position++]);
+        // eslint-disable-next-line no-invalid-this
+        return fn.apply(this, args);
+    };
+};
+
+const compose = (...args: any[]) => {
+  const start = args.length - 1;
+  return function() {
+      let i = start;
+      // eslint-disable-next-line no-invalid-this
+      let result = args[start].apply(this, arguments);
+      // eslint-disable-next-line no-invalid-this
+      while (i--) result = args[i].call(this, result);
+      return result;
+  };
+};
+
+
+// 记忆函数
+const memoize = (fn: any, hasher: string) => {
+  const cache: any = {};
+  return (...args: any[]) => {
+    const key = hasher || JSON.stringify(args);
+    if (!cache.hasOwnProperty(key)) {
+      // eslint-disable-next-line no-invalid-this
+      cache[key] = fn.apply(this, args);
+    }
+    return cache[key];
+  };
+}
+
