@@ -53,12 +53,10 @@
         return new MyPromise((resolve, reject) => {
             // 每次都返回一个新的Promise对象
             function handle(callback) {
-                /*
-            1、返回的Promise的结果是由onResolved/onrejected决定的
-            2、返回的是Promise对象 (根据执结果决定Promise的返回结果)
-            3、返回的不是Promise对象 (该值就是Promise的返回结果)
-            4、抛出异常 异常的值为返回的结果
-        */
+                // 1、返回的Promise的结果是由onResolved/onrejected决定的
+                // 2、返回的是Promise对象 (根据执结果决定Promise的返回结果)
+                // 3、返回的不是Promise对象 (该值就是Promise的返回结果)
+                // 4、抛出异常 异常的值为返回的结果
                 try {
                     const result = callback(self.data);
                     if (reject instanceof MyPromise) {
