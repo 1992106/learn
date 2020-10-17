@@ -20,10 +20,10 @@ function lazyMan(name) {
     }, 0);
     this.eat = (str) => {
         this.task.push(() => {
-            return new ((res) => {
+            return new Promise((res) => {
                 console.log('eat:' + str);
                 res();
-            })();
+            });
         });
         return this;
     };
