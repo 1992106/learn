@@ -37,7 +37,7 @@ export function toFixed(value: number, length = 2): number {
     tempNum = 1;
   }
   temp = Math.pow(10, length);
-  s = Math.floor(value * temp) + tempNum;
+  s = Math.round(value * temp) + tempNum;
   return s / temp;
 }
 
@@ -49,6 +49,12 @@ export function getLowerCamelCase(str: string): string {
   const reg2 = /^([A-Za-z0-9])/g;
   return str.replace(reg, ($, $1, $2) => $2.toUpperCase())
     .replace(reg2, ($, $1) => $1.toLowerCase());
+}
+
+function getCamelCase(str) {
+  return str.replace(/-([a-z])/g,function(keb,item){
+      return item.toUpperCase();
+  } )
 }
 
 /**
@@ -73,6 +79,12 @@ export function getKebabCase(str: string): string {
 }
 
 
+function getKebabCase2(str){
+  return str.replace(/[A-Z]/g, function(item) {
+      return '-'+item.toLowerCase()
+  })
+}
+
 /**
  * 驼峰/短横线 转 下划线命名(under_score_case)
  */
@@ -85,6 +97,11 @@ export function getUnderScoreCase(str: string): string {
     .replace(reg3, ($, $1) => '_' + $1.toLowerCase());
 }
 
+
+// 去除字符串中的html代码
+export function removeHtml(str = ''): String {
+  return str.replace(/<[\/\!]*[^<>]*>/ig, '')
+}
 
 // 防抖
 export function debounce(fn: any, wait: number): any {
