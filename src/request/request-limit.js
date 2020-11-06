@@ -1,24 +1,23 @@
 class RequestLimit {
-    constructor(limit) {
-        this.limit = Number(limit) || 5;
+    constructor() {
         this.blockQueue = [];
         this.currentIndex = 0;
     }
 
-    async request(fn) {
+    async limit(fn, num) {
         if (!fn) {
             throw new Error('fn is required.');
         }
         if (Object.prototype.toString.call(fn) !== '[object Function]') {
             throw new Error('fn must be a function.');
         }
-        if (this.currentIndex >= this.limit) {
+        if (this.currentIndex >= (num || 5)) {
             await new Promise((resolve) => this.blockQueue.push(resolve)); // 在 request 里判断如果当前请求数大于设置的 limit 程序进入阻塞状态
         }
-        return this._handleRequest(fn); // 在 request 请求里如果当前请求数小于设置的 limit，处理传入的请求
+        return this._handleLimit(fn); // 在 request 请求里如果当前请求数小于设置的 limit，处理传入的请求
     }
 
-    async _handleRequest(fn) {
+    async _handleLimit(fn) {
         this.currentIndex++; // 在处理传入的请求开始时要对当前请求数做加 1 操作
         try {
             return await fn();
