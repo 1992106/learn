@@ -1,3 +1,4 @@
+// 获取当前子元素是其父元素下子元素的排位
 const getIndex = el => {
   if (!el) {
     return -1
@@ -25,8 +26,8 @@ const getOffset = el => {
   }
 }
 
-
-const fade = (el, type = 'in') {
+// fade动画
+const fade = (el, type = 'in') => {
   el.style.opacity = (type === 'in' ? 0 : 1)
   let last = +new Date()
   const tick = () => {
@@ -45,7 +46,11 @@ const fade = (el, type = 'in') {
 }
 
 // 获取元素类型
-const dataType = obj => Object.prototype.toString.call(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
+const type = obj => Object.prototype.toString.call(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
+
+
+// 判断是否是移动端
+const isMobile = () => 'ontouchstart' in window
 
 
 setTimeout(() => {
