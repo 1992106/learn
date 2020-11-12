@@ -72,12 +72,9 @@ setTimeout(() => {
     }
     ul.appendChild(fragment)
     countOfRender += 1
-    loop()
-  }
-  function loop() {
     if (countOfRender < loopCount) {
       window.requestAnimationFrame(add)
     }
   }
-  loop()
+  window.requestAnimationFrame(add)
 }, 0)
