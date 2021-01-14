@@ -1,3 +1,6 @@
+// 创建自定义事件，并派发自定义事件
+const triggerEvent = (el, eventType, detail) => el.dispatchEvent(new CustomEvent(eventType, { detail })); 
+
 // 获取当前子元素是其父元素下子元素的排位
 const getIndex = el => {
   if (!el) {
@@ -26,6 +29,12 @@ const getOffset = el => {
   }
 }
 
+// 获取当前页面的滚动位置
+const getScrollPosition = (el = window) => ({
+  x: el.pageXOffset ? el.pageXOffset : el.scrollLeft,
+  y: el.pageYOffset ? el.pageYOffset : el.scrollTop
+});
+
 // fade动画
 const fade = (el, type = 'in') => {
   el.style.opacity = (type === 'in' ? 0 : 1)
@@ -52,6 +61,18 @@ const type = obj => Object.prototype.toString.call(obj).replace(/^\[object (.+)\
 // 判断是否是移动端
 const isMobile = () => 'ontouchstart' in window
 
+// 元素是否保护的指定类
+const hasClass = (el, className) => el.classList.contains(className);
+
+// 父元素是否包含子元素
+const elementContains = (parent, child) => parent !== child && parent.contains(child);
+
+// 元素是否在视口可见
+const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
+  const { top, left, bottom, right } = el.getBoundingClientRect();
+  const { innerHeight, innerWidth } = window;
+  return partiallyVisible ? ((top > 0 && top < innerHeight) || (bottom > 0 && bottom < innerHeight)) && ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth)) : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth;
+};
 
 setTimeout(() => {
   // 插入十万条数据
@@ -76,5 +97,24 @@ setTimeout(() => {
       window.requestAnimationFrame(add)
     }
   }
-  window.requestAnimationFrame(add)
+  add()
+  // window.requestAnimationFrame(add)
 }, 0)
+
+// 复制
+const copyToClipboard = str => {
+  const el = document.createElement( 'textarea' );
+  el.value = str;
+  el.setAttribute( 'readonly', 'readonly' );
+  el.style.position =  'absolute' ;
+  el.style.left =  '-9999px' ;
+  document.body.appendChild(el);
+  const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
+  el.select();
+  document.execCommand( 'copy' );
+  document.body.removeChild(el);
+  if (selected) {
+      document.getSelection().removeAllRanges();
+      document.getSelection().addRange(selected);
+  }
+};

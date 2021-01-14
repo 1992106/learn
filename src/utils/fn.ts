@@ -229,7 +229,6 @@ export const jsonpRequest = ({url, data}) => {
     document.body.appendChild(script)
   })
 }
-// 使用方式
 // jsonpRequest({
 //   url: 'http://localhost:9871/api/jsonp',
 //   data: {
@@ -239,3 +238,36 @@ export const jsonpRequest = ({url, data}) => {
 // }).then(res => {
 //   console.log(res)
 // })
+
+export const httpGet = (url, callback, err = console.error) => {
+  const request = new XMLHttpRequest();
+  request.open("GET", url, true);
+  request.onload = () => callback(request.responseText);
+  request.onerror = () => err(request);
+  request.send();
+};
+// httpGet(
+//   "https://jsonplaceholder.typicode.com/posts/1",
+//   console.log
+// );
+
+export const httpPost = (url, data, callback, err = console.error) => {
+  const request = new XMLHttpRequest();
+  request.open( 'POST' , url, true);
+  request.setRequestHeader( 'Content-type' ,  'application/json; charset=utf-8' );
+  request.onload = () => callback(request.responseText);
+  request.onerror = () => err(request);
+  request.send(data);
+};
+// const newPost = {
+//   userId: 1,
+//   id: 1337,
+//   title:  'Foo' ,
+//   body:  'test'
+// };
+// const data = JSON.stringify(newPost);
+// httpPost(
+//   "https://jsonplaceholder.typicode.com/posts",
+//   data,
+//   console.log
+// );
