@@ -2,8 +2,8 @@ import React, { useState, createContext, useContext } from 'react'
 
 // 创建一个 context
 const Context = createContext(0)
-
-// 组件一, Consumer 写法
+fangw
+// 组件一, Consumer 写法（只能在组件render生命fang'w）
 class Item1 extends React.PureComponent {
   render () {
     return (
@@ -15,7 +15,7 @@ class Item1 extends React.PureComponent {
     )
   }
 }
-// 组件二, contextType 写法
+// 组件二, contextType 写法（组件只能有且仅有一个context，不支持多个context）
 class Item2 extends React.PureComponent {
   static contextType = Context
   render () {
@@ -25,7 +25,8 @@ class Item2 extends React.PureComponent {
     )
   }
 }
-// 组件一, useContext 写法
+Item2.contextType = Context;
+// 组件三, useContext 写法
 function Item3 () {
   const count = useContext(Context);
   return (
@@ -47,3 +48,39 @@ function App () {
     </div>
     )
 }
+
+// 过时的写法  https://zh-hans.reactjs.org/docs/legacy-context.html
+// 创建context
+class Message extends React.Component {
+  getChildContext() {
+    return {color: "purple"};
+  }
+  render() {
+    return (
+      <div>
+        {this.props.text} <Button>Delete</Button>
+      </div>
+    );
+  }
+}
+Message.childContextTypes = {
+  color: PropTypes.string
+};
+// 类组件
+class Button extends React.Component {
+  render() {
+    return (
+      <button style={{background: this.context.color}}>
+        {this.props.children}
+      </button>
+    );
+  }
+}
+Button.contextTypes = {color: PropTypes.string};
+// 函数组件
+const Button = ({children}, context) => {
+  return (<button style={{background: context.color}}>
+    {children}
+  </button>)
+}
+Button.contextTypes = {color: PropTypes.string};
