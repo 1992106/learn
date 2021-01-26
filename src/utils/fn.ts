@@ -11,6 +11,7 @@ export function once(fn: Function): Function {
   return function () {
     if (!called) {
       called = true
+      // eslint-disable-next-line no-invalid-this
       fn.apply(this, arguments)
     }
   }

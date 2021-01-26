@@ -11,6 +11,14 @@ module.exports = {
         '@typescript-eslint/consistent-type-definitions': [
             "error",
             "interface"
-        ]
+        ],
+        'no-unused-vars': "off",
+        "no-cond-assign": "off",
+        "no-param-reassign": "off",
+        "no-eq-null": "off",
+        "eqeqeq": "off",
+        "no-promise-executor-return": "off",
+        "no-return-assign": "off",
+        "max-params": [0]
     }
 }

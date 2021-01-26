@@ -65,5 +65,11 @@
       "pre-commit": "lint-staged",
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "dependencies": {
+    "@reduxjs/toolkit": "^1.5.0",
+    "prop-types": "^15.7.2",
+    "react": "^17.0.1",
+    "redux": "^4.0.5"
   }
 }

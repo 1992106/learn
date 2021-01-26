@@ -1,5 +1,5 @@
 // 创建自定义事件，并派发自定义事件
-const triggerEvent = (el, eventType, detail) => el.dispatchEvent(new CustomEvent(eventType, { detail })); 
+const triggerEvent = (el, eventType, detail) => el.dispatchEvent(new CustomEvent(eventType, { detail }));
 
 // 获取当前子元素是其父元素下子元素的排位
 const getIndex = el => {
@@ -30,7 +30,7 @@ const getOffset = el => {
 }
 
 // 获取当前页面的滚动位置
-const getScrollPosition = (el = window) => ({
+const getScrollPosition = (el) => ({
   x: el.pageXOffset ? el.pageXOffset : el.scrollLeft,
   y: el.pageYOffset ? el.pageYOffset : el.scrollTop
 });
@@ -38,16 +38,16 @@ const getScrollPosition = (el = window) => ({
 // fade动画
 const fade = (el, type = 'in') => {
   el.style.opacity = (type === 'in' ? 0 : 1)
-  let last = +new Date()
+  let last = Number(new Date())
   const tick = () => {
     const opacityValue = (type === 'in'
-      ? (+new Date() - last) / 400
-      : -(+new Date() - last) / 400)
-    el.style.opacity = +el.style.opacity + opacityValue
-    last = +new Date()
+      ? (Number(new Date()) - last) / 400
+      : -(Number(new Date()) - last) / 400)
+    el.style.opacity = Number(el.style.opacity) + opacityValue
+    last = Number(new Date())
     if (type === 'in'
-      ? (+el.style.opacity < 1)
-      : (+el.style.opacity > 0)) {
+      ? (Number(el.style.opacity) < 1)
+      : (Number(el.style.opacity) > 0)) {
       requestAnimationFrame(tick)
     }
   }
@@ -75,16 +75,16 @@ const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
 };
 
 setTimeout(() => {
-  // 插入十万条数据
+  // 插入十万条数据
   const total = 100000
-  // 一次插入 20 条，如果觉得性能不好就减少
+  // 一次插入20条，如果觉得性能不好就减少
   const once = 20
-  // 渲染数据总共需要几次
+  // 渲染数据总共需要几次
   const loopCount = total / once
   let countOfRender = 0
   let ul = document.querySelector('ul')
   function add() {
-    // 优化性能，插入不会造成回流
+    // 优化性能，插入不会造成回流
     const fragment = document.createDocumentFragment()
     for (let i = 0; i < once; i++) {
       const li = document.createElement('li')
@@ -103,18 +103,18 @@ setTimeout(() => {
 
 // 复制
 const copyToClipboard = str => {
-  const el = document.createElement( 'textarea' );
+  const el = document.createElement('textarea');
   el.value = str;
-  el.setAttribute( 'readonly', 'readonly' );
-  el.style.position =  'absolute' ;
-  el.style.left =  '-9999px' ;
+  el.setAttribute('readonly', 'readonly');
+  el.style.position = 'absolute';
+  el.style.left = '-9999px';
   document.body.appendChild(el);
   const selected = document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
   el.select();
-  document.execCommand( 'copy' );
+  document.execCommand('copy');
   document.body.removeChild(el);
   if (selected) {
-      document.getSelection().removeAllRanges();
-      document.getSelection().addRange(selected);
+    document.getSelection().removeAllRanges();
+    document.getSelection().addRange(selected);
   }
 };
