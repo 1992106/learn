@@ -1,9 +1,10 @@
 import React, { useState, createContext, useContext } from 'react'
+import PropTypes from 'prop-types';
 
-// 创建一个 context
+// 创建一个context
 const Context = createContext(0)
-fangw
-// 组件一, Consumer 写法（只能在组件render生命fang'w）
+
+// 组件一, Consumer写法（只能在组件render生命）
 class Item1 extends React.PureComponent {
   render () {
     return (
@@ -15,7 +16,7 @@ class Item1 extends React.PureComponent {
     )
   }
 }
-// 组件二, contextType 写法（组件只能有且仅有一个context，不支持多个context）
+// 组件二, contextType写法（组件只能有且仅有一个context，不支持多个context）
 class Item2 extends React.PureComponent {
   static contextType = Context
   render () {
@@ -50,8 +51,8 @@ function App () {
 }
 
 // 过时的写法  https://zh-hans.reactjs.org/docs/legacy-context.html
-// 创建context
 class Message extends React.Component {
+  // 创建context
   getChildContext() {
     return {color: "purple"};
   }
