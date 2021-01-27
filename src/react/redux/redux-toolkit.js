@@ -40,7 +40,7 @@ const counter = createReducer(0, (builder) => {
         });
 });
 
-// ! configureStore内部会调用combineReducers
+// ! configureStore内部会自动调用combineReducers
 const store = configureStore({
     reducer: {
         todos,
