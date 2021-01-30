@@ -98,6 +98,7 @@ const counterSlice = createSlice({
         }
     }
 });
+// exports const { increment, decrement } = counterSlice.actions
 // ! 合并多个reducer
 const reducer = combineReducers({
     todos: todosSlice.reducer,

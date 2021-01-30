@@ -4,6 +4,5 @@ module.exports = {
       'stylelint-config-prettier'
   ],
   plugins: [],
-  rules: {
-  }
+  rules: {}
 };

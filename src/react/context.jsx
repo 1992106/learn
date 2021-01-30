@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext } from 'react'
 import PropTypes from 'prop-types';
 
-// 创建一个context
+// 创建一个context（方法一）
 const Context = createContext(0)
 
 // 组件一, Consumer写法（只能在组件render生命）
@@ -16,6 +16,7 @@ class Item1 extends React.PureComponent {
     )
   }
 }
+
 // 组件二, contextType写法（组件只能有且仅有一个context，不支持多个context）
 class Item2 extends React.PureComponent {
   static contextType = Context
@@ -27,6 +28,7 @@ class Item2 extends React.PureComponent {
   }
 }
 Item2.contextType = Context;
+
 // 组件三, useContext 写法
 function Item3 () {
   const count = useContext(Context);
@@ -51,8 +53,9 @@ function App () {
 }
 
 // 过时的写法  https://zh-hans.reactjs.org/docs/legacy-context.html
+// es5
 class Message extends React.Component {
-  // 创建context
+  // 创建一个context（方法二）
   getChildContext() {
     return {color: "purple"};
   }
@@ -67,7 +70,7 @@ class Message extends React.Component {
 Message.childContextTypes = {
   color: PropTypes.string
 };
-// 类组件
+// es6
 class Button extends React.Component {
   render() {
     return (
