@@ -45,9 +45,9 @@ const partial2 = (fn: any, ...args: any[]) => {
 const compose = (...args: any[]) => {
   const start = args.length - 1;
   return function() {
-      let i = start;
+      let i = start,
       // eslint-disable-next-line no-invalid-this
-      let result = args[start].apply(this, arguments);
+       result = args[start].apply(this, arguments);
       // eslint-disable-next-line no-invalid-this
       while (i--) result = args[i].call(this, result);
       return result;

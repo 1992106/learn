@@ -81,8 +81,8 @@ setTimeout(() => {
   const once = 20
   // 渲染数据总共需要几次
   const loopCount = total / once
-  let countOfRender = 0
-  let ul = document.querySelector('ul')
+  let countOfRender = 0,
+   ul = document.querySelector('ul')
   function add() {
     // 优化性能，插入不会造成回流
     const fragment = document.createDocumentFragment()

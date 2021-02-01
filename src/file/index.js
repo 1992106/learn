@@ -37,11 +37,11 @@ function urlToBase64(url) {
 function base64ToBlob({ b64data = '', contentType = '', sliceSize = 512 } = {}) {
     return new Promise((resolve, reject) => {
         // 使用 atob() 方法将数据解码
-        let byteCharacters = decodeURIComponent(escape(window.atob(b64data))); // atob(b64data)
-        let byteArrays = [];
+        let byteCharacters = decodeURIComponent(escape(window.atob(b64data))), // atob(b64data)
+            byteArrays = [];
         for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            let slice = byteCharacters.slice(offset, offset + sliceSize);
-            let byteNumbers = [];
+            let slice = byteCharacters.slice(offset, offset + sliceSize),
+                byteNumbers = [];
             for (let i = 0; i < slice.length; i++) {
                 byteNumbers.push(slice.charCodeAt(i));
             }
