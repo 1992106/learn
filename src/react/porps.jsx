@@ -1,9 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types';
 
-// es6(2种方法)
+// es6(2种写法)
 class Greeting extends React.Component {
-  // 方法一
+  // 写法一
   static defaultProps = {
     name: 'stranger'
   }
@@ -13,7 +13,7 @@ class Greeting extends React.Component {
     );
   }
 }
-// 方法二
+// 写法二
 Greeting.defaultProps = {
   name: 'Stranger'
 };

@@ -1,5 +1,6 @@
 import React from 'react'
 
+// 使用createRef方法创建ref
 class CustomTextInput extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +24,7 @@ class CustomTextInput extends React.Component {
   }
 }
 
+// 使用回调函数创建ref
 class CustomTextInput extends React.Component {
   constructor(props) {
     super(props);
