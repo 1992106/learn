@@ -20,7 +20,7 @@ module.exports = {
         "no-promise-executor-return": "off",
         "no-return-assign": "off",
         "max-params": ["off"],
-        "one-var": ["warn", {
+        "one-var": ["off", {
           "var": "always", // Exactly one var declaration per function
           "let": "always", // Exactly one let declaration per block
           "const": "never" // Exactly one declarator per const declaration per block

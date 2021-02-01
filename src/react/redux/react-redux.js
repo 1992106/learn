@@ -4,90 +4,96 @@ import { createSelector } from 'reselect';
 import { createAction } from '@reduxjs/toolkit';
 
 /**
- * mapStateToProps
+ * !!! connect 使用connect函数连接组件(2种用法)
  * @returns
  */
+// 方法一：只使用mapStateToProps方法注入state
 const mapStateToProps = (state, ownProps) => ({
-    count: state.count
+  count: state.count
 });
-
-/**
- * mapDispatchToProps
- * @returns
- */
-// 方法一：
 function Counter({ count, dispatch }) {
-    // dispatch函数是通过prop注入进来
-    return (
-        <div>
-            <button onClick={() => dispatch({ type: 'DECREMENT' })}>-</button>
-            <span>{count}</span>
-            <button onClick={() => dispatch({ type: 'INCREMENT' })}>+</button>
-        </div>
-    );
+  // dispatch函数是通过prop注入进来
+  return (
+    <div>
+      <button onClick={() => dispatch({ type: 'INCREMENT' })}>-</button>
+      <span>{count}</span>
+      <button onClick={() => dispatch({ type: 'DECREMENT' })}>+</button>
+    </div>
+  );
 }
-// ! connect第二个参数为空时，会自动注入dispatch函数
-// connect方法包装组件
+// ! connect方法包装组件时, connect第二个参数为空时，会自动注入dispatch函数
 connect()(Counter);
-// which is equivalent with
 connect(null, null)(Counter);
 // or
 connect(mapStateToProps /** no second argument */)(Counter);
 
-// 方法二：
-function Counter({ count, dispatch }) {
-    // dispatch函数是通过prop注入进来
-    return (
-        <div>
-            <button onClick={() => dispatch(increment())}>-</button>
-            <span>{count}</span>
-            <button onClick={() => dispatch(decrement())}>+</button>
-        </div>
-    );
-}
-function Counter({ count, increment, decrement }) {
-    // increment，decrement函数是通过mapDispatchToProps注入进来
-    return (
-        <div>
-            <button onClick={() => increment()}>-</button>
-            <span>{count}</span>
-            <button onClick={() => decrement()}>+</button>
-        </div>
-    );
-}
-
+// 方法二：使用mapStateToProps方法注入state,使用mapStateToProps方法注入dispatch
+const mapStateToProps = (state, ownProps) => ({
+  count: state.count
+});
 const increment = createAction('INCREMENT');
 const decrement = createAction('DECREMENT');
 const mapDispatchToProps = (dispatch, ownProps) => {
-    // ! 手动注入dispatch函数
-    return {
-        increment: () => dispatch(increment()),
-        decrement: () => dispatch(decrement()),
-        dispatch
-    };
+  return {
+    increment: () => dispatch(increment()),
+    decrement: () => dispatch(decrement()),
+    dispatch // 如果组件需要dispatch, 可以手动注入dispatch函数
+  };
 };
 function mapDispatchToProps(dispatch, ownProps) {
-    return {
-        dispatch,
-        ...bindActionCreators({ increment, decrement }, dispatch)
-    };
+  return {
+    dispatch, // 如果组件需要dispatch, 可以手动注入dispatch函数
+    ...bindActionCreators({ increment, decrement }, dispatch)
+  };
 }
-// connect方法包装组件
+function Counter({ count, increment, decrement, dispatch }) {
+  // increment，decrement函数是通过mapDispatchToProps注入进来
+  // dispatch是通过mapDispatchToProps手动注入进来
+  return (
+    <div>
+      <button onClick={() => dispatch(increment())}>-</button> // 使用dispatch派发increment
+      <span>{count}</span>
+      <button onClick={() => dispatch(decrement())}>+</button> // 使用dispatch派发decrement
+    </div>
+  );
+}
+function Counter({ count, increment, decrement, dispatch }) {
+  // increment，decrement函数是通过mapDispatchToProps注入进来; 直接使用,不需要通过dispatch派发
+  // dispatch是通过mapDispatchToProps手动注入进来
+  return (
+    <div>
+      <button onClick={() => increment()}>-</button> // 直接使用increment
+      <span>{count}</span>
+      <button onClick={() => decrement()}>+</button> // 直接使用decrement
+    </div>
+  );
+}
+// ! connect方法包装组件时, connect第二个参数为mapDispatchToProps函数时，会自动注入mapDispatchToProps函数返回值, 比如increment, decrement, dispatch
+// ! 通过mapDispatchToProps注入的increment, decrement可以直接使用,不需要通过dispatch派发(必须使用mapDispatchToProps注入才可以直接使用)
 connect(null, mapDispatchToProps)(Counter);
 connect(mapStateToProps, mapDispatchToProps)(Counter);
 
+/**
+ * !!! 使用useSelector()和useDispatch() Hook来替代connect()
+ */
 // 方法三：
 // 把多个state或prop聚合成一个具有缓存的useSelector
 const selectCount = createSelector(
-    (state) => state.count,
-    (_, newNuber) => newNuber,
-    (count, newNuber) => count + newNuber
+  (state) => state.count,
+  (_, newNuber) => newNuber,
+  (count, newNuber) => count + newNuber
 );
 export const CounterComponent = () => {
-    // 获取state中的count
-    const count = useSelector((state) => state.count);
-    // 复杂的用法
-    const count = useSelector((state) => selectCount(state, 10));
-    const dispatch = useDispatch();
-    return <div>{count}</div>;
+  // 获取state中的count
+  const count = useSelector((state) => state.count);
+  // 复杂的用法
+  const count = useSelector((state) => selectCount(state, 10));
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <button onClick={() => dispatch({ type: 'INCREMENT' })}>-</button>
+      <span>{count}</span>
+      <button onClick={() => dispatch({ type: 'DECREMENT' })}>+</button>
+    </div>
+  );
 };

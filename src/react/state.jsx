@@ -1,6 +1,6 @@
 import React, { useState, createReactClass } from 'react'
 
-// es6
+// es6 在constructor中初始化state
 class SayHello extends React.Component {
   constructor(props) {
     super(props);
@@ -24,7 +24,7 @@ class SayHello extends React.Component {
   }
 }
 
-// 函数组件
+// 函数组件, 使用useState
 const SayHello = (props) => {
   const [message, setMessage] = useState(props.initialCount)
 
@@ -40,7 +40,7 @@ const SayHello = (props) => {
   )
 }
 
-// es5
+// es5, 使用getInitialState方法
 const SayHello = createReactClass({
   getInitialState: function() {
     return {message: 'Hello!'};
