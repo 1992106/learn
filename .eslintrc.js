@@ -19,6 +19,16 @@ module.exports = {
         "eqeqeq": "off",
         "no-promise-executor-return": "off",
         "no-return-assign": "off",
-        "max-params": [0]
+        "max-params": ["off"],
+        "one-var": ["warn", {
+          "var": "always", // Exactly one var declaration per function
+          "let": "always", // Exactly one let declaration per block
+          "const": "never" // Exactly one declarator per const declaration per block
+      }],
+      "no-sequences": ["off"]
     }
 }
+
+// "off" or 0 - turn the rule off
+// "warn" or 1 - turn the rule on as a warning (doesn't affect exit code)
+// "error" or 2 - turn the rule on as an error (exit code will be 1)

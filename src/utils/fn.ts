@@ -28,9 +28,9 @@ export function removeHtml(str = ''): String {
  * @param length 保留小数点后位数
  */
 export function toFixed(value: number, length = 2): number {
-  let tempNum = 0;
-  let s: number;
-  let temp: number;
+  let tempNum = 0,
+   s: number,
+   temp: number;
   const s1 = String(value);
   const start = s1.indexOf('.');
   if (start === -1) {
@@ -75,8 +75,8 @@ export function throttle(fn: any, wait: number): any {
 }
 
 export function newFn(): any {
-  let target: any = {};
-  let [constructor, ...args] = [...arguments];
+  let target: any = {},
+   [constructor, ...args] = [...arguments];
   // 执行 [[原型]] 连接
   // eslint-disable-next-line no-proto
   target['__proto__'] = constructor.protoType;
@@ -138,10 +138,10 @@ Function.prototype.bind = function () {
   if (typeof this !== 'function') {
     throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
   }
-  let self = this;
-  let thisArg = arguments[0];
+  let self = this,
+   thisArg = arguments[0],
   // 获取bind函数从第二个参数到最后一个参数
-  let args = Array.prototype.slice.call(arguments, 1);
+   args = Array.prototype.slice.call(arguments, 1);
 
   return function () {
     // 这个时候的arguments是指bind返回的函数传入的参数
@@ -155,12 +155,12 @@ Function.prototype.bind = function () {
   if (typeof this !== 'function') {
     throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
   }
-  let thisArg = arguments[0];
+  let thisArg = arguments[0],
   // 获取bind2函数从第二个参数到最后一个参数
-  let args = Array.prototype.slice.call(arguments, 1);
-  let self = this;
-  let fNOP = function () { };
-  let fBound = function () {
+   args = Array.prototype.slice.call(arguments, 1),
+   self = this,
+   fNOP = function () { },
+   fBound = function () {
     let bindArgs = Array.prototype.slice.call(arguments);
     // eslint-disable-next-line no-invalid-this
     return self.apply(this instanceof fNOP ? this : thisArg, args.concat(bindArgs));
@@ -177,12 +177,12 @@ Function.prototype.bind = function () {
   if (typeof this !== 'function') {
     throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
   }
-  let thisArg = arguments[0];
-  let args = Array.prototype.slice.call(arguments, 1);
-  let argsLength = args.length;
-  let self = this;
-  let fNOP = function () { };
-  let fBound = function () {
+  let thisArg = arguments[0],
+   args = Array.prototype.slice.call(arguments, 1),
+   argsLength = args.length,
+   self = this,
+   fNOP = function () { },
+   fBound = function () {
     // reset to default base arguments
     args.length = argsLength;
     Array.prototype.push.apply(args, arguments);
@@ -233,7 +233,6 @@ export const jsonpRequest = ({url, data}) => {
 // jsonpRequest({
 //   url: 'http://localhost:9871/api/jsonp',
 //   data: {
-//     // 传参
 //     msg: 'helloJsonp'
 //   }
 // }).then(res => {
