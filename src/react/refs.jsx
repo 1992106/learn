@@ -51,3 +51,5 @@ class CustomTextInput extends React.Component {
     );
   }
 }
+
+// React.forwardRef

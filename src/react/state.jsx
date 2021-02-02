@@ -1,21 +1,26 @@
-import React, { useState, createReactClass } from 'react'
+import React, { useState } from 'react'
 
-// es6 在constructor中初始化state
+// es6(2种写法)
 class SayHello extends React.Component {
   constructor(props) {
     super(props);
+    // 写法一：在constructor中（推荐）
     this.state = {message: 'Hello!'};
     // 这一行很重要！
     this.handleClick = this.handleClick.bind(this);
   }
 
+  //  写法二：非构造函数写法
+  state = { message: 'Hello!' }
+
   handleClick() {
     this.setState({message: 'Hello Word'})
+    this.setState((prevState)=>({message: prevState.message + 'Word'}))
+    this.setState((prevState, prop) => ({message: prevState.message + prop}))
     alert(this.state.message);
   }
 
   render() {
-    // 由于 `this.handleClick` 已经绑定至实例，因此我们才可以用它来处理点击事件
     return (
       <button onClick={this.handleClick}>
         Say hello
@@ -41,7 +46,7 @@ const SayHello = (props) => {
 }
 
 // es5, 使用getInitialState方法
-const SayHello = createReactClass({
+const SayHello = React.createClass({
   getInitialState: function() {
     return {message: 'Hello!'};
   },

@@ -3,12 +3,13 @@ import PropTypes from 'prop-types';
 
 /**
  * !!! 通过createContext方法创建一个context（方法一）
+ * Provider生产context & Consumer消费context
  * 类组件和函数组件都支持
  */
 const Context = createContext(0)
 
 // 使用Context
-// 方法一: 类组件, Consumer写法（只能在组件render生命）
+// 方法一: 类组件, Consumer写法（只能在组件render生命周期使用）
 class Item extends React.PureComponent {
   render () {
     return (
@@ -47,6 +48,7 @@ function App () {
     <div>
       点击次数: { count }
       <button onClick={() => { setCount(count + 1)}}>点我</button>
+      {/*  Provider提供context */}
       <Context.Provider value={count}>
         <Item1></Item1>
         <Item2></Item2>
@@ -59,13 +61,18 @@ function App () {
 // 过时的写法  https://zh-hans.reactjs.org/docs/legacy-context.html
 /**
  * !!! 通过getChildContext()方法创建一个context（方法二）
- * 通过childContextTypes定义类型
+ * 父组件要定义 childContextTypes 和 getChildContext()
+ * 子组件必须定义 contextTypes
  * 该写法只支持类组件
  */
 class Message extends React.Component {
   // 创建一个context
   getChildContext() {
     return {color: "purple"};
+  }
+  // 写法一
+  static childContextTypes = {
+    color: PropTypes.string
   }
   render() {
     return (
@@ -75,12 +82,18 @@ class Message extends React.Component {
     );
   }
 }
+// 写法二
 Message.childContextTypes = {
   color: PropTypes.string
 };
-// 使用context(2个用法)
-// 类组件
+
+// 使用context
+// es6(2种写法)
 class Button extends React.Component {
+  // 写法一
+  static contextTypes = {
+    color: PropTypes.string
+  };
   render() {
     return (
       <button style={{background: this.context.color}}>
@@ -89,6 +102,7 @@ class Button extends React.Component {
     );
   }
 }
+// 写法二
 Button.contextTypes = {color: PropTypes.string};
 // 函数组件
 const Button = ({children}, context) => {
