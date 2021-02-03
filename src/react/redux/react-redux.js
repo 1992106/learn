@@ -1,7 +1,6 @@
 import { bindActionCreators } from 'redux';
 import { connect, useSelector, useDispatch } from 'react-redux';
-import { createSelector } from 'reselect';
-import { createAction } from '@reduxjs/toolkit';
+import { createAction, createSelector } from '@reduxjs/toolkit';
 
 /**
  * !!! connect 使用connect函数连接组件(2种用法)
@@ -44,18 +43,8 @@ function mapDispatchToProps(dispatch, ownProps) {
   return {
     dispatch, // 如果组件需要dispatch, 可以手动注入dispatch函数
     ...bindActionCreators({ increment, decrement }, dispatch)
+    // bindActionCreators把一个value为不同action creator的对象，转成拥有同名key的对象。同时使用dispatch对每个action creator进行包装，以便可以直接调用它们。
   };
-}
-function Counter({ count, increment, decrement, dispatch }) {
-  // increment，decrement函数是通过mapDispatchToProps注入进来
-  // dispatch是通过mapDispatchToProps手动注入进来
-  return (
-    <div>
-      <button onClick={() => dispatch(increment())}>-</button> // 使用dispatch派发increment
-      <span>{count}</span>
-      <button onClick={() => dispatch(decrement())}>+</button> // 使用dispatch派发decrement
-    </div>
-  );
 }
 function Counter({ count, increment, decrement, dispatch }) {
   // increment，decrement函数是通过mapDispatchToProps注入进来; 直接使用,不需要通过dispatch派发
@@ -77,7 +66,7 @@ connect(mapStateToProps, mapDispatchToProps)(Counter);
  * !!! 使用useSelector()和useDispatch() Hook来替代connect()
  */
 // 方法三：
-// 把多个state或prop聚合成一个具有缓存的useSelector
+// 把多个state或prop或Selector聚合成一个具有缓存的useSelector
 const selectCount = createSelector(
   (state) => state.count,
   (_, newNuber) => newNuber,
