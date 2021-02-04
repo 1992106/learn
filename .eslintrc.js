@@ -25,6 +25,7 @@ module.exports = {
           "let": "always", // Exactly one let declaration per block
           "const": "never" // Exactly one declarator per const declaration per block
       }],
+      "no-undef": ["off"],
       "no-sequences": ["off"]
     }
 }

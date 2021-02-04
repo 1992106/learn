@@ -1,6 +1,6 @@
 // （1）异步的Action Creator返回了一个函数，而普通的Action Creator默认返回一个对象。
 
-// （2）异步的Action Creator的参数是派发里面同步Action的参数，它返回的函数的参数是dispatch和getState这两个 Redux 方法。普通的Action Creator的参数是 Action 的内容。
+// （2）异步的Action Creator的参数是派发里面同步Action的参数，它返回函数的参数是Redux中dispatch和getState两个方法。普通的Action Creator的参数是Action的内容。
 
 // （3）在返回的函数之中，先发出一个 同步Action，表示操作开始。
 

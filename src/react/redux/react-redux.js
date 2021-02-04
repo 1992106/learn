@@ -57,26 +57,21 @@ function Counter({ count, increment, decrement, dispatch }) {
     </div>
   );
 }
-// ! connect方法包装组件时, connect第二个参数为mapDispatchToProps函数时，会自动注入mapDispatchToProps函数返回值, 比如increment, decrement, dispatch
+// ! connect方法包装组件时, connect第二个参数为mapDispatchToProps函数时，会自动注入mapDispatchToProps函数返回值, 比如increment, decrement
 // ! 通过mapDispatchToProps注入的increment, decrement可以直接使用,不需要通过dispatch派发(必须使用mapDispatchToProps注入才可以直接使用)
 connect(null, mapDispatchToProps)(Counter);
 connect(mapStateToProps, mapDispatchToProps)(Counter);
 
 /**
  * !!! 使用useSelector()和useDispatch() Hook来替代connect()
+ * createSelector等同于mapStateToProps的作用
  */
 // 方法三：
-// 把多个state或prop或Selector聚合成一个具有缓存的useSelector
-const selectCount = createSelector(
-  (state) => state.count,
-  (_, newNuber) => newNuber,
-  (count, newNuber) => count + newNuber
-);
+// createSelector把多个state或prop或Selector聚合成一个具有缓存的useSelector
+// https://react-redux.js.org/api/hooks#useselector
 export const CounterComponent = () => {
   // 获取state中的count
   const count = useSelector((state) => state.count);
-  // 复杂的用法
-  const count = useSelector((state) => selectCount(state, 10));
   const dispatch = useDispatch();
   return (
     <div>
