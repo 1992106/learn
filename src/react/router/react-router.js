@@ -83,7 +83,10 @@ class Login extends React.Component {
     router: PropTypes.object.isRequired
   };
   render() {
-    const { match, location, history } = this.context.router;
+    const {
+      history,
+      route: { match, location }
+    } = this.context.router;
     // history.push('/)
     return; // 这里放没登陆之前的各种form表单
   }
