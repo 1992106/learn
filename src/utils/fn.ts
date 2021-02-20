@@ -75,8 +75,7 @@ export function throttle(fn: any, wait: number): any {
 }
 
 export function newFn(): any {
-  let target: any = {},
-   [constructor, ...args] = [...arguments];
+  let target: any = {}, [constructor, ...args] = [...arguments];
   // 执行 [[原型]] 连接
   // eslint-disable-next-line no-proto
   target['__proto__'] = constructor.protoType;
@@ -88,6 +87,18 @@ export function newFn(): any {
     return result;
   }
   return target;
+}
+
+export function forEach(list, callback) {
+  const entries = Object.entries(list);
+  let i = 0;
+  const len = entries.length;
+
+  for(;i < len; i++) {
+    const res = callback(entries[i][1], entries[i][0], list);
+
+    if(res === true) break;
+  }
 }
 
 // eslint-disable-next-line no-extend-native
@@ -198,7 +209,6 @@ Function.prototype.bind = function () {
   fBound.prototype = new fNOP();
   return fBound;
 }
-
 
 /**
  * JSONP请求工具

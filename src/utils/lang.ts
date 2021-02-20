@@ -21,6 +21,26 @@ export const isEmpty = (data: any): boolean => {
   return false;
 };
 
+export const  isEmpty2 = (x: any): boolean => {
+  if (x === null || x === undefined) {
+    return true;
+  }
+
+  if(Array.isArray(x) || typeof x === 'string' || x instanceof String) {
+    return x.length === 0;
+  }
+
+  if(x instanceof Map || x instanceof Set) {
+    return x.size === 0;
+  }
+
+  if(Object.prototype.toString.call(x) === '[object Object]') {
+    return Object.keys(x).length === 0;
+  }
+
+  return false;
+}
+
 /**
  * 短横线/下横线/大驼峰 转 小驼峰命名(lowerCamelCase)
  */
@@ -88,3 +108,89 @@ export const hyphenate = cached((str: string): string => {
   const hyphenateReg = /\B([A-Z])/g
   return str.replace(hyphenateReg, '-$1').toLowerCase()
 })
+
+// 获取列表最后一项
+const lastItem = (list: Array<any> | Set<any> | Map<any, any>) => {
+  if(Array.isArray(list)) {
+    return list.slice(-1)[0];
+  }
+
+  if(list instanceof Set) {
+    return Array.from(list).slice(-1)[0];
+  }
+
+  if(list instanceof Map) {
+    return Array.from(list.values()).slice(-1)[0];
+  }
+}
+
+// 带有范围的随机数生成器
+const randomNumber = (max = 1, min = 0) => {
+  if(min >= max) {
+    return max;
+  }
+
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+// 随机 ID 生成器
+const uniqueId = () => {
+  const id = (function*() {
+    let mil = new Date().getTime();
+
+    while (true)
+      yield mil += 1;
+  })();
+
+  return () => id.next().value;
+}
+const uniqueIncrementingId = (lastId = 0) => {
+  const id = (function*() {
+    let numb = lastId;
+
+    while (true)
+      yield numb += 1;
+  })()
+
+  return (length = 12) => `${id.next().value}`.padStart(length, '0');
+}
+const uniqueAlphaNumericId = () => {
+  const heyStack = '0123456789abcdefghijklmnopqrstuvwxyz';
+  const randomInt = () => Math.floor(Math.random() * Math.floor(heyStack.length))
+
+  return (length = 24) => Array.from({length}, () => heyStack[randomInt()]).join('');
+}
+
+// 创建一个范围内的数字
+const rangeSimple = (end) =>  {
+  return Array.from({ length: end }, (_, index) => index);
+}
+const rangeSimple2 = (start, end, step) => {
+  return Array.from({ length: (end - start) / step + 1}, (_, i) => start + (i * step))
+}
+const range = (maxOrStart, end = null, step = null) => {
+  if(!end) {
+    return Array.from({length: maxOrStart}, (_, i) => i)
+  }
+
+  if(end <= maxOrStart) {
+    return [];
+  }
+
+  if(step !== null) {
+    return Array.from(
+      {length: Math.ceil(((end - maxOrStart) / step))},
+      (_, i) => (i * step) + maxOrStart
+    );
+  }
+
+  return Array.from(
+    {length: Math.ceil((end - maxOrStart))},
+    (_, i) => i + maxOrStart
+  );
+}
+
+// 填充数组
+// https://segmentfault.com/a/1190000020221170
+const fillArray = (length:number, data: any) => Array.from({ length }, () => data)
+const fillArray2 = (length:number, data: any) => Array(length).fill(data)
