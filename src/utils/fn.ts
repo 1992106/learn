@@ -28,9 +28,7 @@ export function removeHtml(str = ''): String {
  * @param length 保留小数点后位数
  */
 export function toFixed(value: number, length = 2): number {
-  let tempNum = 0,
-   s: number,
-   temp: number;
+  let tempNum = 0, s: number, temp: number;
   const s1 = String(value);
   const start = s1.indexOf('.');
   if (start === -1) {

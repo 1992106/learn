@@ -25,77 +25,77 @@ export const  isEmpty2 = (x: any): boolean => {
   if (x === null || x === undefined) {
     return true;
   }
-
   if(Array.isArray(x) || typeof x === 'string' || x instanceof String) {
     return x.length === 0;
   }
-
   if(x instanceof Map || x instanceof Set) {
     return x.size === 0;
   }
-
   if(Object.prototype.toString.call(x) === '[object Object]') {
     return Object.keys(x).length === 0;
   }
-
   return false;
 }
 
+
+function getTag(value) {
+  if (value == null) {
+    return value === undefined ? '[object Undefined]' : '[object Null]'
+  }
+  return Object.prototype.toString.call(value)
+}
+
+function isObject(value) {
+  const type = typeof value
+  return value != null && (type === 'object' || type === 'function')
+}
+
+function isObjectLike(value) {
+  return typeof value === 'object' && value !== null
+}
+
+function isPlainObject(value) {
+  if (!isObjectLike(value) || getTag(value) != '[object Object]') {
+    return false
+  }
+  if (Object.getPrototypeOf(value) === null) {
+    return true
+  }
+  let proto = value
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto)
+  }
+  return Object.getPrototypeOf(value) === proto
+}
+
+function isElement(value) {
+  return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value)
+}
+
+// ES6 Number.isInteger 判断是否是一个整数（负整数、0、正整数）
+// 使用 value % 1 === 0 来判断
+function isInteger(value) {
+  return typeof value === 'number' && value % 1 === 0
+}
+// 使用Math.round、Math.ceil、Math.floor
+function isInteger1(value) {
+  return Math.floor(value) === value
+}
+
+function isLength(value) {
+  return typeof isInteger(value) && value > -1 && value <= Number.MAX_SAFE_INTEGER
+}
+
+function isArrayLike(value) {
+  return value != null && typeof value !== 'function' && isLength(value.length)
+}
+
 /**
- * 短横线/下横线/大驼峰 转 小驼峰命名(lowerCamelCase)
+ * kebab-case (短横线分隔命名)
+ * under_score_case (下划线命名)
+ * camelCase (驼峰式命名)
+ * PascalCase (单词首字母大写命名)
  */
-export function getLowerCamelCase(str: string): string {
-  const reg = /(^|-|_)([A-Za-z0-9])/g;
-  const reg2 = /^([A-Za-z0-9])/g;
-  return str.replace(reg, ($, $1, $2) => $2.toUpperCase())
-    .replace(reg2, ($, $1) => $1.toLowerCase());
-}
-
-function getCamelCase(str) {
-  return str.replace(/-([a-z])/g,function(keb,item){
-      return item.toUpperCase();
-  } )
-}
-
-/**
- * 短横线/下划线/小驼峰 转 大驼峰命名(UpperCamelCase)
- */
-export function getUpperCamelCase(str: string): string {
-  const reg = /(^|-|_)([A-Za-z0-9])/g;
-  return str.replace(reg, ($, $1, $2) => $2.toUpperCase());
-}
-
-
-/**
- * 驼峰/下划线 转 短横线命名(kebab-case)
- */
-export function getKebabCase(str: string): string {
-  const reg = /^([A-Z$]+)/g;
-  const reg2 = /_([a-zA-Z$]+)/g;
-  const reg3 = /([A-Z$]+)/g;
-  return str.replace(reg, ($, $1) => $1.toLowerCase())
-    .replace(reg2, ($, $1) => '-' + $1.toLowerCase())
-    .replace(reg3, ($, $1) => '-' + $1.toLowerCase());
-}
-
-
-function getKebabCase2(str){
-  return str.replace(/[A-Z]/g, function(item) {
-      return '-'+item.toLowerCase()
-  })
-}
-
-/**
- * 驼峰/短横线 转 下划线命名(under_score_case)
- */
-export function getUnderScoreCase(str: string): string {
-  const reg = /^([A-Z$]+)/g;
-  const reg2 = /-([a-zA-Z$]+)/g;
-  const reg3 = /([A-Z$]+)/g;
-  return str.replace(reg, ($, $1) => $1.toLowerCase())
-    .replace(reg2, ($, $1) => '_' + $1.toLowerCase())
-    .replace(reg3, ($, $1) => '_' + $1.toLowerCase());
-}
 
 // 连字符转驼峰
 export const camelize = cached((str: string): string => {
