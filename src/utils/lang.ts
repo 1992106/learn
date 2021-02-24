@@ -94,9 +94,8 @@ function isArrayLike(value) {
  * kebab-case (短横线分隔命名)
  * under_score_case (下划线命名)
  * camelCase (驼峰式命名)
- * PascalCase (单词首字母大写命名)
+ * PascalCase (单词首字母大写命名：帕斯卡命名)
  */
-
 // 连字符转驼峰
 export const camelize = cached((str: string): string => {
   const camelizeReg = /-(\w)/g
