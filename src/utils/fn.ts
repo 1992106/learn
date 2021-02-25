@@ -87,15 +87,36 @@ export function newFn(): any {
   return target;
 }
 
+export const myExtends = (Child, Super) => {
+  const Fn = function () { };
+
+  Fn.prototype = Super.prototype;
+  Child.prototype = new Fn();
+  Child.prototype.constructor = Child;
+}
+
+export const myInstance = (L, R) => {
+  // L代表instanceof左边，R代表右边
+  let RP = R.prototype
+  // eslint-disable-next-line no-proto
+  let LP = L.__proto__
+  while (true) {
+    if (LP == null) { return false }
+    if (LP == RP) { return true }
+    // eslint-disable-next-line no-proto
+    LP = LP.__proto__
+  }
+}
+
 export function forEach(list, callback) {
   const entries = Object.entries(list);
   let i = 0;
   const len = entries.length;
 
-  for(;i < len; i++) {
+  for (; i < len; i++) {
     const res = callback(entries[i][1], entries[i][0], list);
 
-    if(res === true) break;
+    if (res === true) break;
   }
 }
 
@@ -117,6 +138,24 @@ Function.prototype.call = function (): any {
   let result = thisArg.fn(...args);
   delete thisArg.fn; // thisArg 上并没有 func 属性，因此需要移除
   return result;
+}
+// eslint-disable-next-line no-extend-native
+Function.prototype.call = function (context) {
+  // 先判断调用myCall是不是一个函数
+  // 这里的this就是调用myCall的
+  if (typeof this !== 'function') {
+    throw new TypeError("Not a Function")
+  }
+  // 不传参数默认为window
+  context = context || window
+  // 保存this
+  context.fn = this
+  // 保存参数
+  let args = Array.from(arguments).slice(1)   // Array.from 把伪数组对象转为数组
+  // 调用函数
+  let result = context.fn(...args)
+  delete context.fn
+  return result
 }
 
 // eslint-disable-next-line no-extend-native
@@ -140,7 +179,26 @@ Function.prototype.apply = function (): any {
   delete thisArg.fn; // thisArg 上并没有 func 属性，因此需要移除
   return result;
 }
-
+// eslint-disable-next-line no-extend-native
+Function.prototype.apply = function (context) {
+  // 判断this是不是函数
+  if (typeof this !== "function") {
+    throw new TypeError("Not a Function")
+  }
+  let result
+  // 默认是window
+  context = context || window
+  // 保存this
+  context.fn = this
+  // 是否传参
+  if (arguments[1]) {
+    result = context.fn(...arguments[1])
+  } else {
+    result = context.fn()
+  }
+  delete context.fn
+  return result
+}
 
 // eslint-disable-next-line no-extend-native
 Function.prototype.bind = function () {
@@ -148,9 +206,9 @@ Function.prototype.bind = function () {
     throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
   }
   let self = this,
-   thisArg = arguments[0],
-  // 获取bind函数从第二个参数到最后一个参数
-   args = Array.prototype.slice.call(arguments, 1);
+    thisArg = arguments[0],
+    // 获取bind函数从第二个参数到最后一个参数
+    args = Array.prototype.slice.call(arguments, 1);
 
   return function () {
     // 这个时候的arguments是指bind返回的函数传入的参数
@@ -165,39 +223,17 @@ Function.prototype.bind = function () {
     throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
   }
   let thisArg = arguments[0],
-  // 获取bind2函数从第二个参数到最后一个参数
-   args = Array.prototype.slice.call(arguments, 1),
-   self = this,
-   fNOP = function () { },
-   fBound = function () {
-    let bindArgs = Array.prototype.slice.call(arguments);
-    // eslint-disable-next-line no-invalid-this
-    return self.apply(this instanceof fNOP ? this : thisArg, args.concat(bindArgs));
-  }
-
-  fNOP.prototype = this.prototype;
-  // eslint-disable-next-line new-cap
-  fBound.prototype = new fNOP();
-  return fBound;
-}
-
-// eslint-disable-next-line no-extend-native
-Function.prototype.bind = function () {
-  if (typeof this !== 'function') {
-    throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
-  }
-  let thisArg = arguments[0],
-   args = Array.prototype.slice.call(arguments, 1),
-   argsLength = args.length,
-   self = this,
-   fNOP = function () { },
-   fBound = function () {
-    // reset to default base arguments
-    args.length = argsLength;
-    Array.prototype.push.apply(args, arguments);
-    // eslint-disable-next-line no-invalid-this
-    return self.apply(fNOP.prototype.isPrototypeOf(this) ? this : thisArg, args);
-  };
+    args = Array.prototype.slice.call(arguments, 1),
+    argsLength = args.length,
+    self = this,
+    fNOP = function () { },
+    fBound = function () {
+      // reset to default base arguments
+      args.length = argsLength;
+      Array.prototype.push.apply(args, arguments);
+      // eslint-disable-next-line no-invalid-this
+      return self.apply(fNOP.prototype.isPrototypeOf(this) ? this : thisArg, args);
+    };
 
   if (this.prototype) {
     // Function.prototype doesn't have a prototype property
@@ -214,7 +250,7 @@ Function.prototype.bind = function () {
  * @param data 请求的参数
  * @returns {Promise<any>}
  */
-export const jsonpRequest = ({url, data}) => {
+export const jsonpRequest = ({ url, data }) => {
   return new Promise((resolve, reject) => {
     // 处理传参成xx=yy&aa=bb的形式
     const handleData = (data) => {
@@ -261,8 +297,8 @@ export const httpGet = (url, callback, err = console.error) => {
 
 export const httpPost = (url, data, callback, err = console.error) => {
   const request = new XMLHttpRequest();
-  request.open( 'POST' , url, true);
-  request.setRequestHeader( 'Content-type' ,  'application/json; charset=utf-8' );
+  request.open('POST', url, true);
+  request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
   request.onload = () => callback(request.responseText);
   request.onerror = () => err(request);
   request.send(data);

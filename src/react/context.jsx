@@ -2,7 +2,7 @@ import React, { useState, createContext, useContext } from 'react'
 import PropTypes from 'prop-types';
 
 /**
- * !!! 通过createContext方法创建一个context（方法一）
+ * !!! 通过createContext方法创建一个context, Provider的value提供一个context（方法一）
  * Provider生产context & Consumer消费context
  * 类组件和函数组件都支持
  */
@@ -70,7 +70,7 @@ class Message extends React.Component {
   getChildContext() {
     return {color: "purple"};
   }
-  // 写法一
+  // 写法一：提供一个context
   static childContextTypes = {
     color: PropTypes.string
   }
@@ -82,7 +82,7 @@ class Message extends React.Component {
     );
   }
 }
-// 写法二
+// 写法二：提供一个context
 Message.childContextTypes = {
   color: PropTypes.string
 };

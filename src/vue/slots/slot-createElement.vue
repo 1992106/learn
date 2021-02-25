@@ -30,7 +30,7 @@ export default {
   template: `
     <MySlot>
       <template v-slot:header>hello world</template>
-      'children node'
+      children node
       <div v-slot:footer>this is footer</div>
     </MySlot>
   `,

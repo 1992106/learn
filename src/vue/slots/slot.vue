@@ -1,84 +1,87 @@
 <script>
-export default {
-  data() {
-    return {
-      title: ''
-    }
-  },
-  props: [msg],
-  /**
-   * !!! <slot></slot>插槽
-   */
-  // this.$slots 访问静态插槽的内容，每个插槽都是一个 VNode 数组
-  // ! createElement函数写法
-  render(createElement) {
-    // `<div><slot></slot></div>`
-    return createElement('div', this.$slots.default)
-  },
-  // ! jsx写法
-  render(h) {
-    return <div>{ this.$slots.default }</div>
-  },
-
-  // this.$scopedSlots 访问作用域插槽，每个作用域插槽都是一个返回若干 VNode 的函数
-  // ! createElement函数写法
-  render(createElement) {
-    // `<div><slot :text="msg"></slot name="other" :title="title"><slot></slot></div>`
-    return createElement('div', [
-      this.$scopedSlots.default({
-        text: this.msg
-      }),
-      this.$scopedSlots.other({
-        title: this.title
-      })
-    ])
-  },
-  // ! jsx写法
-  render(h) {
-    return <div>
-      { this.$scopedSlots.default({
-        text: this.msg
-      }) }
-      { this.$scopedSlots.other({
-        title: this.title
-      }) }
+  // 子组件
+  const MySlot = {
+    // ! <slot name=''></slot>
+    template: `
+      <div>
+        <header>
+          <slot name="header"></slot>
+        </header>
+        <main>
+          <slot></slot>
+        </main>
+        <footer>
+          <slot name="footer"></slot>
+        </footer>
       </div>
-  },
-
-
-  /**
-   * !!! v-slot指令
-   */
-  // ! <template></template>写法
-  // <current-user>
-  //   <template v-slot:default="slotProps">
-  //     <div>{{ slotProps.text }}</div>
-  //   </template>
-  //   <template v-slot:other="otherSlotProps">
-  //     <div>{{ otherSlotProps.title }}</div>
-  //   </template>
-  // </current-user>
-  // ! createElement函数写法
-  render(createElement) {
-    return createElement('current-user', {
-      // 作用域插槽的格式为
-      // { name: props => VNode | Array<VNode> }
-      scopedSlots: {
-        default: props => createElement('div', props.text),
-        other: props => createElement('div', props.title)
-      },
-      // 如果组件是其它组件的子组件，需为插槽指定名称
-      slot: 'name-of-slot',
-    })
-  },
-  // ! jsx写法
-  render(h) {
-    const scopedSlots = {
-        default: props => <div>{ props.text }</div>,
-        other: props => <div>{ props.title }</div>
+    `,
+    // ! createElement this.$slots
+    render(h) {
+      return h('div', [
+        h('header', this.$slots.header),
+        h('main', this.$slots.default),
+        h('footer', this.$slots.footer)
+      ])
+    },
+    // ! jsx this.$slots
+    render(h) {
+      return (
+        <div>
+          <header>{this.$slots.header}</header>
+          <main>{this.$slots.default}</main>
+          <footer>{this.$slots.footer}</footer>
+        </div>
+      )
     }
-    return <current-user scopedSlots={scopedSlots}></current-user>
   }
 
-}
+  // 父组件
+  `
+  <div>
+    <header>
+      <h1>Here might be a page title</h1>
+    </header>
+    <main>
+      <p>A paragraph for the main content.</p>
+      <p>And another one.</p>
+    </main>
+    <footer>
+      Here's some contact info
+    </footer>
+  </div>
+`
+  export default {
+     // ! v-slot:x 或 #x 或 slot='x' (三种写法)
+    template: `
+      <MySlot>
+        <h1 v-slot:header>Here might be a page title</h1>
+        <p>A paragraph for the main content.</p>
+        <p>And another one.</p>
+        <template v-slot:footer>Here's some contact info</template>
+      </MySlot>
+    `,
+    components: {
+      MySlot
+    },
+    // ! createElement h函数第2个参数{ slot: '' }
+    render(h) {
+      return h('MySlot', [
+        h('h1', { slot: 'header' }, 'Here might be a page title'),
+        h('p', 'A paragraph for the main content.'),
+        h('p', 'And another one.'),
+        h('template', { slot: 'footer' }, `Here's some contact info`)
+      ])
+    },
+    // ! jsx slot=''
+    render(h) {
+      return (
+        <MySlot>
+          <h1 slot='header'>Here might be a page title</h1>
+          <p>A paragraph for the main content.</p>
+          <p>And another one.</p>
+          <template slot="footer">Here's some contact info</template>
+        </MySlot>
+      )
+    }
+  }
 </script>
