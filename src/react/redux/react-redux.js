@@ -26,7 +26,7 @@ connect(null, null)(Counter);
 // or
 connect(mapStateToProps /** no second argument */)(Counter);
 
-// 方法二：使用mapStateToProps方法注入state,使用mapStateToProps方法注入dispatch
+// 方法二：使用mapStateToProps方法注入state,使用mapDispatchToProps方法注入dispatch
 const mapStateToProps = (state, ownProps) => ({
   count: state.count
 });

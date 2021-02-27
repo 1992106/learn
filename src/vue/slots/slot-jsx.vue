@@ -47,7 +47,7 @@ export default {
 
 // ! scopedSlots 作用域插槽
 const MySlot = {
-  // ! <slot name='xxx' v-bind:xxx='xxx'></slot>
+  // ! <slot name='xxx' :xxx='xxx'></slot>
   template: `
     <div>
       <header><slot name="header" v-bind:user="user"></slot></header>
@@ -71,12 +71,12 @@ const MySlot = {
 }
 
 export default {
-  // ! v-slot:x='' 或 #x='' 或 slot='x'/slot-scope=''
+  // ! v-slot:x='y' 或 #x='y' 或 slot='x'/slot-scope='y' (三种写法)
   template: `
     <MySlot>
       <template v-slot:header="slotProps">hello, {{slotProps.user}}</template>
       children node
-      <div v-slot:foorer>this is footer</div>
+      <template v-slot:footer><div>this is footer</div></template>
     </MySlot>
   `,
   render (h) {
@@ -87,7 +87,7 @@ export default {
     return (
       <MySlot scopedSlots={scopedSlots}>
         children node
-        <div slot='footer'>this is footer</div>
+        <template slot='footer'><div>this is footer</div></template>
       </MySlot>
     )
   }

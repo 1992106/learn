@@ -15,6 +15,7 @@
         </footer>
       </div>
     `,
+    // this.$slots 访问静态插槽的内容，每个插槽都是一个 VNode 数组
     // ! createElement this.$slots
     render(h) {
       return h('div', [
@@ -54,7 +55,9 @@
      // ! v-slot:x 或 #x 或 slot='x' (三种写法)
     template: `
       <MySlot>
-        <h1 v-slot:header>Here might be a page title</h1>
+        <template v-slot:header>
+          <h1 >Here might be a page title</h1>
+        </template>
         <p>A paragraph for the main content.</p>
         <p>And another one.</p>
         <template v-slot:footer>Here's some contact info</template>
@@ -63,20 +66,31 @@
     components: {
       MySlot
     },
-    // ! createElement h函数第2个参数{ slot: '' }
+    // ! createElement
+    // ??? scopedSlots或者slot
     render(h) {
-      return h('MySlot', [
-        h('h1', { slot: 'header' }, 'Here might be a page title'),
+      return h('MySlot', {
+        scopedSlots: {
+          header: () => h('h1', 'Here might be a page title'),
+          footer: () => `Here's some contact info`
+        }
+      }, [
         h('p', 'A paragraph for the main content.'),
-        h('p', 'And another one.'),
-        h('template', { slot: 'footer' }, `Here's some contact info`)
+        h('p', 'And another one.')
       ])
+      // 错误写法？？？
+      // return h('MySlot', [
+      //   h('template', { slot: 'header' } [ h('h1', 'Here might be a page title') ]),
+      //   h('p', 'A paragraph for the main content.'),
+      //   h('p', 'And another one.'),
+      //   h('template', { slot: 'footer' }, `Here's some contact info`)
+      // ])
     },
     // ! jsx slot=''
     render(h) {
       return (
         <MySlot>
-          <h1 slot='header'>Here might be a page title</h1>
+          <template slot="header"><h1>Here might be a page title</h1></template>
           <p>A paragraph for the main content.</p>
           <p>And another one.</p>
           <template slot="footer">Here's some contact info</template>

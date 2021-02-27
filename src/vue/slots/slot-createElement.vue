@@ -48,7 +48,7 @@ export default {
 // ! scopedSlots 作用域插槽
 // 定义作用域插槽
 const MySlot = {
-  // ! <slot name='xxx' v-bind:xxx='xxx'></slot>
+  // ! <slot name='xxx' :xxx='xxx'></slot>
   template: `
     <div>
       <header><slot name="header" v-bind:user="user"></slot></header>
@@ -71,24 +71,22 @@ const MySlot = {
 // 要使用作用域插槽的数据内容，则插槽必须在组件的数据对象`scopedSlots`中使用，如`header`所示
 // 作用域插槽也可以当作普通插槽使用，如`default`和`header`
 export default {
-  // ! v-slot:x='' 或 #x='' 或 slot='x'/slot-scope=''
+  // ! v-slot:x='y' 或 #x='y' 或 slot='x'/slot-scope='y' (三种写法)
   template: `
     <MySlot>
       <template v-slot:header="slotProps">hello,{{slotProps.user}}</template>
       children node
-      <div v-slot:footer>this is footer</div>
+      <template v-slot:footer><div>this is footer</div></template>
     </MySlot>
   `,
   components: { MySlot },
   render (h) {
     return h('MySlot', {
       scopedSlots: {
-        header: props => `hello, ${props.user}`
+        header: props => `hello, ${props.user}`,
+        footer: () => <div>this is footer</div>
       }
-    }, [
-      'children node',
-      h('div', { slot: 'footer' }, 'this is footer')
-    ])
+    }, 'children node')
   }
 }
 </script>
