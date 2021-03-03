@@ -160,7 +160,7 @@ const uniqueAlphaNumericId = () => {
   return (length = 24) => Array.from({length}, () => heyStack[randomInt()]).join('');
 }
 
-// 创建一个范围内的数字
+// 创建一个范围内的数组
 const rangeSimple = (end) =>  {
   return Array.from({ length: end }, (_, index) => index);
 }
