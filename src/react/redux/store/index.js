@@ -5,3 +5,6 @@ import compose from './compose';
 import bindActionCreators from './bindActionCreators';
 
 export { combineReducers, createStore, applyMiddleware, bindActionCreators, compose };
+
+// https://github.com/YvetteLau/Blog/blob/master/myredux/to-redux2/src/redux/createStore.js
+// https://github.com/reduxjs/redux/blob/v3.7.2/src/createStore.js

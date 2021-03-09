@@ -5,7 +5,7 @@ const applyMiddleware = (...middlewares) => (createStore) => (...args) => {
   let dispatch = store.dispatch;
   const middlewareAPI = {
     getState: store.getState,
-    dispatch: (...args) => dispatch(...args)
+    dispatch: (dispatch) => dispatch(dispatch)
   };
   let middles = middlewares.map((middleware) => middleware(middlewareAPI));
   dispatch = compose(...middles)(store.dispatch);
