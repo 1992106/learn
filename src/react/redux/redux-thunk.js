@@ -1,3 +1,4 @@
+// http://www.ruanyifeng.com/blog/2016/09/redux_tutorial_part_two_async_operations.html
 // （1）异步的Action Creator返回了一个函数，而普通的Action Creator默认返回一个对象。
 
 // （2）异步的Action Creator的参数是派发里面同步Action的参数，它返回函数的参数是Redux中dispatch和getState两个方法。普通的Action Creator的参数是Action的内容。
@@ -9,3 +10,26 @@
 // 所以：一个异步Action包含两个（开始/结束）或三个(开始/请求成功/请求失败)同步Action
 // store.dispatch方法正常情况下，参数只能是对象，不能是函数
 // redux-thunk中间件，改造store.dispatch，使得后者可以接受函数作为参数
+
+// 创建异步action（createAsyncThunk写法）
+const getRoutes = createAsyncThunk('routes/getRoutes', async (params, { dispatch, getState }) => {
+  const { data } = await request({
+    query: GET_ROUTERS
+  });
+  return data?.routers || [];
+});
+dispatch(getRoutes());
+
+// 创建异步action（原始写法）
+const getRoutes = (params) => async (dispatch, getState) => {
+  dispatch({ type: 'getRoutes.pending', payload: '' });
+  try {
+    const { data } = await request({
+      query: GET_ROUTERS
+    });
+    dispatch({ type: 'getRouters.fulfilled', payload: data?.routers || [] });
+  } catch (e) {
+    dispatch({ type: 'getRoutes.pending', payload: '' });
+  }
+};
+dispatch(getRoutes());
