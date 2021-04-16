@@ -1,5 +1,5 @@
 // 创建自定义事件，并派发自定义事件
-const triggerEvent = (el, eventType, detail) => el.dispatchEvent(new CustomEvent(eventType, { detail }));
+const triggerEvent = (el, eventType, detail) => el.dispatchEvent(new CustomEvent(eventType, { detail }))
 
 // 获取当前子元素是其父元素下子元素的排位
 const getIndex = el => {
@@ -33,7 +33,7 @@ const getOffset = el => {
 const getScrollPosition = (el) => ({
   x: el.pageXOffset ? el.pageXOffset : el.scrollLeft,
   y: el.pageYOffset ? el.pageYOffset : el.scrollTop
-});
+})
 
 // fade动画
 const fade = (el, type = 'in') => {
@@ -55,24 +55,49 @@ const fade = (el, type = 'in') => {
 }
 
 // 获取元素类型
-const type = obj => Object.prototype.toString.call(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase();
+const type = obj => Object.prototype.toString.call(obj).replace(/^\[object (.+)\]$/, '$1').toLowerCase()
 
 
 // 判断是否是移动端
 const isMobile = () => 'ontouchstart' in window
 
 // 元素是否保护的指定类
-const hasClass = (el, className) => el.classList.contains(className);
+const hasClass = (el, className) => el.classList.contains(className)
 
 // 父元素是否包含子元素
-const elementContains = (parent, child) => parent !== child && parent.contains(child);
+const elementContains = (parent, child) => parent !== child && parent.contains(child)
 
 // 元素是否在视口可见
 const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
   const { top, left, bottom, right } = el.getBoundingClientRect();
   const { innerHeight, innerWidth } = window;
   return partiallyVisible ? ((top > 0 && top < innerHeight) || (bottom > 0 && bottom < innerHeight)) && ((left > 0 && left < innerWidth) || (right > 0 && right < innerWidth)) : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth;
-};
+}
+
+// 获取标签内容（包含标签）
+function getOuterHTML(el) {
+  if (el.outerHTML) {
+    return el.outerHTML;
+  } else {
+    let container = document.createElement("div");
+    container.appendChild(el.cloneNode(true));
+    return container.innerHTML;
+  }
+}
+
+const inBrowser = typeof window !== "undefined"
+// const inWeex = typeof WXEnvironment !== "undefined" && !!WXEnvironment.platform
+// const weexPlatform = inWeex && WXEnvironment.platform.toLowerCase()
+const UA = inBrowser && window.navigator.userAgent.toLowerCase()
+
+const isIE = UA && /msie|trident/.test(UA)
+const isIE9 = UA && UA.indexOf("msie 9.0") > 0
+const isEdge = UA && UA.indexOf("edge/") > 0
+const isAndroid = (UA && UA.indexOf("android") > 0) || weexPlatform === "android"
+const isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || weexPlatform === "ios"
+const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge
+const isPhantomJS = UA && /phantomjs/.test(UA)
+const isFF = UA && UA.match(/firefox\/(\d+)/)
 
 setTimeout(() => {
   // 插入十万条数据
@@ -81,8 +106,8 @@ setTimeout(() => {
   const once = 20
   // 渲染数据总共需要几次
   const loopCount = total / once
-  let countOfRender = 0,
-   ul = document.querySelector('ul')
+  let countOfRender = 0
+  let ul = document.querySelector('ul')
   function add() {
     // 优化性能，插入不会造成回流
     const fragment = document.createDocumentFragment()
@@ -117,4 +142,4 @@ const copyToClipboard = str => {
     document.getSelection().removeAllRanges();
     document.getSelection().addRange(selected);
   }
-};
+}
