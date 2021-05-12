@@ -65,13 +65,13 @@ function isElement(value) {
   return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value)
 }
 
-// Number.isFinite(value) 与 !Number.isNaN(value) 改成  value === value
+// Number.isFinite(value) 与 !Number.isNaN(value) 换成 value === value 也可以达到相同效果
 function isNumber(value) {
   // eslint-disable-next-line no-self-compare
   return typeof value == 'number' && value === value
 }
 
-// ES6 Number.isNaN() 方法确定传递的值是否为 NaN， ES5 isNaN()
+// ES6 Number.isNaN() 判断是否是否为NaN， ES5 isNaN()
 function isNaN(value) {
   // eslint-disable-next-line no-self-compare
   return typeof value === 'number' && value !== value
@@ -265,7 +265,7 @@ const range = (maxOrStart, end = null, step = null) => {
 // https://segmentfault.com/a/1190000020221170
 const fillArray = (length:number, data: any) => Array.from({ length }, () => data)
 const fillArray2 = (length:number, data: any) => Array(length).fill(data)
-// 生成空数组 new Array(10)与Array(10)一样，会生成稀疏空数组
+// 生成数组 new Array(10)与Array(10)一样，会生成稀疏数组[,,,]
 const emptyArray = (length: number) => Array.from({ length })
 const emptyArray2 = (length: number) => Array.apply(null, { length })
 const emptyArray3 = (length: number) => Array(20).fill(undefined)

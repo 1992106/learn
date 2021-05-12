@@ -34,7 +34,7 @@ const partial2 = (fn: any, ...args: any[]) => {
       let position = 0;
       const len = args.length;
         for(let i = 0; i < len; i++) {
-            args[i] = args[i] === '_' ? arguments[position++] : args[i]
+          args[i] = args[i] === '_' ? arguments[position++] : args[i]
         }
         while(position < arguments.length) args.push(arguments[position++]);
         // eslint-disable-next-line no-invalid-this
@@ -47,7 +47,7 @@ const compose = (...args: any[]) => {
   return function() {
       let i = start,
       // eslint-disable-next-line no-invalid-this
-       result = args[start].apply(this, arguments);
+      result = args[start].apply(this, arguments);
       // eslint-disable-next-line no-invalid-this
       while (i--) result = args[i].call(this, result);
       return result;

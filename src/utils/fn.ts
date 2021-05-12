@@ -27,19 +27,30 @@ export function removeHtml(str = ''): String {
  * @param value 需要舍入的数
  * @param length 保留小数点后位数
  */
-export function toFixed(value: number, length = 2): number {
-  let tempNum = 0, s: number, temp: number;
-  const s1 = String(value);
-  const start = s1.indexOf('.');
-  if (start === -1) {
-    return value;
+export function toFixed(value: number, length = 2): string {
+  if (typeof value !== 'number') {
+    throw new Error("value不是数字");
   }
-  if (Number(s1.substr(start + length + 1, 1)) >= 5) {
-    tempNum = 1;
+  if (length < 0) {
+    throw new Error("length不能为负数")
   }
-  temp = Math.pow(10, length);
-  s = Math.round(value * temp) + tempNum;
-  return s / temp;
+  // return Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
+  let result = Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
+
+  let str = String(result);
+  let arr = str.split('.');
+  if (arr.length === 1) {
+    if(length != 0){
+      str += ".";
+      str += new Array(length + 1).join('0');
+    }
+  } else {
+    if (arr[1].length < length) {
+        arr[1] += new Array(length - arr[1].length + 1).join('0')
+    }
+    str = arr.join('.')
+  }
+  return str
 }
 
 // 防抖
