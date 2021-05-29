@@ -8,6 +8,12 @@ const dataType = (obj: any) => Object.prototype.toString.call(obj).replace(/^\[o
 // 延迟函数delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+// 超时函数
+const timeout = (fn: Promise<any>, ms: number) => {
+  const err = delay(ms).then(() => { throw new Error('Operation timed out after ' + ms + ' ms') })
+  return Promise.race([fn, err])
+}
+
 // 函数柯里化
 const curring = (fn: any) => {
   const { length } = fn;

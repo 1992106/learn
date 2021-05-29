@@ -1,31 +1,35 @@
 // 延迟函数
-function sleep(delay) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(), delay);
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+
+// 超时函数
+const timeout = (fn, delay) => {
+  const err = sleep(delay).then(() => {
+    throw new Error('Operation timed out after ' + delay + ' ms');
   });
-}
+  return Promise.race([fn, err]);
+};
 
 // 重试函数
-function retry(fn, num, delay) {
+const retry = (fn, delay, times) => {
   return new Promise((resolve, reject) => {
-    function attempt() {
-      fn()
-        .then((res) => {
+    const attempt = () => {
+      fn().then(
+        (res) => {
           resolve(res);
-        })
-        .catch((err) => {
-          if (num === 0) {
+        },
+        (err) => {
+          if (times === 0) {
             reject(err);
           } else {
-            // eslint-disable-next-line no-param-reassign
-            num--;
-            setTimeout(() => attempt(), delay);
+            times--;
+            setTimeout(attempt, delay);
           }
-        });
-    }
+        }
+      );
+    };
     attempt();
   });
-}
+};
 
 // 顺序执行 promise
 const asyncQueue = () => {
@@ -81,4 +85,4 @@ async function poll(fn, validate, interval = 2500) {
   return new Promise(resolver);
 }
 
-export { sleep, retry, asyncQueue, poll };
+export { sleep, timeout, retry, asyncQueue, poll };
