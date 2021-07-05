@@ -1,6 +1,9 @@
 // 创建自定义事件，并派发自定义事件
 const triggerEvent = (el, eventType, detail) => el.dispatchEvent(new CustomEvent(eventType, { detail }))
 
+// 去除字符串中的html代码
+const removeHtml = (str = '') => str.replace(/<[\/\!]*[^<>]*>/ig, '');
+
 // 获取当前子元素是其父元素下子元素的排位
 const getIndex = el => {
   if (!el) {

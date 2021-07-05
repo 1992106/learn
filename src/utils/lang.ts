@@ -5,23 +5,7 @@ import { cached } from './fn'
  * @param data 要验证的字段值
  * @returns 为空返回false,不为空返回true
  */
-export const isEmpty = (data: any): boolean => {
-  if (data === null || data === undefined) {
-    return true;
-  }
-  if (typeof data === 'string' && data.trim() === '') {
-    return true;
-  }
-  if (Array.isArray(data) && data.length === 0) {
-    return true;
-  }
-  if (Object.prototype.toString.call(data) === '[object Object]' && Object.keys(data).length === 0) {
-    return true;
-  }
-  return false;
-}
-
-export const  isEmpty2 = (x: any): boolean => {
+export const  isEmpty = (x: any): boolean => {
   if (x === null || x === undefined) {
     return true;
   }
@@ -49,14 +33,42 @@ function toRawType(value) {
   return Object.prototype.toString.call(value).slice(8, -1);
 }
 
+// 判断是否是promise
+function isPromise(value) {
+  return (
+    value != null &&
+    typeof value.then === "function" &&
+    typeof value.catch === "function"
+  )
+}
+
+// 判断是否是原始数据（除symbol）
+function isStatic(value) {
+  return (
+      typeof value === 'string' ||
+      typeof value === 'number' ||
+      typeof value === 'boolean' ||
+      typeof value === 'undefined' ||
+      value === null
+  )
+}
+
+// 判断是否是原始数据
+function isPrimitive(value) {
+  return isStatic(value) || typeof value === 'symbol'
+}
+
+// 判断是否是引用类型对象（例如：array,function,object,regexp,new String(),new Number(),new Boolean())
 function isObject(obj) {
   return obj != null && (typeof obj === 'object' || typeof obj === 'function')
 }
 
+// 判断是否是类对象。如果一个值是类对象，那么它不应该是null，并且typeof等于“object”。
 function isObjectLike(obj) {
   return obj !== null && typeof obj === 'object'
 }
 
+// 判断是否是Object类型的数据
 function isPlainObject(obj) {
   return getTag(obj) === "[object Object]";
 }
@@ -65,8 +77,10 @@ function isElement(value) {
   return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value)
 }
 
-// Number.isFinite(value) 与 !Number.isNaN(value) 换成 value === value 也可以达到相同效果
+// 判断是否是数字（除NaN）
+// Number.isFinite（）：判断是否是有限数字（除NaN和正负Infinity）
 function isNumber(value) {
+  // return typeof value == 'number' && !Number.isNaN(value)
   // eslint-disable-next-line no-self-compare
   return typeof value == 'number' && value === value
 }
@@ -108,14 +122,6 @@ function toArray(list, start) {
     ret[i] = list[i + start]
   }
   return ret
-}
-
-function isPromise(value) {
-  return (
-    value != null &&
-    typeof value.then === "function" &&
-    typeof value.catch === "function"
-  )
 }
 
 // 将输入值转换为数字以便持久化。如果转换失败，则返回原始字符串。
@@ -269,3 +275,48 @@ const fillArray2 = (length:number, data: any) => Array(length).fill(data)
 const emptyArray = (length: number) => Array.from({ length })
 const emptyArray2 = (length: number) => Array.apply(null, { length })
 const emptyArray3 = (length: number) => Array(20).fill(undefined)
+
+// 生成一个重复的字符串
+function repeat(str, n) {
+  let res = '';
+  while(n) {
+      if(n % 2 === 1) {
+          res += str;
+      }
+      if(n > 1) {
+          str += str;
+      }
+      n >>= 1;
+  }
+  return res
+};
+
+
+Object.keys = Object.keys || function keys(object) {
+  if (object === null || object === undefined) {
+      throw new TypeError('Cannot convert undefined or null to object');
+  }
+  let result = [];
+  if (isArrayLike(object) || isPlainObject(object)) {
+    // eslint-disable-next-line guard-for-in
+    for (let key in object) {
+      object.hasOwnProperty(key) && (result.push(key))
+    }
+  }
+  return result;
+}
+
+
+Object.values = Object.values || function values(object) {
+  if (object === null || object === undefined) {
+      throw new TypeError('Cannot convert undefined or null to object');
+  }
+  let result = [];
+  if (isArrayLike(object) || isPlainObject(object)) {
+    // eslint-disable-next-line guard-for-in
+    for (let key in object) {
+      object.hasOwnProperty(key) && (result.push(object[key]))
+    }
+  }
+  return result;
+}
