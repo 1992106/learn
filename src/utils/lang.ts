@@ -5,17 +5,17 @@ import { cached } from './fn'
  * @param data 要验证的字段值
  * @returns 为空返回false,不为空返回true
  */
-export const  isEmpty = (x: any): boolean => {
+export const isEmpty = (x: any): boolean => {
   if (x === null || x === undefined) {
     return true;
   }
-  if(Array.isArray(x) || typeof x === 'string' || x instanceof String) {
+  if (Array.isArray(x) || typeof x === 'string' || x instanceof String) {
     return x.length === 0;
   }
-  if(x instanceof Map || x instanceof Set) {
+  if (x instanceof Map || x instanceof Set) {
     return x.size === 0;
   }
-  if(Object.prototype.toString.call(x) === '[object Object]') {
+  if (Object.prototype.toString.call(x) === '[object Object]') {
     return Object.keys(x).length === 0;
   }
   return false;
@@ -45,11 +45,11 @@ function isPromise(value) {
 // 判断是否是原始数据（除symbol）
 function isStatic(value) {
   return (
-      typeof value === 'string' ||
-      typeof value === 'number' ||
-      typeof value === 'boolean' ||
-      typeof value === 'undefined' ||
-      value === null
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean' ||
+    typeof value === 'undefined' ||
+    value === null
   )
 }
 
@@ -77,15 +77,22 @@ function isElement(value) {
   return isObjectLike(value) && value.nodeType === 1 && !isPlainObject(value)
 }
 
-// 判断是否是数字（除NaN）
-// Number.isFinite（）：判断是否是有限数字（除NaN和正负Infinity）
-function isNumber(value) {
-  // return typeof value == 'number' && !Number.isNaN(value)
-  // eslint-disable-next-line no-self-compare
-  return typeof value == 'number' && value === value
+// 判断是否是非数字值（Int/Float/Infinity/字符串数字）（不包含NaN）
+function isNumeric(v){
+  return (typeof v === 'string' || typeof v === 'number') && !isNaN(v)
 }
 
+// 判断是否是数字（Int/Float/Infinity）（不包含NaN）
+function isNumber(value) {
+  // eslint-disable-next-line no-self-compare
+  return typeof value == 'number' && value === value
+  // return typeof value == 'number' && !Number.isNaN(value)
+}
+// 判断是否是有限数字（Int/Float）（不包含Infinity和NaN）
+// Number.isFinite（）
+
 // ES6 Number.isNaN() 判断是否是否为NaN， ES5 isNaN()
+// Number(undefined)和0/0返回NaN，parseInt/parseFloat等方法尝试将一个字符串解析成数字但失败了的时候也会返回NaN
 function isNaN(value) {
   // eslint-disable-next-line no-self-compare
   return typeof value === 'number' && value !== value
@@ -104,7 +111,7 @@ function isInteger(value) {
 // 判断一个值是否是一个有效的array-like对象的length属性
 // 是数字且大于0小于Number.MAX_SAFE_INTEGER的整数
 function isLength(value) {
-  return typeof value == 'number' && value % 1 == 0 && value > -1 &&  value <= Number.MAX_SAFE_INTEGER
+  return typeof value == 'number' && value % 1 == 0 && value > -1 && value <= Number.MAX_SAFE_INTEGER
 }
 
 // 判断一个值是否是一个array-like
@@ -135,8 +142,8 @@ function toString(val) {
   return val == null
     ? ""
     : Array.isArray(val) || (isPlainObject(val) && val.toString === Object.prototype.toString)
-    ? JSON.stringify(val, null, 2)
-    : String(val)
+      ? JSON.stringify(val, null, 2)
+      : String(val)
 }
 
 // 将属性混合到目标对象中
@@ -168,15 +175,15 @@ export const hyphenate = cached((str: string): string => {
 
 // 获取列表最后一项
 const lastItem = (list: Array<any> | Set<any> | Map<any, any>) => {
-  if(Array.isArray(list)) {
+  if (Array.isArray(list)) {
     return list.slice(-1)[0];
   }
 
-  if(list instanceof Set) {
+  if (list instanceof Set) {
     return Array.from(list).slice(-1)[0];
   }
 
-  if(list instanceof Map) {
+  if (list instanceof Map) {
     return Array.from(list.values()).slice(-1)[0];
   }
 }
@@ -193,7 +200,7 @@ function remove(arr, item) {
 
 // 带有范围的随机数生成器
 const randomNumber = (max = 1, min = 0) => {
-  if(min >= max) {
+  if (min >= max) {
     return max;
   }
 
@@ -212,7 +219,7 @@ const hash = (str) => {
 
 // 随机 ID 生成器
 const uniqueId = () => {
-  const id = (function*() {
+  const id = (function* () {
     let mil = new Date().getTime();
 
     while (true)
@@ -222,7 +229,7 @@ const uniqueId = () => {
   return () => id.next().value;
 }
 const uniqueIncrementingId = (lastId = 0) => {
-  const id = (function*() {
+  const id = (function* () {
     let numb = lastId;
 
     while (true)
@@ -235,42 +242,42 @@ const uniqueAlphaNumericId = () => {
   const heyStack = '0123456789abcdefghijklmnopqrstuvwxyz';
   const randomInt = () => Math.floor(Math.random() * Math.floor(heyStack.length))
 
-  return (length = 24) => Array.from({length}, () => heyStack[randomInt()]).join('');
+  return (length = 24) => Array.from({ length }, () => heyStack[randomInt()]).join('');
 }
 
 // 创建一个范围内的数组
-const rangeSimple = (end) =>  {
+const rangeSimple = (end) => {
   return Array.from({ length: end }, (_, index) => index);
 }
 const rangeSimple2 = (start, end, step) => {
-  return Array.from({ length: (end - start) / step + 1}, (_, i) => start + (i * step))
+  return Array.from({ length: (end - start) / step + 1 }, (_, i) => start + (i * step))
 }
 const range = (maxOrStart, end = null, step = null) => {
-  if(!end) {
-    return Array.from({length: maxOrStart}, (_, i) => i)
+  if (!end) {
+    return Array.from({ length: maxOrStart }, (_, i) => i)
   }
 
-  if(end <= maxOrStart) {
+  if (end <= maxOrStart) {
     return [];
   }
 
-  if(step !== null) {
+  if (step !== null) {
     return Array.from(
-      {length: Math.ceil(((end - maxOrStart) / step))},
+      { length: Math.ceil(((end - maxOrStart) / step)) },
       (_, i) => (i * step) + maxOrStart
     );
   }
 
   return Array.from(
-    {length: Math.ceil((end - maxOrStart))},
+    { length: Math.ceil((end - maxOrStart)) },
     (_, i) => i + maxOrStart
   );
 }
 
 // 填充数组
 // https://segmentfault.com/a/1190000020221170
-const fillArray = (length:number, data: any) => Array.from({ length }, () => data)
-const fillArray2 = (length:number, data: any) => Array(length).fill(data)
+const fillArray = (length: number, data: any) => Array.from({ length }, () => data)
+const fillArray2 = (length: number, data: any) => Array(length).fill(data)
 // 生成数组 new Array(10)与Array(10)一样，会生成稀疏数组[,,,]
 const emptyArray = (length: number) => Array.from({ length })
 const emptyArray2 = (length: number) => Array.apply(null, { length })
@@ -279,14 +286,14 @@ const emptyArray3 = (length: number) => Array(20).fill(undefined)
 // 生成一个重复的字符串
 function repeat(str, n) {
   let res = '';
-  while(n) {
-      if(n % 2 === 1) {
-          res += str;
-      }
-      if(n > 1) {
-          str += str;
-      }
-      n >>= 1;
+  while (n) {
+    if (n % 2 === 1) {
+      res += str;
+    }
+    if (n > 1) {
+      str += str;
+    }
+    n >>= 1;
   }
   return res
 };
@@ -294,7 +301,7 @@ function repeat(str, n) {
 
 Object.keys = Object.keys || function keys(object) {
   if (object === null || object === undefined) {
-      throw new TypeError('Cannot convert undefined or null to object');
+    throw new TypeError('Cannot convert undefined or null to object');
   }
   let result = [];
   if (isArrayLike(object) || isPlainObject(object)) {
@@ -309,7 +316,7 @@ Object.keys = Object.keys || function keys(object) {
 
 Object.values = Object.values || function values(object) {
   if (object === null || object === undefined) {
-      throw new TypeError('Cannot convert undefined or null to object');
+    throw new TypeError('Cannot convert undefined or null to object');
   }
   let result = [];
   if (isArrayLike(object) || isPlainObject(object)) {

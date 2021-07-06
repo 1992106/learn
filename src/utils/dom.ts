@@ -192,8 +192,8 @@ function getBase64(url, filename) {
     eleLink.style.display = 'none';
     // 创建canvas元素
     const canvas = document.createElement("canvas"),
-    width = img.width, // 确保canvas的尺寸和图片一样
-    height = img.height;
+      width = img.width, // 确保canvas的尺寸和图片一样
+      height = img.height;
     canvas.width = width;
     canvas.height = height;
     canvas.getContext("2d").drawImage(img, 0, 0, width, height); // 将图片绘制到canvas中
