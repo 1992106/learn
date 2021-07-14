@@ -22,13 +22,13 @@
 
 
 /**
- * createObjectURL实现文件/图片下载
- * @param content 文件流
+ * new Blob() 与 URL.createObjectURL实现文件/图片下载
+ * @param content 由ArrayBuffer, ArrayBufferView, Blob, DOMString等对象构成
  * @param fileName 文件名
  */
-const downloadByObjectURL = (content: Blob | File, fileName: string) => {
+const downloadByObjectURL = (content: Blob | File | ArrayBuffer| ArrayBufferView | string, fileName: string, mime?: string) => {
 
-  const blob = new Blob([content]);
+  const blob = new Blob([content], { type: mime || 'application/octet-stream' });
   const src = URL.createObjectURL(blob);
 
   // 下载
@@ -40,7 +40,7 @@ const downloadByObjectURL = (content: Blob | File, fileName: string) => {
 
 
 /**
- * readAsDataURL实现文件/图片下载
+ * new FileReader() 与 readAsDataURL实现文件/图片下载
  * @param content 文件流
  * @param fileName 文件名
  */
@@ -76,10 +76,10 @@ const downloadByOnlineUrl = async (url: string, fileName: string) => {
 /**
  * url to base64 (HTMLCanvasElement.toDataURL())
  * @param url 图片地址
- * @param mimeType
+ * @param mime
  * @returns
  */
-const urlToBase64 = (url: string, mimeType?: string): Promise<string>  => {
+const urlToBase64 = (url: string, mime?: string): Promise<string>  => {
   return new Promise((resolve, reject) => {
     // 创建canvas
     let canvas = document.createElement('canvas');
@@ -96,7 +96,7 @@ const urlToBase64 = (url: string, mimeType?: string): Promise<string>  => {
       // 将图片绘制到canvas中
       ctx.drawImage(img, 0, 0);
       // 获取base64 url
-      const dataURL = canvas.toDataURL(mimeType || 'image/png');
+      const dataURL = canvas.toDataURL(mime || 'image/png');
       canvas = null;
 
       resolve(dataURL);
