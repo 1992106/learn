@@ -26,7 +26,8 @@ module.exports = {
           "const": "never" // Exactly one declarator per const declaration per block
       }],
       "no-undef": ["off"],
-      "no-sequences": ["off"]
+      "no-sequences": ["off"],
+      "prefer-promise-reject-errors": ["error", {"allowEmptyReject": true}]
     }
 }
 
