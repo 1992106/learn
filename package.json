@@ -43,16 +43,13 @@
     "typescript": "^3.9.5"
   },
   "lint-staged": {
-    "src/**/*.js": [
-      "eslint --fix",
-      "prettier --write"
-    ],
-    "src/**/*.ts": [
-      "npm run lint:ts",
-      "git add"
+    "src/**/*{js,ts,jsx,tsx}": [
+      "prettier --write",
+      "eslint --fix"
     ],
     "src/**/*.less": [
-      "npm run lint:style",
+      "prettier --write",
+      "stylelint --fix",
       "git add"
     ]
   },
