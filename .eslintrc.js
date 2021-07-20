@@ -28,6 +28,8 @@ module.exports = {
     "no-undef": "off",
     "no-sequences": "off",
     "no-self-compare": "off",
+    "no-invalid-this": "off",
+    "guard-for-in": "off",
     "prefer-promise-reject-errors": ["error", { "allowEmptyReject": true }]
   }
 }

@@ -21,7 +21,8 @@ export const isEmpty = (x: any): boolean => {
   return false;
 }
 
-// Object.is()的polyfill
+/**
+ * Object.is()的polyfill
 // Object.is() 方法判断两个值是否为同一个值。如果满足以下条件则两个值相等:
 // 都是 undefined
 // 都是 null
@@ -35,7 +36,11 @@ export const isEmpty = (x: any): boolean => {
 // 或都是非零而且非 NaN 且为同一个值
 // !!! Object.is(+0, -0) === false
 // !!! Object.is(NaN, NaN) === true
-function is(x, y) {
+ * @param x
+ * @param y
+ * @returns
+ */
+function is(x: any, y: any) {
   if (x === y) {
     // 处理 +0 != -0 的情况
     return x !== 0 || y !== 0 || 1 / x === 1 / y
@@ -51,7 +56,7 @@ function is(x, y) {
  * @param objB
  * @returns
  */
-export default function shallowEqual(objA, objB) {
+export default function shallowEqual(objA: any, objB: any) {
   // 首先对基本数据类型比较
   if (is(objA, objB)) return true // is()可换成Object.is()
   // 由于Object.is()可以对基本数据类型做一个精确的比较；如果不相等，只有是object才会不相等。
@@ -142,7 +147,6 @@ function isNumeric(v) {
 
 // 判断是否是数字（Int/Float/Infinity）（不包含NaN）
 function isNumber(value) {
-  // eslint-disable-next-line no-self-compare
   return typeof value == 'number' && value === value
   // return typeof value == 'number' && !Number.isNaN(value)
 }
@@ -152,7 +156,6 @@ function isNumber(value) {
 // ES6 Number.isNaN() 判断是否是否为NaN， ES5 isNaN()
 // Number(undefined)和0/0返回NaN，parseInt/parseFloat等方法尝试将一个字符串解析成数字但失败了的时候也会返回NaN
 function isNaN(value) {
-  // eslint-disable-next-line no-self-compare
   return typeof value === 'number' && value !== value
 }
 
@@ -206,7 +209,6 @@ function toString(val) {
 
 // 将属性混合到目标对象中
 function extend(target, source) {
-  // eslint-disable-next-line guard-for-in
   for (let key in source) {
     target[key] = source[key]
   }
@@ -363,12 +365,11 @@ Object.keys = Object.keys || function keys(object) {
   }
   let result = [];
   if (isArrayLike(object) || isPlainObject(object)) {
-    // eslint-disable-next-line guard-for-in
     for (let key in object) {
       object.hasOwnProperty(key) && (result.push(key))
     }
   }
-  return result;
+  return result
 }
 
 
@@ -378,10 +379,9 @@ Object.values = Object.values || function values(object) {
   }
   let result = [];
   if (isArrayLike(object) || isPlainObject(object)) {
-    // eslint-disable-next-line guard-for-in
     for (let key in object) {
       object.hasOwnProperty(key) && (result.push(object[key]))
     }
   }
-  return result;
+  return result
 }

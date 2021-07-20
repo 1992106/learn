@@ -9,7 +9,6 @@ function bindActionCreators(actionCreator, dispatch) {
   } else if (typeof actionCreator === 'object') {
     // 如果是一个对象，那么对象的每一项都要都要返回 bindActionCreator
     const boundActionCreators = {};
-    // eslint-disable-next-line guard-for-in
     for (let key in actionCreator) {
       boundActionCreators[key] = bindActionCreator(actionCreator[key], dispatch);
     }

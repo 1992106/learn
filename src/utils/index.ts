@@ -25,7 +25,6 @@ const curring = (fn: any) => {
 const partial = (fn: any, ...args: any[]) => {
   return function () {
     const newArgs = args.concat([].slice.call(arguments));
-    // eslint-disable-next-line no-invalid-this
     return fn.apply(this, newArgs);
   };
 }
@@ -39,7 +38,6 @@ const partial2 = (fn: any, ...args: any[]) => {
       args[i] = args[i] === '_' ? arguments[position++] : args[i]
     }
     while (position < arguments.length) args.push(arguments[position++]);
-    // eslint-disable-next-line no-invalid-this
     return fn.apply(this, args);
   };
 };
@@ -47,10 +45,7 @@ const partial2 = (fn: any, ...args: any[]) => {
 const compose = (...args: any[]) => {
   const start = args.length - 1;
   return function () {
-    let i = start,
-      // eslint-disable-next-line no-invalid-this
-      result = args[start].apply(this, arguments);
-    // eslint-disable-next-line no-invalid-this
+    let i = start, result = args[start].apply(this, arguments);
     while (i--) result = args[i].call(this, result);
     return result;
   };
@@ -62,7 +57,6 @@ const memoize = (fn: any, hasher: string) => {
   return (...args: any[]) => {
     const key = hasher || JSON.stringify(args);
     if (!cache.hasOwnProperty(key)) {
-      // eslint-disable-next-line no-invalid-this
       cache[key] = fn.apply(this, args);
     }
     return cache[key];

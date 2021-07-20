@@ -11,7 +11,6 @@ export function once(fn: Function): Function {
   return function () {
     if (!called) {
       called = true
-      // eslint-disable-next-line no-invalid-this
       fn.apply(this, arguments)
     }
   }
@@ -57,7 +56,6 @@ export function debounce(fn: any, wait: number): any {
     }
     const args = Array.prototype.slice.call(arguments);
     timeout = setTimeout(() => {
-      // eslint-disable-next-line no-invalid-this
       fn.apply(this, args)
     }, wait)
   }
@@ -71,7 +69,6 @@ export function throttle(fn: any, wait: number): any {
       const args = Array.prototype.slice.call(arguments);
       timeout = setTimeout(() => {
         timeout = null;
-        // eslint-disable-next-line no-invalid-this
         fn.apply(this, args)
       }, wait);
     }
@@ -90,7 +87,7 @@ export function newFn(): any {
   if (result && (typeof result === 'object' || typeof result === 'function')) {
     return result;
   }
-  return target;
+  return target
 }
 
 export const myExtends = (Child, Super) => {
@@ -232,22 +229,20 @@ Function.prototype.bind = function () {
     args = Array.prototype.slice.call(arguments, 1),
     argsLength = args.length,
     self = this,
-    fNOP = function () { },
+    FNOP = function () { },
     fBound = function () {
       // reset to default base arguments
       args.length = argsLength;
       Array.prototype.push.apply(args, arguments);
-      // eslint-disable-next-line no-invalid-this
-      return self.apply(fNOP.prototype.isPrototypeOf(this) ? this : thisArg, args);
+      return self.apply(FNOP.prototype.isPrototypeOf(this) ? this : thisArg, args);
     };
 
   if (this.prototype) {
     // Function.prototype doesn't have a prototype property
-    fNOP.prototype = this.prototype;
+    FNOP.prototype = this.prototype;
   }
-  // eslint-disable-next-line new-cap
-  fBound.prototype = new fNOP();
-  return fBound;
+  fBound.prototype = new FNOP();
+  return fBound
 }
 
 
