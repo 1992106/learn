@@ -1,5 +1,5 @@
 // 延迟函数
-const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+const sleep = delay => new Promise(resolve => setTimeout(resolve, delay));
 
 // 超时函数
 const timeout = (fn, delay) => {
@@ -14,10 +14,10 @@ const retry = (fn, delay, times) => {
   return new Promise((resolve, reject) => {
     const attempt = () => {
       fn().then(
-        (res) => {
+        res => {
           resolve(res);
         },
-        (err) => {
+        err => {
           if (times === 0) {
             reject(err);
           } else {
@@ -33,7 +33,7 @@ const retry = (fn, delay, times) => {
 
 // 顺序执行 promise
 const asyncQueue = () => {
-  const toPromise = (x) => {
+  const toPromise = x => {
     if (x instanceof Promise) {
       // if promise just return it
       return x;
@@ -48,19 +48,19 @@ const asyncQueue = () => {
     return Promise.resolve(x);
   };
 
-  return (list) => {
+  return list => {
     const results = [];
 
     return (
       list
         .reduce((previousPromise, currentPromise) => {
-          return previousPromise.then((res) => {
+          return previousPromise.then(res => {
             results.push(res); // collect the results
             return toPromise(currentPromise);
           });
         }, toPromise(list.shift()))
         // collect the final result and return the array of results as resolved promise
-        .then((res) => Promise.resolve([...results, res]))
+        .then(res => Promise.resolve([...results, res]))
     );
   };
 };

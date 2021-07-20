@@ -4,12 +4,12 @@
  * @param name 文件名
  * @param target
  */
- const download = (url, name) => {
+const download = (url, name) => {
   // 创建可下载隐藏链接
   const eleLink = document.createElement('a');
   eleLink.style.display = 'none';
   // 设置文件url
-  eleLink.href = url
+  eleLink.href = url;
   // 设置文件名
   eleLink.setAttribute('download', name);
   // 插入a标签
@@ -18,26 +18,27 @@
   eleLink.click();
   // 移除a标签
   document.body.removeChild(eleLink);
-}
-
+};
 
 /**
  * new Blob() 与 URL.createObjectURL实现文件/图片下载
  * @param content 由ArrayBuffer, ArrayBufferView, Blob, DOMString等对象构成
  * @param fileName 文件名
  */
-const downloadByObjectURL = (content: Blob | File | ArrayBuffer| ArrayBufferView | string, fileName: string, mime?: string) => {
-
+const downloadByObjectURL = (
+  content: Blob | File | ArrayBuffer | ArrayBufferView | string,
+  fileName: string,
+  mime?: string
+) => {
   const blob = new Blob([content], { type: mime || 'application/octet-stream' });
   const src = URL.createObjectURL(blob);
 
   // 下载
-  download(src, fileName)
+  download(src, fileName);
 
   // 释放URL对象
-  URL.revokeObjectURL(src)
+  URL.revokeObjectURL(src);
 };
-
 
 /**
  * new FileReader() 与 readAsDataURL实现文件/图片下载
@@ -45,21 +46,18 @@ const downloadByObjectURL = (content: Blob | File | ArrayBuffer| ArrayBufferView
  * @param fileName 文件名
  */
 const downloadByDataURL = (content: Blob | File, fileName: string) => {
-
   const fileReader = new FileReader();
 
   fileReader.onload = function () {
-
     // base64 url
-    const src = fileReader.result
+    const src = fileReader.result;
 
     // 下载
-    download(src, fileName)
-  }
+    download(src, fileName);
+  };
 
   fileReader.readAsDataURL(content);
-}
-
+};
 
 /**
  * 图片Url下载
@@ -68,10 +66,10 @@ const downloadByDataURL = (content: Blob | File, fileName: string) => {
  */
 const downloadByOnlineUrl = async (url: string, fileName: string) => {
   // 如果图片有跨域问题，需要把url转成base64
-  const src = await urlToBase64(url)
+  const src = await urlToBase64(url);
   // 下载
-  download(src, fileName)
-}
+  download(src, fileName);
+};
 
 /**
  * url to base64 (HTMLCanvasElement.toDataURL())
@@ -79,7 +77,7 @@ const downloadByOnlineUrl = async (url: string, fileName: string) => {
  * @param mime
  * @returns
  */
-const urlToBase64 = (url: string, mime?: string): Promise<string>  => {
+const urlToBase64 = (url: string, mime?: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     // 创建canvas
     let canvas = document.createElement('canvas');
@@ -87,7 +85,7 @@ const urlToBase64 = (url: string, mime?: string): Promise<string>  => {
 
     const img = new Image();
     img.crossOrigin = '';
-    img.onload = function() {
+    img.onload = function () {
       if (!canvas || !ctx) {
         return reject();
       }
@@ -103,7 +101,7 @@ const urlToBase64 = (url: string, mime?: string): Promise<string>  => {
     };
     img.src = url;
   });
-}
+};
 
 /**
  * base64 to blob
@@ -121,4 +119,4 @@ const dataURLtoBlob = (base64: string): Blob => {
     u8arr[n] = bstr.charCodeAt(n);
   }
   return new Blob([u8arr], { type: mime });
-}
+};

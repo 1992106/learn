@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useState } from 'react';
 
-export const useLegacyState = <T,>(defaultState: T) => {
+export const useLegacyState = <T>(defaultState: T) => {
   let [state, setState] = useState(defaultState);
 
   const setLegacyState = (nextState: Partial<T>) => {

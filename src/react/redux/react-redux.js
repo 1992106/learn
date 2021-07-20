@@ -71,7 +71,7 @@ connect(mapStateToProps, mapDispatchToProps)(Counter);
 // https://react-redux.js.org/api/hooks#useselector
 export const CounterComponent = () => {
   // 获取state中的count
-  const count = useSelector((state) => state.count);
+  const count = useSelector(state => state.count);
   const dispatch = useDispatch();
   return (
     <div>

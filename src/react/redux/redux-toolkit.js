@@ -14,7 +14,7 @@ const todos = createReducer([], {
     return [...state, todo];
   }
 });
-const todos = createReducer([], (builder) => {
+const todos = createReducer([], builder => {
   builder.addCase(addTodo, (state, action) => {
     const todo = action.payload;
     return [...state, todo];
@@ -30,7 +30,7 @@ const counter = createReducer(0, {
   [increment]: (state, action) => state + action.payload,
   [decrement]: (state, action) => state - action.payload
 });
-const counter = createReducer(0, (builder) => {
+const counter = createReducer(0, builder => {
   builder
     .addCase(increment, (state, action) => {
       return state + action.payload;
@@ -71,7 +71,7 @@ const todosSlice = createSlice({
       reducer: (state, action) => {
         state.push(action.payload);
       },
-      prepare: (value) => {
+      prepare: value => {
         return { payload: value };
       }
     }

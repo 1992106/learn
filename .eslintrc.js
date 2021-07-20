@@ -1,36 +1,26 @@
 module.exports = {
   extends: [
-    'alloy',
+    'eslint:recommended',
+    'plugin:prettier/recommended',
   ],
   parser: '@typescript-eslint/parser',
+  parserOptions: {
+    ecmaVersion: 12,
+    sourceType: 'module',
+    ecmaFeatures: {
+      jsx: true
+    }
+  },
   plugins: ['@typescript-eslint'],
   rules: {
-    // 禁止使用 var
-    'no-var': "error",
-    // 优先使用 interface 而不是 type
-    '@typescript-eslint/consistent-type-definitions': [
-      "error",
-      "interface"
-    ],
-    'no-unused-vars': "off",
-    "no-cond-assign": "off",
-    "no-param-reassign": "off",
-    "no-eq-null": "off",
-    "eqeqeq": "off",
-    "no-promise-executor-return": "off",
-    "no-return-assign": "off",
-    "max-params": "off",
-    "one-var": ["off", {
-      "var": "always", // Exactly one var declaration per function
-      "let": "always", // Exactly one let declaration per block
-      "const": "never" // Exactly one declarator per const declaration per block
-    }],
+    'prettier/prettier': ["error", { endOfLine: 'lf' }],
     "no-undef": "off",
-    "no-sequences": "off",
-    "no-self-compare": "off",
-    "no-invalid-this": "off",
-    "guard-for-in": "off",
-    "prefer-promise-reject-errors": ["error", { "allowEmptyReject": true }]
+    "no-unused-vars": "off",
+    "no-redeclare": "off",
+    "no-useless-escape": "off",
+    "no-prototype-builtins": "off",
+    "no-constant-condition": "off",
+    "guard-for-in": "off"
   }
 }
 

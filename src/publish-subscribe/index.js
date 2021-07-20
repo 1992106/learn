@@ -31,7 +31,7 @@ class EventEmitter {
     const subscribedEvents = this.events[event];
 
     if (subscribedEvents && subscribedEvents.length) {
-      subscribedEvents.forEach((callback) => {
+      subscribedEvents.forEach(callback => {
         callback.call(this, ...args);
       });
     }
@@ -49,12 +49,12 @@ class EventEmitter {
 
 let pubSub = new EventEmitter();
 
-pubSub.subscribe('click', (e) => {
+pubSub.subscribe('click', e => {
   console.log('click call:' + e);
 });
 pubSub.publish('click', 'abc');
 
-pubSub.subscribe('dblclick', (e) => {
+pubSub.subscribe('dblclick', e => {
   console.log('dblclick call:' + e);
 });
 pubSub.publish('dblclick', 'xyz');

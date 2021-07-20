@@ -1,19 +1,19 @@
 export function cached<F extends Function>(fn: F): any {
-  const cache = Object.create(null)
+  const cache = Object.create(null);
   return function cachedFn(str: string) {
-    const hit = cache[str]
-    return hit || (cache[str] = fn(str))
-  }
+    const hit = cache[str];
+    return hit || (cache[str] = fn(str));
+  };
 }
 
 export function once(fn: Function): Function {
-  let called = false
+  let called = false;
   return function () {
     if (!called) {
-      called = true
-      fn.apply(this, arguments)
+      called = true;
+      fn.apply(this, arguments);
     }
-  }
+  };
 }
 
 /**
@@ -23,10 +23,10 @@ export function once(fn: Function): Function {
  */
 export function toFixed(value: number, length = 2): string {
   if (typeof value !== 'number') {
-    throw new Error("value不是数字");
+    throw new Error('value不是数字');
   }
   if (length < 0) {
-    throw new Error("length不能为负数")
+    throw new Error('length不能为负数');
   }
   // return Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
   let result = Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
@@ -35,16 +35,16 @@ export function toFixed(value: number, length = 2): string {
   let arr = str.split('.');
   if (arr.length === 1) {
     if (length != 0) {
-      str += ".";
+      str += '.';
       str += new Array(length + 1).join('0');
     }
   } else {
     if (arr[1].length < length) {
-      arr[1] += new Array(length - arr[1].length + 1).join('0')
+      arr[1] += new Array(length - arr[1].length + 1).join('0');
     }
-    str = arr.join('.')
+    str = arr.join('.');
   }
-  return str
+  return str;
 }
 
 // 防抖
@@ -56,9 +56,9 @@ export function debounce(fn: any, wait: number): any {
     }
     const args = Array.prototype.slice.call(arguments);
     timeout = setTimeout(() => {
-      fn.apply(this, args)
-    }, wait)
-  }
+      fn.apply(this, args);
+    }, wait);
+  };
 }
 
 // 节流
@@ -69,14 +69,15 @@ export function throttle(fn: any, wait: number): any {
       const args = Array.prototype.slice.call(arguments);
       timeout = setTimeout(() => {
         timeout = null;
-        fn.apply(this, args)
+        fn.apply(this, args);
       }, wait);
     }
-  }
+  };
 }
 
 export function newFn(): any {
-  let target: any = {}, [constructor, ...args] = [...arguments];
+  let target: any = {},
+    [constructor, ...args] = [...arguments];
   // 执行 [[原型]] 连接
   // eslint-disable-next-line no-proto
   target['__proto__'] = constructor.protoType;
@@ -87,29 +88,33 @@ export function newFn(): any {
   if (result && (typeof result === 'object' || typeof result === 'function')) {
     return result;
   }
-  return target
+  return target;
 }
 
 export const myExtends = (Child, Super) => {
-  const Fn = function () { };
+  const Fn = function () {};
 
   Fn.prototype = Super.prototype;
   Child.prototype = new Fn();
   Child.prototype.constructor = Child;
-}
+};
 
 export const myInstance = (L, R) => {
   // L代表instanceof左边，R代表右边
-  let RP = R.prototype
+  let RP = R.prototype;
   // eslint-disable-next-line no-proto
-  let LP = L.__proto__
+  let LP = L.__proto__;
   while (true) {
-    if (LP == null) { return false }
-    if (LP == RP) { return true }
+    if (LP == null) {
+      return false;
+    }
+    if (LP == RP) {
+      return true;
+    }
     // eslint-disable-next-line no-proto
-    LP = LP.__proto__
+    LP = LP.__proto__;
   }
-}
+};
 
 export function forEach(list, callback) {
   const entries = Object.entries(list);
@@ -125,8 +130,8 @@ export function forEach(list, callback) {
 
 // eslint-disable-next-line no-extend-native
 Function.prototype.call = function (): any {
-  if (typeof this !== "function") {
-    throw new Error("Function.prototype.call - what is trying to be bound is not callable");
+  if (typeof this !== 'function') {
+    throw new Error('Function.prototype.call - what is trying to be bound is not callable');
   }
   let [thisArg, ...args] = [...arguments];
   // let [thisArg, ...args] = Array.from(arguments);
@@ -141,30 +146,30 @@ Function.prototype.call = function (): any {
   let result = thisArg.fn(...args);
   delete thisArg.fn; // thisArg 上并没有 func 属性，因此需要移除
   return result;
-}
+};
 // eslint-disable-next-line no-extend-native
 Function.prototype.call = function (context) {
   // 先判断调用myCall是不是一个函数
   // 这里的this就是调用myCall的
   if (typeof this !== 'function') {
-    throw new TypeError("Not a Function")
+    throw new TypeError('Not a Function');
   }
   // 不传参数默认为window
-  context = context || window
+  context = context || window;
   // 保存this
-  context.fn = this
+  context.fn = this;
   // 保存参数
-  let args = Array.from(arguments).slice(1)   // Array.from 把伪数组对象转为数组
+  let args = Array.from(arguments).slice(1); // Array.from 把伪数组对象转为数组
   // 调用函数
-  let result = context.fn(...args)
-  delete context.fn
-  return result
-}
+  let result = context.fn(...args);
+  delete context.fn;
+  return result;
+};
 
 // eslint-disable-next-line no-extend-native
 Function.prototype.apply = function (): any {
-  if (typeof this !== "function") {
-    throw new Error("Function.prototype.apply - what is trying to be bound is not callable");
+  if (typeof this !== 'function') {
+    throw new Error('Function.prototype.apply - what is trying to be bound is not callable');
   }
   let [thisArg, args] = [...arguments];
   // let [thisArg, args] = Array.from(arguments);
@@ -181,27 +186,27 @@ Function.prototype.apply = function (): any {
   let result = thisArg.fn(...args);
   delete thisArg.fn; // thisArg 上并没有 func 属性，因此需要移除
   return result;
-}
+};
 // eslint-disable-next-line no-extend-native
 Function.prototype.apply = function (context) {
   // 判断this是不是函数
-  if (typeof this !== "function") {
-    throw new TypeError("Not a Function")
+  if (typeof this !== 'function') {
+    throw new TypeError('Not a Function');
   }
-  let result
+  let result;
   // 默认是window
-  context = context || window
+  context = context || window;
   // 保存this
-  context.fn = this
+  context.fn = this;
   // 是否传参
   if (arguments[1]) {
-    result = context.fn(...arguments[1])
+    result = context.fn(...arguments[1]);
   } else {
-    result = context.fn()
+    result = context.fn();
   }
-  delete context.fn
-  return result
-}
+  delete context.fn;
+  return result;
+};
 
 // eslint-disable-next-line no-extend-native
 Function.prototype.bind = function () {
@@ -217,8 +222,8 @@ Function.prototype.bind = function () {
     // 这个时候的arguments是指bind返回的函数传入的参数
     let bindArgs = Array.prototype.slice.call(arguments);
     return self.apply(thisArg, args.concat(bindArgs));
-  }
-}
+  };
+};
 
 // eslint-disable-next-line no-extend-native
 Function.prototype.bind = function () {
@@ -229,7 +234,7 @@ Function.prototype.bind = function () {
     args = Array.prototype.slice.call(arguments, 1),
     argsLength = args.length,
     self = this,
-    FNOP = function () { },
+    FNOP = function () {},
     fBound = function () {
       // reset to default base arguments
       args.length = argsLength;
@@ -242,9 +247,8 @@ Function.prototype.bind = function () {
     FNOP.prototype = this.prototype;
   }
   fBound.prototype = new FNOP();
-  return fBound
-}
-
+  return fBound;
+};
 
 // window.Set = window.Set || (function () {
 //   function Set(arr) {
@@ -296,27 +300,27 @@ Function.prototype.bind = function () {
 export const jsonpRequest = ({ url, data }) => {
   return new Promise((resolve, reject) => {
     // 处理传参成xx=yy&aa=bb的形式
-    const handleData = (data) => {
-      const keys = Object.keys(data)
-      const keysLen = keys.length
+    const handleData = data => {
+      const keys = Object.keys(data);
+      const keysLen = keys.length;
       return keys.reduce((pre, cur, index) => {
-        const value = data[cur]
-        const flag = index !== keysLen - 1 ? '&' : ''
-        return `${pre}${cur}=${value}${flag}`
-      }, '')
-    }
+        const value = data[cur];
+        const flag = index !== keysLen - 1 ? '&' : '';
+        return `${pre}${cur}=${value}${flag}`;
+      }, '');
+    };
     // 动态创建script标签
-    const script = document.createElement('script')
+    const script = document.createElement('script');
     // 接口返回的数据获取
-    window['jsonpCallback'] = (res) => {
-      document.body.removeChild(script)
-      delete window['jsonpCallback']
-      resolve(res)
-    }
-    script.src = `${url}?${handleData(data)}&cb=jsonpCallback`
-    document.body.appendChild(script)
-  })
-}
+    window['jsonpCallback'] = res => {
+      document.body.removeChild(script);
+      delete window['jsonpCallback'];
+      resolve(res);
+    };
+    script.src = `${url}?${handleData(data)}&cb=jsonpCallback`;
+    document.body.appendChild(script);
+  });
+};
 // jsonpRequest({
 //   url: 'http://localhost:9871/api/jsonp',
 //   data: {
@@ -328,7 +332,7 @@ export const jsonpRequest = ({ url, data }) => {
 
 export const httpGet = (url, callback, err = console.error) => {
   const request = new XMLHttpRequest();
-  request.open("GET", url, true);
+  request.open('GET', url, true);
   request.onload = () => callback(request.responseText);
   request.onerror = () => err(request);
   request.send();

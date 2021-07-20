@@ -30,7 +30,7 @@ const App = () => {
 // Route definition
 <Route
   path="/dashboard/:reportId"
-  render={(props) => {
+  render={props => {
     return <Report {...props} salesData={true} />;
   }}
 />;

@@ -1,16 +1,15 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react';
 
 // 获取上一次值
 export function usePrevious<T>(value: T): T | undefined {
-  const ref = useRef<T>()
+  const ref = useRef<T>();
 
   useEffect(() => {
-    ref.current = value
-  }, [value])
+    ref.current = value;
+  }, [value]);
 
-  return ref.current
+  return ref.current;
 }
-
 
 // const Counter = () => {
 //   const [value, setValue] = React.useState(0);

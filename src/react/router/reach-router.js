@@ -30,7 +30,7 @@ const App = () => {
 ></Report>;
 
 // Params & Props
-const Report = (props) => {
+const Report = props => {
   return (
     <h1>
       {props.reportId}

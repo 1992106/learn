@@ -21,7 +21,7 @@ const getRoutes = createAsyncThunk('routes/getRoutes', async (params, { dispatch
 dispatch(getRoutes());
 
 // 创建异步action（原始写法）
-const getRoutes = (params) => async (dispatch, getState) => {
+const getRoutes = params => async (dispatch, getState) => {
   dispatch({ type: 'getRoutes.pending', payload: '' });
   try {
     const { data } = await request({

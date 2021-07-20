@@ -20,7 +20,7 @@ class Dep {
   }
   // 通知每一个观察者做出更新
   notify() {
-    this.subs.forEach((item) => {
+    this.subs.forEach(item => {
       item.update();
     });
   }
