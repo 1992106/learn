@@ -1,8 +1,8 @@
 import { cached } from './fn'
 
 /**
- * 验证字段值是否不为空
- * @param data 要验证的字段值
+ * 判断是否为空
+ * @param x 要验证的字段值
  * @returns 为空返回false,不为空返回true
  */
 export const isEmpty = (x: any): boolean => {
@@ -19,6 +19,64 @@ export const isEmpty = (x: any): boolean => {
     return Object.keys(x).length === 0;
   }
   return false;
+}
+
+// Object.is()的polyfill
+// Object.is() 方法判断两个值是否为同一个值。如果满足以下条件则两个值相等:
+// 都是 undefined
+// 都是 null
+// 都是 true 或 false
+// 都是相同长度的字符串且相同字符按相同顺序排列
+// 都是相同对象（意味着每个对象有同一个引用）
+// 都是数字且
+// 都是 +0
+// 都是 -0
+// 都是 NaN
+// 或都是非零而且非 NaN 且为同一个值
+// !!! Object.is(+0, -0) === false
+// !!! Object.is(NaN, NaN) === true
+function is(x, y) {
+  if (x === y) {
+    // 处理 +0 != -0 的情况
+    return x !== 0 || y !== 0 || 1 / x === 1 / y
+  } else {
+    // 处理 NaN === NaN 的情况
+    return x !== x && y !== y
+  }
+}
+
+/**
+ * 浅对比2个值是否相等
+ * @param objA
+ * @param objB
+ * @returns
+ */
+export default function shallowEqual(objA, objB) {
+  // 首先对基本数据类型比较
+  if (is(objA, objB)) return true // is()可换成Object.is()
+  // 由于Object.is()可以对基本数据类型做一个精确的比较；如果不相等，只有是object才会不相等。
+  // 所以判断两个对象只要不是object就可以返回false
+  if (typeof objA !== 'object' || objA === null ||
+    typeof objB !== 'object' || objB === null) {
+    return false
+  }
+
+  // 最后对object比较
+  const keysA = Object.keys(objA)
+  const keysB = Object.keys(objB)
+  // 长度不等直接返回false
+  if (keysA.length !== keysB.length) return false
+  const hasOwn = Object.prototype.hasOwnProperty
+  for (let i = 0; i < keysA.length; i++) {
+    // key值相等的时候
+    // 借用原型链上真正的 hasOwnProperty 方法，判断ObjB里面是否有A的key的key值
+    // 最后，对对象的value进行一个基本数据类型的比较，返回结果
+    if (!hasOwn.call(objB, keysA[i]) ||
+      !is(objA[keysA[i]], objB[keysA[i]])) {
+      return false
+    }
+  }
+  return true
 }
 
 function getTag(value) {
@@ -78,7 +136,7 @@ function isElement(value) {
 }
 
 // 判断是否是非数字值（Int/Float/Infinity/字符串数字）（不包含NaN）
-function isNumeric(v){
+function isNumeric(v) {
   return (typeof v === 'string' || typeof v === 'number') && !isNaN(v)
 }
 

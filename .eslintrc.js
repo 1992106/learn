@@ -1,34 +1,35 @@
 module.exports = {
-    extends: [
-        'alloy',
+  extends: [
+    'alloy',
+  ],
+  parser: '@typescript-eslint/parser',
+  plugins: ['@typescript-eslint'],
+  rules: {
+    // 禁止使用 var
+    'no-var': "error",
+    // 优先使用 interface 而不是 type
+    '@typescript-eslint/consistent-type-definitions': [
+      "error",
+      "interface"
     ],
-    parser: '@typescript-eslint/parser',
-    plugins: ['@typescript-eslint'],
-    rules: {
-        // 禁止使用 var
-        'no-var': "error",
-        // 优先使用 interface 而不是 type
-        '@typescript-eslint/consistent-type-definitions': [
-            "error",
-            "interface"
-        ],
-        'no-unused-vars': "off",
-        "no-cond-assign": "off",
-        "no-param-reassign": "off",
-        "no-eq-null": "off",
-        "eqeqeq": "off",
-        "no-promise-executor-return": "off",
-        "no-return-assign": "off",
-        "max-params": ["off"],
-        "one-var": ["off", {
-          "var": "always", // Exactly one var declaration per function
-          "let": "always", // Exactly one let declaration per block
-          "const": "never" // Exactly one declarator per const declaration per block
-      }],
-      "no-undef": ["off"],
-      "no-sequences": ["off"],
-      "prefer-promise-reject-errors": ["error", {"allowEmptyReject": true}]
-    }
+    'no-unused-vars': "off",
+    "no-cond-assign": "off",
+    "no-param-reassign": "off",
+    "no-eq-null": "off",
+    "eqeqeq": "off",
+    "no-promise-executor-return": "off",
+    "no-return-assign": "off",
+    "max-params": "off",
+    "one-var": ["off", {
+      "var": "always", // Exactly one var declaration per function
+      "let": "always", // Exactly one let declaration per block
+      "const": "never" // Exactly one declarator per const declaration per block
+    }],
+    "no-undef": "off",
+    "no-sequences": "off",
+    "no-self-compare": "off",
+    "prefer-promise-reject-errors": ["error", { "allowEmptyReject": true }]
+  }
 }
 
 // "off" or 0 - turn the rule off
