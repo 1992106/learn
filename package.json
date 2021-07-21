@@ -16,7 +16,13 @@
   "keywords": [
     "cli",
     "utils",
-    "ts/js"
+    "js",
+    "jsx",
+    "ts",
+    "tsx",
+    "vue",
+    "react",
+    "angular"
   ],
   "author": "王会俊",
   "license": "MIT",

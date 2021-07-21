@@ -212,22 +212,29 @@ function extend(target, source) {
 }
 
 /**
- * kebab-case (短横线分隔命名)
+ * kebabCase (中横线分隔命名)
  * under_score_case (下划线命名)
- * camelCase (驼峰式命名)
+ * camelCase (驼峰命名)
  * PascalCase (单词首字母大写命名：帕斯卡命名)
  */
-// 连字符转驼峰
-export const camelize = cached((str: string): string => {
-  const camelizeReg = /-(\w)/g;
-  return str.replace(camelizeReg, (_, $1) => ($1 ? $1.toUpperCase() : ''));
-});
+// kebabCase转驼峰命名
+export function camelCase(str: string) {
+  const reg = /-(\w)/g;
+  return str.replace(reg, (_, $1) => ($1 ? $1.toUpperCase() : ''));
+}
+// camelCase转中横线分隔命名
+export function kebabCase(str: string) {
+  const reg = /\B([A-Z])/g;
+  return str.replace(reg, '-$1').toLowerCase();
+}
 
-// 驼峰转连字符
-export const hyphenate = cached((str: string): string => {
-  const hyphenateReg = /\B([A-Z])/g;
-  return str.replace(hyphenateReg, '-$1').toLowerCase();
-});
+export function pascalCase(str: string) {
+  return capitalize(camelCase(str));
+}
+
+export function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 // 获取列表最后一项
 const lastItem = (list: Array<any> | Set<any> | Map<any, any>) => {
