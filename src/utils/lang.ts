@@ -227,11 +227,11 @@ export function kebabCase(str: string) {
   const reg = /\B([A-Z])/g;
   return str.replace(reg, '-$1').toLowerCase();
 }
-
+// 帕斯卡命名
 export function pascalCase(str: string) {
   return capitalize(camelCase(str));
 }
-
+// 首字母转大写
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
