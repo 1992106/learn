@@ -2,6 +2,7 @@
   "name": "learn",
   "version": "1.0.0",
   "description": "cli and Some utility functions(ts/js)",
+  "type": "module",
   "scripts": {
     "lint": "npm run lint:ts && npm run lint:style",
     "lint:es": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
