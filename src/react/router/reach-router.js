@@ -6,13 +6,11 @@ const App = () => {
     <div>
       <h1>Global Party Supplies, Inc</h1>
       <Router>
-        {' '}
         // PATHS
         <Home path="/" /> // "/"
         <About path="about" /> // "/about"
         <Support path="support" /> // "/support"
         <Dashboard path="dashboard">
-          {' '}
           // "/dashboard"
           <Report path=":reportId" /> // "/dashboard/:reportId"
           <Invoices path="invoices" /> // "/dashboard/invoices"
