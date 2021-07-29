@@ -29,7 +29,7 @@ const getRoutes = params => async (dispatch, getState) => {
     });
     dispatch({ type: 'getRouters.fulfilled', payload: data?.routers || [] });
   } catch (e) {
-    dispatch({ type: 'getRoutes.pending', payload: '' });
+    dispatch({ type: 'getRoutes.rejected', payload: '' });
   }
 };
 dispatch(getRoutes());
