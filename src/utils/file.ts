@@ -129,8 +129,8 @@ const urlToObjectURL = (url: string): Promise<string> => {
       canvas.toBlob(blob => {
         const url = URL.createObjectURL(blob);
         resolve(url);
-        URL.revokeObjectURL(url);
         canvas = null;
+        URL.revokeObjectURL(url);
       });
     };
     img.src = url;
