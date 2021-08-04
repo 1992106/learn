@@ -31,6 +31,7 @@ const downloadByObjectURL = (
   mime?: string
 ) => {
   const blob = new Blob([content], { type: mime || 'application/octet-stream' });
+  // 生成ObjectURL
   const src = URL.createObjectURL(blob);
 
   // 下载
@@ -56,6 +57,7 @@ const downloadByDataURL = (content: Blob | File, fileName: string) => {
     download(src, fileName);
   };
 
+  // 生成DataURL
   fileReader.readAsDataURL(content);
 };
 
@@ -66,18 +68,18 @@ const downloadByDataURL = (content: Blob | File, fileName: string) => {
  */
 const downloadByOnlineUrl = async (url: string, fileName: string) => {
   // 如果图片有跨域问题，需要把url转成base64
-  const src = await urlToBase64(url);
+  const src = await urlToDataURL(url);
   // 下载
   download(src, fileName);
 };
 
 /**
- * url to base64 (HTMLCanvasElement.toDataURL())
- * @param url 图片地址
- * @param mime
+ * url to DataURL (HTMLCanvasElement.toDataURL())
+ * @param url 图片http地址
+ * @param type
  * @returns
  */
-const urlToBase64 = (url: string, mime?: string): Promise<string> => {
+const urlToDataURL = (url: string, type?: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     // 创建canvas
     let canvas = document.createElement('canvas');
@@ -94,10 +96,42 @@ const urlToBase64 = (url: string, mime?: string): Promise<string> => {
       // 将图片绘制到canvas中
       ctx.drawImage(img, 0, 0);
       // 获取base64 url
-      const dataURL = canvas.toDataURL(mime || 'image/png');
+      const dataURL = canvas.toDataURL(type || 'image/png');
       canvas = null;
 
       resolve(dataURL);
+    };
+    img.src = url;
+  });
+};
+
+/**
+ * url to ObjectURL (HTMLCanvasElement.toBlob())
+ * @param url 图片http地址
+ * @returns
+ */
+const urlToObjectURL = (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    // 创建canvas
+    let canvas = document.createElement('canvas');
+    const ctx = canvas!.getContext('2d');
+
+    const img = new Image();
+    img.crossOrigin = '';
+    img.onload = function () {
+      if (!canvas || !ctx) {
+        return reject();
+      }
+      canvas.height = img.height;
+      canvas.width = img.width;
+      // 将图片绘制到canvas中
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        resolve(url);
+        URL.revokeObjectURL(url);
+        canvas = null;
+      });
     };
     img.src = url;
   });
@@ -110,13 +144,15 @@ const urlToBase64 = (url: string, mime?: string): Promise<string> => {
  */
 const dataURLtoBlob = (base64: string): Blob => {
   const arr = base64.split(',');
-  const typeItem = arr[0];
-  const mime = typeItem.match(/:(.*?);/)![1];
-  const bstr = atob(arr[1]);
-  let n = bstr.length;
+  const type = arr[0].match(/:(.*?);/)![1];
+  const binStr = atob(arr[1]);
+  let n = binStr.length;
   const u8arr = new Uint8Array(n);
   while (n--) {
-    u8arr[n] = bstr.charCodeAt(n);
+    u8arr[n] = binStr.charCodeAt(n);
   }
-  return new Blob([u8arr], { type: mime });
+  // for (let i = 0; i < n; i++) {
+  //   u8arr[i] = binStr.charCodeAt(i);
+  // }
+  return new Blob([u8arr], { type: type || 'image/png' });
 };
