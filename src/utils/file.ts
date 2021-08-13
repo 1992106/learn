@@ -97,9 +97,9 @@ const urlToDataURL = (url: string, type?: string): Promise<string> => {
       ctx.drawImage(img, 0, 0);
       // 获取base64 url
       const dataURL = canvas.toDataURL(type || 'image/png');
-      canvas = null;
-
       resolve(dataURL);
+
+      canvas = null;
     };
     img.src = url;
   });
