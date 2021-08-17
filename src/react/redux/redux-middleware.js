@@ -48,7 +48,6 @@ store.dispatch(fetchPosts('reactjs'));
 store.dispatch(fetchPosts('reactjs')).then(() => console.log(store.getState()));
 
 // redux-promise 中间件
-
 const fetchPosts = (dispatch, postTitle) =>
   new Promise(function (resolve, reject) {
     dispatch(requestPosts(postTitle));
