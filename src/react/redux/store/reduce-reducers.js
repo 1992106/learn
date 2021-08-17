@@ -1,3 +1,5 @@
+// https://github.com/redux-utilities/reduce-reducers/blob/master/src/index.js
+
 export default function reduceReducers(...args) {
   const initialState = typeof args[0] !== 'function' && args.shift();
   const reducers = args;

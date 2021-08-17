@@ -33,3 +33,27 @@ const getRoutes = params => async (dispatch, getState) => {
   }
 };
 dispatch(getRoutes());
+
+// redux-thunk中间件
+const fetchPosts = postTitle => (dispatch, getState) => {
+  dispatch(requestPosts(postTitle));
+  return fetch(`/some/API/${postTitle}.json`)
+    .then(response => response.json())
+    .then(json => dispatch(receivePosts(postTitle, json)));
+};
+
+// 使用方法一
+store.dispatch(fetchPosts('reactjs'));
+// 使用方法二
+store.dispatch(fetchPosts('reactjs')).then(() => console.log(store.getState()));
+
+// redux-promise 中间件
+
+const fetchPosts = (dispatch, postTitle) =>
+  new Promise(function (resolve, reject) {
+    dispatch(requestPosts(postTitle));
+    return fetch(`/some/API/${postTitle}.json`).then(response => ({
+      type: 'FETCH_POSTS',
+      payload: response.json()
+    }));
+  });

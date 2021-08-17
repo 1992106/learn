@@ -95,8 +95,12 @@ function toRawType(value) {
 }
 
 // 判断是否是promise
-function isPromise(value) {
-  return value != null && typeof value.then === 'function' && typeof value.catch === 'function';
+function isPromise(obj) {
+  return (
+    !!obj &&
+    (typeof obj === 'object' || typeof obj === 'function') &&
+    typeof obj.then === 'function'
+  );
 }
 
 // 判断是否是原始数据（除symbol）
