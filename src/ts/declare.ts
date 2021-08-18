@@ -51,6 +51,7 @@
 // declare module 扩展模块
 // /// <reference /> 三斜线指令
 
-// tsconfig.json typeRoots：一般不用配置，ts会默认读取node_modules/@types中的声明文件
+// tsconfig.json typeRoots：不需要配置，ts会自动排除node_modules中的文件，但是会默认读取node_modules/@types中的声明文件。
+// typeRoots是用于配置node_modules包中的声明文件，本地项目中的声明文件不需要配置。
 // 全局类声明文件在全局都可用，不需要通过typeRoots配置。
 // 模块类声明文件：(npm包的声明文件)需要通过export使用，也不需要通过typeRoots配置。
