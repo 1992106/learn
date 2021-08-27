@@ -1,6 +1,7 @@
 /**
  * 下载文件
- * @param url 文件url
+ * @param url 文件url (DataURL、ObjectURL、仅支持同源链接下载)
+ * 非同源链接会直接打开图片，需要把图片url转成DataURL/ObjectURL，如下：downloadByOnlineUrl
  * @param name 文件名
  * @param target
  */
@@ -21,12 +22,13 @@ const download = (url, name) => {
 };
 
 /**
- * new Blob() 与 URL.createObjectURL实现文件/图片下载
+ *【文件/图片】下载
+ * new Blob() 与 URL.createObjectURL（将二进制数据封装为Blob对象）
  * @param content 由ArrayBuffer, ArrayBufferView, Blob, DOMString等对象构成
  * @param fileName 文件名
  */
 const downloadByObjectURL = (
-  content: Blob | File | ArrayBuffer | ArrayBufferView | string,
+  content: ArrayBuffer | ArrayBufferView | Blob | string,
   fileName: string,
   mime?: string
 ) => {
@@ -42,11 +44,12 @@ const downloadByObjectURL = (
 };
 
 /**
- * new FileReader() 与 readAsDataURL实现文件/图片下载
+ * 【文件/图片】下载
+ * new FileReader() 与 readAsDataURL（将二进制数据封装为文件读取FileReader对象）
  * @param content 文件流
  * @param fileName 文件名
  */
-const downloadByDataURL = (content: Blob | File, fileName: string) => {
+const downloadByDataURL = (content: Blob, fileName: string) => {
   const fileReader = new FileReader();
 
   fileReader.onload = function () {
@@ -62,13 +65,33 @@ const downloadByDataURL = (content: Blob | File, fileName: string) => {
 };
 
 /**
- * 图片Url下载
+ * 【文件下载】
+ * @param url 接口地址
+ * @param fileName
+ */
+const downLoadFile = (url: string, fileName: string) => {
+  fetch(url, {
+    method: 'get',
+    cache: 'no-cache'
+  })
+    .then(res => {
+      return res.blob();
+    })
+    .then(content => {
+      downloadByObjectURL(content, fileName);
+      downloadByDataURL(content, fileName);
+    });
+};
+
+/**
+ * 【图片下载】（非同源链接会直接打开图片，所以需要把图片url转成DataURL/ObjectURL）
  * @param url
  * @param fileName
  */
 const downloadByOnlineUrl = async (url: string, fileName: string) => {
   // 如果图片有跨域问题，需要把url转成base64
   const src = await urlToDataURL(url);
+  // const src = await urlToObjectURL(url);
   // 下载
   download(src, fileName);
 };
@@ -86,7 +109,7 @@ const urlToDataURL = (url: string, type?: string): Promise<string> => {
     const ctx = canvas!.getContext('2d');
 
     const img = new Image();
-    img.crossOrigin = '';
+    img.crossOrigin = 'anonymous'; // 图片跨域
     img.onload = function () {
       if (!canvas || !ctx) {
         return reject();
@@ -108,16 +131,17 @@ const urlToDataURL = (url: string, type?: string): Promise<string> => {
 /**
  * url to ObjectURL (HTMLCanvasElement.toBlob())
  * @param url 图片http地址
+ * @param type
  * @returns
  */
-const urlToObjectURL = (url: string): Promise<string> => {
+const urlToObjectURL = (url: string, type?: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     // 创建canvas
     let canvas = document.createElement('canvas');
     const ctx = canvas!.getContext('2d');
 
     const img = new Image();
-    img.crossOrigin = '';
+    img.crossOrigin = 'anonymous'; // 图片跨域
     img.onload = function () {
       if (!canvas || !ctx) {
         return reject();
@@ -131,7 +155,7 @@ const urlToObjectURL = (url: string): Promise<string> => {
         resolve(url);
         canvas = null;
         URL.revokeObjectURL(url);
-      });
+      }, type || 'image/png');
     };
     img.src = url;
   });
@@ -142,7 +166,7 @@ const urlToObjectURL = (url: string): Promise<string> => {
  * @param base64
  * @returns
  */
-const dataURLtoBlob = (base64: string): Blob => {
+const base64ToBlob = (base64: string): Blob => {
   const arr = base64.split(',');
   const type = arr[0].match(/:(.*?);/)![1];
   const binStr = atob(arr[1]);
