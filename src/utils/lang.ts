@@ -34,18 +34,23 @@ export const isEmpty = (x: any): boolean => {
 // 都是 -0
 // 都是 NaN
 // 或都是非零而且非 NaN 且为同一个值
-// !!! Object.is(+0, -0) === false
-// !!! Object.is(NaN, NaN) === true
+// !!! Object.is(+0, -0) 结果为false
+// !!! +0 === -0 结果为true
+// !!! Object.is(NaN, NaN) 结果为true
+// !!! NaN === NaN 结果为false
  * @param x
  * @param y
  * @returns
  */
 function is(x: any, y: any) {
   if (x === y) {
-    // 处理 +0 != -0 的情况
+    // 解决+0 === -0为true
+    // 1/+0 // 结果为Infinity
+    // 1/-0 // 结果为-Infinity
+    // Infinity === -Infinity; // false
     return x !== 0 || y !== 0 || 1 / x === 1 / y;
   } else {
-    // 处理 NaN === NaN 的情况
+    // 解决NaN === NaN为false，可以通过NaN和自身不相等的特性来解决
     return x !== x && y !== y;
   }
 }
@@ -57,7 +62,7 @@ function is(x: any, y: any) {
  * @returns
  */
 export default function shallowEqual(objA: any, objB: any) {
-  // 首先对基本数据类型比较
+  // 首先对两个基本数据类型进行比较
   if (is(objA, objB)) return true; // is()可换成Object.is()
   // 由于Object.is()可以对基本数据类型做一个精确的比较；如果不相等，只有是object才会不相等。
   // 所以判断两个对象只要不是object就可以返回false
