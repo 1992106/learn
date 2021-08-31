@@ -180,3 +180,17 @@ const base64ToBlob = (base64: string): Blob => {
   // }
   return new Blob([u8arr], { type: type || 'image/png' });
 };
+
+/**
+ * blob to base64
+ * @param content
+ * @returns
+ */
+const blobToBase64 = (content: Blob): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener('load', () => resolve(reader.result as string));
+    reader.addEventListener('error', () => reject());
+    reader.readAsDataURL(content);
+  });
+};
