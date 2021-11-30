@@ -25,7 +25,7 @@ class RequestQueue {
   }
 }
 
-// 顺序执行 promise
+// 串行执行promise
 const asyncQueue = (() => {
   const toPromise = x => {
     if (x instanceof Promise) {

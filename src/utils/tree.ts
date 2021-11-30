@@ -83,7 +83,7 @@ function treeForeach4(tree, func) {
 }
 
 // ! 列表和树相互转换
-// ! 列表转树
+// 列表转树
 function listToTree(list = []) {
   let info = list.reduce((map, node) => ((map[node.id] = node), (node.children = []), map), {});
   return list.filter(node => {
