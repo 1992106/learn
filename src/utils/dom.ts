@@ -59,9 +59,6 @@ const type = obj =>
 // 判断是否是移动端
 const isMobile = () => 'ontouchstart' in window;
 
-// 元素是否保护的指定类
-const hasClass = (el, className) => el.classList.contains(className);
-
 // 父元素是否包含子元素
 const elementContains = (parent, child) => parent !== child && parent.contains(child);
 
@@ -117,4 +114,101 @@ const copyToClipboard = str => {
     document.getSelection().removeAllRanges();
     document.getSelection().addRange(selected);
   }
+};
+
+/**
+ * 字符串前后去空
+ * @param string
+ * @returns {string}
+ */
+export const trim = string => {
+  return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
+};
+
+export const hasClass = (el, cls) => {
+  if (!el || !cls) return false;
+  if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.');
+  if (el.classList) {
+    return el.classList.contains(cls);
+  } else {
+    return (' ' + el.className + ' ').indexOf(' ' + cls + ' ') > -1;
+  }
+};
+
+export const addClass = (el, cls) => {
+  if (!el) return;
+  let curClass = el.className;
+  const classes = (cls || '').split(' ');
+
+  for (let i = 0, j = classes.length; i < j; i++) {
+    const clsName = classes[i];
+    if (!clsName) continue;
+
+    if (el.classList) {
+      el.classList.add(clsName);
+    } else {
+      if (!hasClass(el, clsName)) {
+        curClass += ' ' + clsName;
+      }
+    }
+  }
+  if (!el.classList) {
+    el.className = curClass;
+  }
+};
+
+export const removeClass = (el, cls) => {
+  if (!el || !cls) return;
+  const classes = cls.split(' ');
+  let curClass = ' ' + el.className + ' ';
+
+  for (let i = 0, j = classes.length; i < j; i++) {
+    const clsName = classes[i];
+    if (!clsName) continue;
+
+    if (el.classList) {
+      el.classList.remove(clsName);
+    } else {
+      if (hasClass(el, clsName)) {
+        curClass = curClass.replace(' ' + clsName + ' ', ' ');
+      }
+    }
+  }
+  if (!el.classList) {
+    el.className = trim(curClass);
+  }
+};
+
+const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
+  if (!window.requestAnimationFrame) {
+    window.requestAnimationFrame =
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame ||
+      window.msRequestAnimationFrame ||
+      function (callback) {
+        return window.setTimeout(callback, 1000 / 60);
+      };
+  }
+  const difference = Math.abs(from - to);
+  const step = Math.ceil((difference / duration) * 50);
+
+  function scroll(start, end, step) {
+    if (start === end) {
+      endCallback && endCallback();
+      return;
+    }
+
+    let d = start + step > end ? end : start + step;
+    if (start > end) {
+      d = start - step < end ? end : start - step;
+    }
+
+    if (el === window) {
+      window.scrollTo(d, d);
+    } else {
+      el.scrollTop = d;
+    }
+    window.requestAnimationFrame(() => scroll(d, end, step));
+  }
+  scroll(from, to, step);
 };
