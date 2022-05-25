@@ -394,3 +394,8 @@ Object.values =
     }
     return result;
   };
+
+// 判断地址是否有
+const hasUrl = url => {
+  return /^http[s]?:\/\/(baidu|qq).*/.test(url);
+};
