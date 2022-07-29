@@ -1,9 +1,10 @@
 import { useCallback, useLayoutEffect, useRef } from 'react';
 
-function useEvent(handler) {
+// 代替useCallback(() => {}, [])
+export function useEvent(handler) {
   const handlerRef = useRef(null);
 
-  // 视图渲染完成后更新`handlerRef.current`指向
+  // 视图渲染完成后更新handlerRef.current
   useLayoutEffect(() => {
     handlerRef.current = handler;
   });

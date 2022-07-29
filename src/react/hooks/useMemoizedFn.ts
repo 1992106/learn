@@ -7,10 +7,12 @@ type PickFunction<T extends noop> = (
   ...args: Parameters<T>
 ) => ReturnType<T>;
 
-function useMemoizedFn<T extends noop>(fn: T) {
+// 代替useCallback(() => {}, [])
+export function useMemoizedFn<T extends noop>(fn: T) {
   // 通过 useRef 保持其引用地址不变，并且值能够保持值最新
   const fnRef = useRef<T>(fn);
 
+  // 更新fnRef.current
   fnRef.current = useMemo(() => fn, [fn]);
 
   const memoizedFn = useRef<PickFunction<T>>();
@@ -23,5 +25,3 @@ function useMemoizedFn<T extends noop>(fn: T) {
 
   return memoizedFn.current as T;
 }
-
-export default useMemoizedFn;
