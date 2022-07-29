@@ -149,3 +149,18 @@ function treeFindPath(tree, func, path = []) {
   return [];
 }
 const resultPath = treeFindPath(tree, node => node.id === '2-1');
+
+// !查找所有叶子节点
+function findLeafAllNode(tree) {
+  let leafList = [];
+  let node;
+  let list = [...tree];
+  while ((node = list.shift())) {
+    if (node.children) {
+      list.push(...node.children);
+    } else {
+      leafList.push(node);
+    }
+  }
+  return leafList;
+}
