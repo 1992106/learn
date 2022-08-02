@@ -1,12 +1,21 @@
-import { createAction, createReducer, configureStore, createSlice } from '@reduxjs/toolkit';
+import {
+  createAction,
+  createReducer,
+  createAsyncThunk,
+  configureStore,
+  createSlice
+} from '@reduxjs/toolkit';
 import { createStore, combineReducers } from 'redux';
+
+// https://blog.csdn.net/ilovethesunshine/article/details/109627560
+// https://blog.csdn.net/heroboyluck/article/details/113787326
 
 // 例子一
 //  创建action（以下用法效果一样；第二个参数用来自定义payload值）
 const addTodo = createAction('ADD_TODO'); // 语法糖
 const addTodo = createAction('ADD_TODO', function prepare(value) {
   return { payload: value };
-}); // 完整写法
+}); // createAction的完整写法，第二个参数是函数
 // 创建reducer
 const todos = createReducer([], {
   [addTodo]: (state, action) => {
@@ -108,3 +117,27 @@ const store = createStore(reducer);
 store.dispatch(addTodo('test'));
 store.dispatch(increment(1));
 store.dispatch(decrement(1));
+
+// ! createAsyncThunk
+// 创建异步action（createAsyncThunk写法）
+const getRoutes = createAsyncThunk('routes/getRoutes', async (params, { dispatch, getState }) => {
+  const { data } = await request({
+    query: GET_ROUTERS
+  });
+  return data?.routers || [];
+});
+dispatch(getRoutes());
+
+// 创建异步action（原始写法）
+const getRoutes = params => async (dispatch, getState) => {
+  dispatch({ type: 'getRoutes.pending', payload: '' });
+  try {
+    const { data } = await request({
+      query: GET_ROUTERS
+    });
+    dispatch({ type: 'getRoutes.fulfilled', payload: data?.routers || [] });
+  } catch (e) {
+    dispatch({ type: 'getRoutes.rejected', payload: '' });
+  }
+};
+dispatch(getRoutes());

@@ -1,10 +1,9 @@
 import { bindActionCreators } from 'redux';
 import { connect, useSelector, useDispatch } from 'react-redux';
-import { createAction, createSelector } from '@reduxjs/toolkit';
+import { createAction } from '@reduxjs/toolkit';
 
 /**
  * !!! connect 使用connect函数连接组件(2种用法)
- * @returns
  */
 // 方法一：只使用mapStateToProps方法注入state
 const mapStateToProps = (state, ownProps) => ({
@@ -64,7 +63,6 @@ connect(mapStateToProps, mapDispatchToProps)(Counter);
 
 /**
  * !!! 使用useSelector()和useDispatch() Hook来替代connect()
- * createSelector等同于mapStateToProps的作用
  */
 // 方法三：
 // createSelector把多个state或prop或Selector聚合成一个具有缓存的useSelector
