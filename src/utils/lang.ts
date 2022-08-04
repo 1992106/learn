@@ -1,16 +1,5 @@
 import { isPlainObject } from './is';
 
-// 将类数组对象转化为真实数组
-function toArray(list, start) {
-  start = start || 0;
-  let i = list.length - start;
-  let ret = new Array(i);
-  while (i--) {
-    ret[i] = list[i + start];
-  }
-  return ret;
-}
-
 // 将输入值转换为数字以便持久化。如果转换失败，则返回原始字符串。
 function toNumber(val) {
   let n = parseFloat(val);
@@ -32,6 +21,17 @@ function extend(target, source) {
     target[key] = source[key];
   }
   return target;
+}
+
+// 将类数组对象转化为真实数组
+function toArray(list, start) {
+  start = start || 0;
+  let i = list.length - start;
+  let ret = new Array(i);
+  while (i--) {
+    ret[i] = list[i + start];
+  }
+  return ret;
 }
 
 export function forEach(list, callback) {
