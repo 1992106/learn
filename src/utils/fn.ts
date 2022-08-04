@@ -1,79 +1,4 @@
-export function cached<F extends Function>(fn: F): any {
-  const cache = Object.create(null);
-  return function cachedFn(str: string) {
-    const hit = cache[str];
-    return hit || (cache[str] = fn(str));
-  };
-}
-
-export function once(fn: Function): Function {
-  let called = false;
-  return function () {
-    if (!called) {
-      called = true;
-      fn.apply(this, arguments);
-    }
-  };
-}
-
-/**
- * 四舍五入
- * @param value 需要舍入的数
- * @param length 保留小数点后位数
- */
-export function toFixed(value: number, length = 2): string {
-  if (typeof value !== 'number') {
-    throw new Error('value不是数字');
-  }
-  if (length < 0) {
-    throw new Error('length不能为负数');
-  }
-  // return Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
-  let result = Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
-
-  let str = String(result);
-  let arr = str.split('.');
-  if (arr.length === 1) {
-    if (length != 0) {
-      str += '.';
-      str += new Array(length + 1).join('0');
-    }
-  } else {
-    if (arr[1].length < length) {
-      arr[1] += new Array(length - arr[1].length + 1).join('0');
-    }
-    str = arr.join('.');
-  }
-  return str;
-}
-
-// 防抖
-export function debounce(fn: any, wait: number): any {
-  let timeout: any;
-  return function () {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    const args = Array.prototype.slice.call(arguments);
-    timeout = setTimeout(() => {
-      fn.apply(this, args);
-    }, wait);
-  };
-}
-
-// 节流
-export function throttle(fn: any, wait: number): any {
-  let timeout: any;
-  return function () {
-    if (!timeout) {
-      const args = Array.prototype.slice.call(arguments);
-      timeout = setTimeout(() => {
-        timeout = null;
-        fn.apply(this, args);
-      }, wait);
-    }
-  };
-}
+import { isArrayLike, isPlainObject } from './is';
 
 export function newFn(): any {
   let target: any = {},
@@ -115,18 +40,6 @@ export const myInstance = (L, R) => {
     LP = LP.__proto__;
   }
 };
-
-export function forEach(list, callback) {
-  const entries = Object.entries(list);
-  let i = 0;
-  const len = entries.length;
-
-  for (; i < len; i++) {
-    const res = callback(entries[i][1], entries[i][0], list);
-
-    if (res === true) break;
-  }
-}
 
 // eslint-disable-next-line no-extend-native
 Function.prototype.call = function (): any {
@@ -249,6 +162,36 @@ Function.prototype.bind = function () {
   fBound.prototype = new FNOP();
   return fBound;
 };
+
+Object.keys =
+  Object.keys ||
+  function keys(object) {
+    if (object === null || object === undefined) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+    let result = [];
+    if (isArrayLike(object) || isPlainObject(object)) {
+      for (let key in object) {
+        object.hasOwnProperty(key) && result.push(key);
+      }
+    }
+    return result;
+  };
+
+Object.values =
+  Object.values ||
+  function values(object) {
+    if (object === null || object === undefined) {
+      throw new TypeError('Cannot convert undefined or null to object');
+    }
+    let result = [];
+    if (isArrayLike(object) || isPlainObject(object)) {
+      for (let key in object) {
+        object.hasOwnProperty(key) && result.push(object[key]);
+      }
+    }
+    return result;
+  };
 
 // window.Set = window.Set || (function () {
 //   function Set(arr) {

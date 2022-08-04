@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 /**
  * 下载文件
  * @param url 文件url (DataURL、ObjectURL、仅支持同源链接下载)
@@ -194,3 +196,6 @@ const blobToBase64 = (content: Blob): Promise<string> => {
     reader.readAsDataURL(content);
   });
 };
+
+// 读取文件并将其行以数组格式存储
+const readFileLines = filename => fs.readFileSync(filename).toString('UTF8').split('\n');
