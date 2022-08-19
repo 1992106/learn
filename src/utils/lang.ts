@@ -34,7 +34,7 @@ function toArray(list, start) {
   return ret;
 }
 
-export function forEach(list, callback) {
+function forEach(list, callback) {
   const entries = Object.entries(list);
   let i = 0;
   const len = entries.length;

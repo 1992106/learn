@@ -151,7 +151,7 @@ function treeFindPath(tree, func, path = []) {
 const resultPath = treeFindPath(tree, node => node.id === '2-1');
 
 // !查找所有叶子节点
-function findLeafAllNode(tree) {
+function findAllLeafNode(tree) {
   let leafList = [];
   let node;
   let list = [...tree];

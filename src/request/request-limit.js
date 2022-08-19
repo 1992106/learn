@@ -36,7 +36,7 @@ class RequestLimit {
 export default RequestLimit;
 
 // 并发控制（async/await）
-async function poolLimit(limit, requestPool) {
+async function asyncPool(limit, requestPool) {
   // 存放所有请求返回的 promise
   const ret = [];
   // 正在执行的请求，用于控制并发
@@ -59,7 +59,7 @@ async function poolLimit(limit, requestPool) {
 }
 
 // 并发控制
-function poolLimit2(limit, requestPool) {
+function asyncPool(limit, requestPool) {
   // 存放所有请求返回的 promise
   const ret = [];
   // 正在执行的请求，用于控制并发
