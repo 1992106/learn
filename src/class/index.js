@@ -1,6 +1,7 @@
 // 实例属性和方法
 class Person {
   constructor(name, age) {
+    // !在构造函数上定义的属性和方法相当于定义在父类实例上的，而不是原型对象上。
     // 实例属性-常用
     this.name = name;
     this.age = age;
@@ -46,6 +47,10 @@ class Person {
     console.log(this.age);
   }
 }
+// 原型方法-不常用
+Person.prototype.say = function () {
+  console.log(this.temp);
+};
 // 原型属性-不常用
 Person.prototype.temp = 'xxx';
 
