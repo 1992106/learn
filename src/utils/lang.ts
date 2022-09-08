@@ -15,6 +15,17 @@ function toString(val) {
     : String(val);
 }
 
+// 将类数组对象转化为真实数组
+function toArray (list: any, start?: number): Array<any> {
+  start = start || 0
+  let i = list.length - start
+  const ret: Array<any> = new Array(i)
+  while (i--) {
+    ret[i] = list[i + start]
+  }
+  return ret
+}
+
 // 将属性混合到目标对象中
 function extend(target, source) {
   for (let key in source) {
@@ -23,15 +34,15 @@ function extend(target, source) {
   return target;
 }
 
-// 将类数组对象转化为真实数组
-function toArray(list, start) {
-  start = start || 0;
-  let i = list.length - start;
-  let ret = new Array(i);
-  while (i--) {
-    ret[i] = list[i + start];
+// 将数组对象转化成简单对象
+function toObject (arr: Array<any>): Object {
+  const res = {}
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i]) {
+      extend(res, arr[i])
+    }
   }
-  return ret;
+  return res
 }
 
 function forEach(list, callback) {

@@ -90,7 +90,7 @@ const compose = (...args: any[]) => {
 };
 
 // 记忆函数
-const memoize = (fn: any, hasher: string) => {
+const cached = (fn: any, hasher: string) => {
   const cache: any = {};
   return (...args: any[]) => {
     const key = hasher || JSON.stringify(args);
@@ -102,13 +102,12 @@ const memoize = (fn: any, hasher: string) => {
 };
 
 /**
- * 记忆函数
+ * 记忆函数-Map实现
  * @param {Function} func
  * @param {(args:[]) => string }  [resolver] - cache key generator
  */
-function memo(func, resolver) {
+function memoize(func, resolver) {
   const map = new Map();
-
   return function (...args) {
     const key = resolver ? resolver(...args) : args.join('_');
     if (map.has(key)) {
@@ -162,17 +161,17 @@ export function throttle(fn: any, wait: number): any {
 }
 
 /**
- * kebabCase (中横线分隔命名)
+ * kebabCase/hyphenate (中横线分隔命名)
  * under_score_case (下划线命名)
  * camelCase (驼峰命名)
  * PascalCase (单词首字母大写命名：帕斯卡命名)
  */
-// kebabCase转驼峰命名
+// 中横线转驼峰命名
 export function camelCase(str: string) {
   const reg = /-(\w)/g;
   return str.replace(reg, (_, $1) => ($1 ? $1.toUpperCase() : ''));
 }
-// camelCase转中横线分隔命名
+// 驼峰转中横线分隔命名
 export function kebabCase(str: string) {
   const reg = /\B([A-Z])/g;
   return str.replace(reg, '-$1').toLowerCase();
