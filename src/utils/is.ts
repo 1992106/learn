@@ -54,7 +54,7 @@ export function is(x: any, y: any) {
 }
 
 /**
- * 浅对比2个值是否相等
+ * 浅对比2个对象是否相等
  * @param objA
  * @param objB
  * @returns
@@ -219,11 +219,32 @@ export function isNaN(value) {
 export function isNative (Ctor: any): boolean {
   return typeof Ctor === 'function' && /native code/.test(Ctor.toString())
 }
+// 
 
-// 判断地址是否含有
-export const hasUrl = url => {
-  return /^http[s]?:\/\/(baidu|qq).*/.test(url);
+// 匹配URL地址
+export const isUrl = url => {
+  return /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i.test(url)
 };
+
+// 匹配Email地址
+export const isEmail = url => {
+  return /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(url)
+}
+
+// 匹配手机号
+export const isPhone = value => {
+  return /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(value)
+}
+
+// 匹配身份证号
+export const isIdCard = value => {
+  return /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/.test(value)
+}
+
+// 匹配日期
+export const isDate = value => {
+  return /^[1-2][0-9][0-9][0-9][-/]?[0-1]{0,1}[0-9][-/]?[0-3]{0,1}[0-9]$/.test(value)
+}
 
 // 判断是否是移动端
 export const isMobile = () => 'ontouchstart' in window;

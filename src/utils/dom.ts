@@ -1,9 +1,21 @@
 // 创建自定义事件，并派发自定义事件
-const triggerEvent = (el, eventType, detail) =>
+const triggerEvent = (el, eventType, detail) => {
   el.dispatchEvent(new CustomEvent(eventType, { detail }));
+}
 
 // 去除字符串中的html代码
 const removeHtml = (str = '') => str.replace(/<[\/\!]*[^<>]*>/gi, '');
+
+// 字符串前后去空
+export const trim = string => {
+  return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
+  // return (string || '').replace(/(^\s*)|(\s*$)/g, '');
+};
+
+// 去除所有空
+export const allTrim = string => {
+  return (string || '').replace(/\s/g, '');
+};
 
 // 获取当前子元素是其父元素下子元素的排位
 const getIndex = el => {
@@ -97,15 +109,6 @@ const copyToClipboard = str => {
     document.getSelection().removeAllRanges();
     document.getSelection().addRange(selected);
   }
-};
-
-/**
- * 字符串前后去空
- * @param string
- * @returns {string}
- */
-export const trim = string => {
-  return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
 };
 
 export const hasClass = (el, cls) => {
