@@ -29,6 +29,7 @@ export function set (target: Array<any> | Object, key: any, val: any): any {
   // 非 data 里定义的就不是响应式对象。
   const ob = (target: any).__ob__
   // 判断的是传入对象是否为 Vue 实例或者 Vue 实例的根数据对象
+  // 目标对象不能是一个 Vue 实例或 Vue 实例的根数据对象
   if (target._isVue || (ob && ob.vmCount)) {
     process.env.NODE_ENV !== 'production' && warn(
       'Avoid adding reactive properties to a Vue instance or its root $data ' +

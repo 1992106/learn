@@ -82,7 +82,7 @@ function remove(arr, item) {
   }
 }
 
-// 判断构造函数上是否有定义某属性，而不包扩原型链上的
+// 判断对象上是否有属性(不包扩原型链上的)
 const hasOwnProperty = Object.prototype.hasOwnProperty
 export const hasOwn = (obj, key) => {
   return hasOwnProperty.call(obj, key)
