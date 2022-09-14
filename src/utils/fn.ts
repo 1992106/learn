@@ -1,3 +1,4 @@
+import { hasOwn } from './fn';
 import { isArrayLike, isPlainObject } from './is';
 
 export function newFn(): any {

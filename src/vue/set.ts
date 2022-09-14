@@ -5,7 +5,7 @@ import { isPrimitive, isUndef, isValidArrayIndex } from "../utils/is"
  * triggers change notification if the property doesn't
  * already exist.
  */
- export function set (target: Array<any> | Object, key: any, val: any): any {
+export function set (target: Array<any> | Object, key: any, val: any): any {
   if (process.env.NODE_ENV !== 'production' &&
     (isUndef(target) || isPrimitive(target))
   ) {
@@ -48,3 +48,5 @@ import { isPrimitive, isUndef, isValidArrayIndex } from "../utils/is"
 
   return val
 }
+
+// https://github1s.com/vuejs/vue/blob/dev/src/core/observer/index.js

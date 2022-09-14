@@ -82,6 +82,15 @@ function remove(arr, item) {
   }
 }
 
+// 判断构造函数上是否有定义某属性，而不包扩原型链上的
+const hasOwnProperty = Object.prototype.hasOwnProperty
+export const hasOwn = (obj, key) => {
+  return hasOwnProperty.call(obj, key)
+  // in 比 hasOwnProperty 范围大，包括原型上定义的属性
+  // return key in obj && !(key in Object.prototype)
+}
+
+
 // 带有范围的随机数生成器
 const randomNumber = (max = 1, min = 0) => {
   if (min >= max) {
