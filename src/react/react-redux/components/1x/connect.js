@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
-import storeShape from '../storeShape';
-import shallowEqual from '../shallowEqual';
+import storeShape from './storeShape';
+import shallowEqual from './shallowEqual';
 /**
  * mapStateToProps 默认不关联state
  * mapDispatchToProps 默认值为 dispatch => ({dispatch})，将 `store.dispatch` 方法作为属性传递给组件
@@ -18,7 +18,7 @@ function connect(mapStateToProps, mapDispatchToProps) {
     mapStateToProps = defaultMapStateToProps;
   }
   if (!mapDispatchToProps) {
-    // 当 mapDispatchToProps 为 null/undefined/false...时，使用默认值
+    // 当 mapDispatchToProps 为 null/undefined/false 时，使用默认值
     mapDispatchToProps = defaultMapDispatchToProps;
   }
 
@@ -32,13 +32,13 @@ function connect(mapStateToProps, mapDispatchToProps) {
 
       constructor(props, context) {
         super(props, context);
-        this.store = context.store;
+        this.store = props.store || context.store;
         // 源码中是将 store.getState()给了this.state
         this.state = mapStateToProps(this.store.getState(), this.props);
 
         if (typeof mapDispatchToProps === 'function') {
           this.mappedDispatch = mapDispatchToProps(this.store.dispatch, this.props);
-        } else {
+        } else if (typeof mapDispatchToProps === 'object') {
           // 传递了一个 actionCreator 对象过来
           this.mappedDispatch = bindActionCreators(mapDispatchToProps, this.store.dispatch);
         }
