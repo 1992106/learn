@@ -78,3 +78,5 @@ class Promise {
     }, 0);
   }
 }
+
+// https://juejin.cn/post/6844904176355377159#heading-5
