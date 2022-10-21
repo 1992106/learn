@@ -1,20 +1,20 @@
 import React, { Component } from 'react';
-import storeShape from '../storeShape';
+import storeShape from './storeShape';
 
 class Provider extends Component {
   static childContextTypes = {
     store: storeShape.isRequired
   };
 
-  constructor(props) {
-    super(props);
-    this.store = props.store;
-  }
-
   getChildContext() {
     return {
       store: this.store
     };
+  }
+
+  constructor(props, context) {
+    super(props, context);
+    this.store = props.store;
   }
 
   render() {

@@ -8,30 +8,7 @@ import PropTypes from 'prop-types';
  */
 const Context = createContext(0);
 
-// 使用Context
-// 方法一: 类组件, Consumer写法（只能在组件render生命周期使用）
-class Item extends React.PureComponent {
-  render() {
-    return <Context.Consumer>{count => <div>{count}</div>}</Context.Consumer>;
-  }
-}
-
-// 方法二: 类组件, contextType写法（组件只能有且仅有一个context，不支持多个context; 可以全局this.context使用）
-class Item extends React.PureComponent {
-  static contextType = Context;
-  render() {
-    const count = this.context;
-    return <div>{count}</div>;
-  }
-}
-Item.contextType = Context;
-
-// 方法三: 函数组件 , 使用useContext
-function Item() {
-  const count = useContext(Context);
-  return <div>{count}</div>;
-}
-
+// 父组件生产context
 function App() {
   const [count, setCount] = useState(0);
   return (
@@ -45,7 +22,7 @@ function App() {
         点我
       </button>
       {/*  Provider提供context */}
-      <Context.Provider value={count}>
+      <Context.Provider value={{ count }}>
         <Item1></Item1>
         <Item2></Item2>
         <Item3></Item3>
@@ -54,19 +31,45 @@ function App() {
   );
 }
 
+// 子组件使用Context
+// 写法一: 类组件, Context.Consumer写法（只能在组件render生命周期使用）
+class Item extends React.PureComponent {
+  render() {
+    return <Context.Consumer>{ctx => <div>{ctx.count}</div>}</Context.Consumer>;
+  }
+}
+
+// 写法二: 类组件, contextType写法（组件只能有且仅有一个context，不支持多个context; 可以全局this.context使用）
+class Item extends React.PureComponent {
+  // es6(2种写法)
+  static contextType = Context;
+  render() {
+    return <div>{this.context.count}</div>;
+  }
+}
+// es6(2种写法)
+Item.contextType = Context;
+
+// 写法三: 函数组件 , 使用useContext
+function Item() {
+  const context = useContext(Context);
+  return <div>{context.count}</div>;
+}
+
 // 过时的写法  https://zh-hans.reactjs.org/docs/legacy-context.html
 /**
  * !!! 通过getChildContext()方法创建一个context（方法二）
  * 父组件要定义 childContextTypes 和 getChildContext()
- * 子组件必须定义 contextTypes
+ * 子组件必须定义 contextTypes，通过 this.context 即可以获取传递过来的上下文内容
  * 该写法只支持类组件
  */
+// 父组件生产context
 class Message extends React.Component {
   // 创建一个context
   getChildContext() {
     return { color: 'purple' };
   }
-  // 写法一：提供一个context
+  // es6(2种写法)
   static childContextTypes = {
     color: PropTypes.string
   };
@@ -78,15 +81,15 @@ class Message extends React.Component {
     );
   }
 }
-// 写法二：提供一个context
+// es6(2种写法)
 Message.childContextTypes = {
   color: PropTypes.string
 };
 
-// 使用context
-// es6(2种写法)
+// 子组件使用context
+// 写法一 类组件, 使用contextTypes
 class Button extends React.Component {
-  // 写法一
+  // es6(2种写法)
   static contextTypes = {
     color: PropTypes.string
   };
@@ -94,9 +97,10 @@ class Button extends React.Component {
     return <button style={{ background: this.context.color }}>{this.props.children}</button>;
   }
 }
-// 写法二
+// es6(2种写法)
 Button.contextTypes = { color: PropTypes.string };
-// 函数组件
+
+// 写法二：函数组件，使用contextTypes
 const Button = ({ children }, context) => {
   return <button style={{ background: context.color }}>{children}</button>;
 };

@@ -1,5 +1,5 @@
-import connect from './1x/connect';
-import Provider from './1x/Provider';
+import connect from './connect';
+import Provider from './Provider';
 
 export { connect, Provider };
 

@@ -64,13 +64,19 @@ class Promise {
         return;
       }
     }
-    this.state = 'fulfilled'; // 改变状态
-    this.value = value; // 保存结果
-    this.callbacks.forEach(callback => this._handle(callback));
+    setTimeout(() => {
+      this.state = 'fulfilled'; // 改变状态
+      this.value = value; // 保存结果
+      this.callbacks.forEach(callback => this._handle(callback));
+    }, 0);
   }
   _reject(error) {
-    this.state = 'rejected';
-    this.value = error;
-    this.callbacks.forEach(callback => this._handle(callback));
+    setTimeout(() => {
+      this.state = 'rejected';
+      this.value = error;
+      this.callbacks.forEach(callback => this._handle(callback));
+    }, 0);
   }
 }
+
+// https://juejin.cn/post/6844904176355377159#heading-5
