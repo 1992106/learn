@@ -120,6 +120,18 @@ function treeFilter(tree, func) {
     return func(node) || (node.children && node.children.length);
   });
 }
+function treeFilter2(tree, func) {
+  let treeClone = [...tree];
+  return treeClone.filter(node => {
+    if (node.children) {
+      node.children = treeFilter(node.children, func);
+      return node.children.length
+    } else {
+      return func(node)
+    }
+  });
+}
+const resultTree = treeFilter(treeFilter, node => node.id == '2-1')
 
 // ! 查找节点
 function treeFindNode(tree, func) {
