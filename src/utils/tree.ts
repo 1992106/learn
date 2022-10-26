@@ -82,6 +82,47 @@ function treeForeach4(tree, func) {
   }
 }
 
+// 格式化树
+/**
+ * @param  {Array} tree 待转换的 tree
+ * @param  {Object} map  键值对映射
+ * @return {Array}      转换后的 tree
+ */
+function convertTree(tree, map) {
+  const result = []
+
+  // 遍历 tree
+  tree.forEach((item) => {
+    // 读取 map 的键值映射
+    const label = item[map.label]
+    const value = item[map.value]
+    let children = item[map.children]
+
+    // 如果有子节点，递归
+    if (children) {
+      children = convertTree(children, map)
+    }
+
+    result.push({
+      label,
+      value,
+      children
+    })
+  })
+
+  return result
+}
+function formatTree(tree, map) {
+  return tree.reduce((arr, item) => {
+    const children = item[map.children]
+    arr.push({
+      label: item[map.label],
+      value: item[map.value],
+      ...(children ? { children: formatTree(children, map)} : {})
+    })
+  }, [])
+}
+
 // ! 列表和树相互转换
 // 列表转树
 function listToTree(list = []) {
