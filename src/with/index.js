@@ -4,13 +4,6 @@ const data = {
   }
 };
 
-// new Function + with：
-// 1、new Function是全局作用域，使用with限制为this作用域
-// 2、支持传参
-function fnParse(str) {
-  return new Function( `with(this){return ${str}}`)();
-}
-
 // new Function
 // 1、参数作用域【通过传参限制为参数作用域】
 // 2、支持传参
@@ -23,6 +16,12 @@ function fnParse(data, str) {
 // 2、不支持传参
 function fnParse(str) {
   return new Function('(' + str + ')')();
+}
+
+// new Function + with：
+// new Function是全局作用域，使用with限制为this作用域
+function fnParse(str) {
+  return new Function( `with(this){return ${str}}`)();
 }
 
 // eval
