@@ -73,4 +73,4 @@ function runCodeWithDateFunction2(d, obj){
 }
 console.log(runCodeWithDateFunction2(Date,"Date(5)"))
 
-// runCodeWithDateFunction1和runCodeWithDateFunction2
+// runCodeWithDateFunction1和runCodeWithDateFunction2作用一样，写法不同
