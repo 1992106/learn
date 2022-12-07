@@ -32,6 +32,7 @@ export const isEmpty = (x: any): boolean => {
 // 都是 -0
 // 都是 NaN
 // 或都是非零而且非 NaN 且为同一个值
+// !!! 与严格比较运算符（===）的行为基本一致， 只有两个不同
 // !!! Object.is(+0, -0) 结果为false
 // !!! +0 === -0 结果为true
 // !!! Object.is(NaN, NaN) 结果为true
@@ -157,7 +158,7 @@ export function isElement(value) {
 // 判断一个值是否是数组
 export function isArray(value) {
   return Object.prototype.toString.call(value) === '[object Array]';
-  }
+}
 
 // 判断一个值是否是array-like
 // 规则：不等于null，不是function类型，并且有length属性，length是大于0小于Number.MAX_SAFE_INTEGER的整数
@@ -177,6 +178,21 @@ export function isLength(value) {
 export function isValidArrayIndex (val: any): boolean {
   const n = parseFloat(String(val))
   return n >= 0 && Math.floor(n) === n && isFinite(val)
+}
+
+// 判断是否是Map对象
+export function isMap(val: any): boolean {
+  return Object.prototype.toString.call(val) === '[object Map]';
+}
+
+// 判断是否是Set对象
+export function isSet(val: any): boolean {
+  return Object.prototype.toString.call(val) === '[object Set]';
+}
+
+// 判断是否是函数
+export function isFunction(val: any): boolean {
+  return typeof val === 'function';
 }
 
 // 判断是否是数字（Int/Float/Infinity）（不包含NaN）
@@ -219,7 +235,7 @@ export function isNaN(value) {
 export function isNative (Ctor: any): boolean {
   return typeof Ctor === 'function' && /native code/.test(Ctor.toString())
 }
-// 
+//
 
 // 匹配URL地址
 export const isUrl = url => {

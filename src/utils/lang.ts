@@ -166,7 +166,7 @@ const range = (maxOrStart, end = null, step = null) => {
 // https://segmentfault.com/a/1190000020221170
 const fillArray = (length: number, data: any) => Array.from({ length }, () => data);
 const fillArray2 = (length: number, data: any) => Array(length).fill(data);
-// 生成数组 new Array(10)与Array(10)一样，会生成稀疏数组[,,,]
+// 生成数组 由于new Array(10)与Array(10)一样，会生成稀疏数组[,,,]，所以采用下面三种方法
 const emptyArray = (length: number) => Array.from({ length });
 const emptyArray2 = (length: number) => Array.apply(null, { length });
 const emptyArray3 = (length: number) => Array(20).fill(undefined);
