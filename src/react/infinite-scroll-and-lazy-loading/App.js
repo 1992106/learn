@@ -1,6 +1,6 @@
 import React, { useReducer, useRef } from 'react';
 
-import { useFetch, useInfiniteScroll, useLazyLoading } from './customHooks'
+import { useFetch, useInfiniteScroll, useLazyLoading } from './hooks'
 import './index.css';
 
 function App() {
