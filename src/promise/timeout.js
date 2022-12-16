@@ -5,7 +5,6 @@ function timeoutPromise(requestFn,timeout){
   return Promise.race([requestFn,sleep(timeout)]);
 }
 
-
 // 自定义实现Promise.race
 function timeoutPromise(requestFn,timeout){
   const promises = [requestFn(),sleep(timeout)];

@@ -79,4 +79,4 @@ class Promise {
   }
 }
 
-// https://juejin.cn/post/6844904176355377159#heading-5
+// https://juejin.cn/post/6844904176355377159
