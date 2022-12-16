@@ -63,8 +63,7 @@ export function is(x: any, y: any) {
 export function shallowEqual(objA: any, objB: any) {
   // 首先对两个基本数据类型进行比较
   if (is(objA, objB)) return true; // is()可换成Object.is()
-  // 由于Object.is()可以对基本数据类型做一个精确的比较；如果不相等，只有是object才会不相等。
-  // 所以判断两个对象只要不是object就可以返回false
+  // 由于Object.is()可以对基本数据类型做一个精确的比较，如果不相等，则说明一定是object；所以判断两个对象只要不是object就可以返回false
   if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
     return false;
   }
@@ -77,10 +76,103 @@ export function shallowEqual(objA: any, objB: any) {
   const hasOwn = Object.prototype.hasOwnProperty;
   for (let i = 0; i < keysA.length; i++) {
     // key值相等的时候
-    // 借用原型链上真正的 hasOwnProperty 方法，判断ObjB里面是否有A的key的key值
+    // 借用原型链上真正的 hasOwnProperty 方法，判断ObjB里面是否有objA的key
     // 最后，对对象的value进行一个基本数据类型的比较，返回结果
     if (!hasOwn.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
       return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * 深对比2个对象是否相等
+ * @param objA
+ * @param objB
+ * @returns
+ */
+export function deepEqual(objA: any, objB: any) {
+  if (is(objA, objB)) return true;
+
+  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+    return false;
+  }
+
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+  if (keysA.length !== keysB.length) return false;
+  const hasOwn = Object.prototype.hasOwnProperty;
+  for (let i = 0; i < keysA.length; i++) {
+    if (hasOwn.call(objB, keysA[i])) {
+      if (!deepEqual(objB[keysA[i]], objB[keysA[i]])) {
+        return false
+      }
+    } else {
+      return false
+    }
+  }
+  return true;
+}
+
+/**
+ * 浅对比2个对象是否相等
+ * @param objA
+ * @param objB
+ * @returns
+ */
+export function isShallowEqual(objA, objB) {
+  if (objA === objB) {
+    return true;
+  }
+
+  // 判断基本数据
+  if (!(typeof objA === 'object' && objA != null) || !(typeof objB === 'object' && objB != null)) {
+    return false;
+  }
+
+  // 判断对象
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+  for (let i = 0; i < keysA.length; i++) {
+    if (!objB.hasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/**
+ * 深对比2个对象是否相等
+ * @param objA
+ * @param objB
+ * @returns
+ */
+export function isDeepEqual(objA, objB) {
+  if (objA === objB) {
+    return true;
+  }
+
+  // 判断基本数据
+  if (!(typeof objA === 'object' && objA != null) || !(typeof objB === 'object' && objB != null)) {
+    return false;
+  }
+
+  // 判断对象
+  const keysA = Object.keys(objA);
+  const keysB = Object.keys(objB);
+  if (keysA.length !== keysB.length) {
+    return false;
+  }
+  for (let i = 0; i < keysA.length; i++) {
+    if (objB.hasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+      if (isDeepEqual(objA[keysA[i]], objB[keysA[i]])) {
+        return false;
+      }
+    } else {
+      return false
     }
   }
   return true;
@@ -99,21 +191,21 @@ export function toRawType(value) {
 }
 
 // 判断是不是等于undefined或者null
-export function isUndef (v) {
-  return v === undefined || v === null
+export function isUndef(value) {
+  return value === undefined || value === null
 }
 
 // 判断是否定义
-export function isDef (v) {
-  return v !== undefined && v !== null
+export function isDef(value) {
+  return value !== undefined && value !== null
 }
 
 // 判断是否是promise
-export function isPromise (val) {
+export function isPromise(value) {
   return (
-    isDef(val) &&
-    typeof val.then === 'function' &&
-    typeof val.catch === 'function'
+    isDef(value) &&
+    typeof value.then === 'function' &&
+    typeof value.catch === 'function'
   )
 }
 
@@ -175,24 +267,24 @@ export function isLength(value) {
 }
 
 // 判断是否是有效的数组index
-export function isValidArrayIndex (val: any): boolean {
-  const n = parseFloat(String(val))
-  return n >= 0 && Math.floor(n) === n && isFinite(val)
+export function isValidArrayIndex(value: any): boolean {
+  const n = parseFloat(String(value))
+  return n >= 0 && Math.floor(n) === n && isFinite(value)
 }
 
 // 判断是否是Map对象
-export function isMap(val: any): boolean {
-  return Object.prototype.toString.call(val) === '[object Map]';
+export function isMap(value: any): boolean {
+  return Object.prototype.toString.call(value) === '[object Map]';
 }
 
 // 判断是否是Set对象
-export function isSet(val: any): boolean {
-  return Object.prototype.toString.call(val) === '[object Set]';
+export function isSet(value: any): boolean {
+  return Object.prototype.toString.call(value) === '[object Set]';
 }
 
 // 判断是否是函数
-export function isFunction(val: any): boolean {
-  return typeof val === 'function';
+export function isFunction(value: any): boolean {
+  return typeof value === 'function';
 }
 
 // 判断是否是数字（Int/Float/Infinity）（不包含NaN）
@@ -232,7 +324,7 @@ export function isNaN(value) {
 }
 
 // 判断是否是内置函数
-export function isNative (Ctor: any): boolean {
+export function isNative(Ctor: any): boolean {
   return typeof Ctor === 'function' && /native code/.test(Ctor.toString())
 }
 //
