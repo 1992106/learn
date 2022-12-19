@@ -4,10 +4,10 @@ const createCancelPromise = (promiseArg) => {
   let reject = null
 
   const cancelPromise  = new Promise((_, _reject) => (reject = _reject))
-  const pendingPromise = Promise.race([promiseArg, cancelPromise])
+  const wrappedPromise = Promise.race([promiseArg, cancelPromise])
 
   return {
-    promise: pendingPromise,
+    promise: wrappedPromise,
     cancel: (reason) => {
       if (reject) {
         reject(new Error(reason));
@@ -18,6 +18,7 @@ const createCancelPromise = (promiseArg) => {
 }
 
 // 创建指令式的promise，提供取消方法
+// 将 resolve，reject 设为 null，让 promise 永远不会 resolve/reject。
 const createImperativePromise = promiseArg => {
   let resolve = null
   let reject = null
