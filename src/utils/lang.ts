@@ -11,13 +11,13 @@ function toString(val) {
   return val == null
     ? ''
     : Array.isArray(val) || (isPlainObject(val) && val.toString === Object.prototype.toString)
-    ? JSON.stringify(val, null, 2)
-    : String(val);
+      ? JSON.stringify(val, null, 2)
+      : String(val);
 }
 
 // 将类数组对象转化为真实数组
 // 扩展运算符/Array.form/Array.prototype.slice
-function toArray (list: any, start?: number): Array<any> {
+function toArray(list: any, start?: number): Array<any> {
   start = start || 0
   let i = list.length - start
   const ret: Array<any> = new Array(i)
@@ -166,4 +166,11 @@ function repeat(str, n) {
     n >>= 1;
   }
   return res;
+}
+
+// 颜色值16进制转10进制rgb
+function toRGB(color) {
+  const regex = /^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/ //匹配十六进制的正则
+  const match = color.match(regex)  // 判断是否是十六进制颜色值
+  return match ? 'rgb(' + parseInt(match[1], 16) + ',' + parseInt(match[2], 16) + ',' + parseInt(match[3], 16) + ')' : color
 }
