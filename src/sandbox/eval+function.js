@@ -5,13 +5,6 @@ const data = {
 };
 
 // new Function
-// 1、参数作用域【通过传参限制为参数作用域】
-// 2、支持传参
-function fnParse(data, str) {
-  return new Function('params', '(' + str + ')')(data);
-}
-
-// new Function
 // 1、全局作用域
 // 2、不支持传参
 function fnParse(str) {
@@ -19,9 +12,10 @@ function fnParse(str) {
 }
 
 // new Function + with：
-// new Function是全局作用域，使用with限制为this作用域
-function fnParse(str) {
-  return new Function( `with(this){return ${str}}`)();
+// new Function是全局作用域，使用with限制作用域
+function fnParse(ctx, str) {
+  const code = "with(shadow) {" + str + "}";
+  return new Function('shadow', code)(ctx);
 }
 
 // eval
@@ -30,6 +24,14 @@ function fnParse(str) {
 // window.eval()或者global.eval()始终是全局作用域中的变量；如果全局作用域中没有指定的变量，那么将会报错，提示该变量没有定义。
 function evalParse(str) {
   return eval('(' + str + ')');
+}
+
+// eval + with
+// eval是当前作用域，使用with限制作用域
+function evalParse(ctx, str) {
+  with (ctx) {
+    return eval('(' + str + ')');
+  }
 }
 
 // 例子1
@@ -60,16 +62,7 @@ function Date(n){
   return ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"][n%7 || 0];
 }
 
-function runCodeWithDateFunction1(obj){
-  return Function('"use strict";return (' + obj + ')')()(
-      Date
-  );
-}
-console.log(runCodeWithDateFunction1("function(Date){ return Date(5) }"))
-
-function runCodeWithDateFunction2(d, obj){
+function runCodeWithDateFunction(d, obj){
   return Function('Date','"use strict";return (' + obj + ')')(d)
 }
-console.log(runCodeWithDateFunction2(Date,"Date(5)"))
-
-// runCodeWithDateFunction1和runCodeWithDateFunction2作用一样，写法不同
+console.log(runCodeWithDateFunction(Date,"Date(5)"))

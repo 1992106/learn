@@ -16,6 +16,7 @@ function toString(val) {
 }
 
 // 将类数组对象转化为真实数组
+// 扩展运算符/Array.form/Array.prototype.slice
 function toArray (list: any, start?: number): Array<any> {
   start = start || 0
   let i = list.length - start
@@ -24,25 +25,6 @@ function toArray (list: any, start?: number): Array<any> {
     ret[i] = list[i + start]
   }
   return ret
-}
-
-// 将属性混合到目标对象中
-function extend(target, source) {
-  for (let key in source) {
-    target[key] = source[key];
-  }
-  return target;
-}
-
-// 将数组对象转化成简单对象
-function toObject (arr: Array<any>): Object {
-  const res = {}
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i]) {
-      extend(res, arr[i])
-    }
-  }
-  return res
 }
 
 function forEach(list, callback) {

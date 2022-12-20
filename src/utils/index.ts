@@ -1,3 +1,26 @@
+import { isEmpty } from './is'
+
+export function getTag(value) {
+  // 在 es5 之前，并没有对 null 和 undefined 进行处理，所以返回的都是 [object Object]
+  if (value == null) {
+    return value === undefined ? '[object Undefined]' : '[object Null]';
+  }
+  return Object.prototype.toString.call(value);
+}
+
+// 获取数据类型
+export function getType(value) {
+  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase()
+}
+
+// 获取数据类型
+export function getDataType(value: any) {
+  return Object.prototype.toString
+    .call(value)
+    .replace(/^\[object (.+)\]$/, '$1')
+    .toLowerCase();
+}
+
 /**
  * 四舍五入
  * @param value 需要舍入的数
@@ -29,12 +52,60 @@ export function toFixed(value: number, length = 2): string {
   return str;
 }
 
-// 获取数据类型
-const dataType = (obj: any) =>
-  Object.prototype.toString
-    .call(obj)
-    .replace(/^\[object (.+)\]$/, '$1')
-    .toLowerCase();
+// 填充对象
+export function polyfill(target, source) {
+  const obj = Array.isArray(target) ? [] : {}
+  Object.keys(target).forEach(key => {
+    if (getType(target[key]) === 'object') {
+      obj[key] = isEmpty(source[key]) ? target[key] : polyfill(target[key], source[key])
+    } else {
+      obj[key] = isEmpty(source[key]) ? target[key] : source[key]
+    }
+  })
+  return obj
+}
+
+// 扩展
+function extend(target, source) {
+  const obj = Array.isArray(target) ? [] : {}
+  Object.keys(target).forEach(key => {
+    if (getType(target[key]) === 'object') {
+      obj[key] = extend(target[key], source[key])
+    } else {
+      obj[key] = source[key]
+    }
+  })
+  return obj
+}
+
+// 深拷贝
+// JSON.stringify和JSON.parse
+export function deepClone(target) {
+  // 非引用类型
+  if (target == null || typeof target !== 'object') return target;
+  // 函数
+  if (target instanceof Function) {
+    return function () {
+      return target.apply(this, arguments);
+    }
+  }
+  // 日期
+  if (target instanceof Date) return new Date(target);
+  // 正则
+  if (target instanceof RegExp) return new RegExp(target.source, target.flags);
+
+  // 数组、对象
+  let targetClone = Array.isArray(target) ? [] : {};
+  Object.keys(target).forEach(key => {
+    if (getType(target[key]) === 'object') {
+      targetClone[key] = deepClone(target[key]);
+    }
+    else {
+      targetClone[key] = target[key];
+    }
+  });
+  return targetClone;
+}
 
 // 延迟函数delay
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

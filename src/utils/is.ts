@@ -178,18 +178,6 @@ export function isDeepEqual(objA, objB) {
   return true;
 }
 
-export function getTag(value) {
-  // 在 es5 之前，并没有对 null 和 undefined 进行处理，所以返回的都是 [object Object]
-  if (value == null) {
-    return value === undefined ? '[object Undefined]' : '[object Null]';
-  }
-  return Object.prototype.toString.call(value);
-}
-
-export function toRawType(value) {
-  return Object.prototype.toString.call(value).slice(8, -1);
-}
-
 // 判断是不是等于undefined或者null
 export function isUndef(value) {
   return value === undefined || value === null
