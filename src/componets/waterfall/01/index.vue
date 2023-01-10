@@ -6,7 +6,7 @@
       class="item-wrapper"
       v-for="(item, i) in data"
       :key="i"
-      :style="{ width: itemWidth + 'px' }"
+      :style="{ width: itemWidth }"
     >
       <slot :item="item" />
     </div>
@@ -32,17 +32,22 @@ export default {
     gap: {
       type: Array,
       default: () => [10, 10]
+    },
+    // 宽度
+    itemWidth: {
+      type: String,
+      default: '25%'
     }
   },
   watch: {
     data: {
       handler: function () {
-        this.$nextTick(() => this.waterfall());
+        this.waterfall()
       }
     }
   },
   methods: {
-    waterFall() {
+    calculate() {
       const [rowGap, colGap] = this.gap;
       const items = this.$refs['items'];
       //首先确定列数 = 页面的宽度 / 图片的宽度
@@ -78,6 +83,9 @@ export default {
           arr[index] = arr[index] + items[i].offsetHeight + rowGap;
         }
       }
+    },
+    waterFall() {
+      this.$nextTick(() => this.calculate());
     }
   },
   mounted() {
@@ -94,9 +102,9 @@ export default {
 <style lang="scss" scoped>
 .waterfall-wrapper {
   position: relative;
-}
 
-.item-wrapper {
-  position: absolute;
+  .item-wrapper {
+    position: absolute;
+  }
 }
 </style>

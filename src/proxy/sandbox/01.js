@@ -1,4 +1,5 @@
-// https://mp.weixin.qq.com/s/SMx1YLzvtHQdbAX72KeMXw
+// https://juejin.cn/post/7157570429928865828
+// https://zhuanlan.zhihu.com/p/428039764
 
 // 定义全局变量foo
 var foo = "foo1";
