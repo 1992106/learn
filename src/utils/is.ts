@@ -103,12 +103,8 @@ export function deepEqual(objA: any, objB: any) {
   if (keysA.length !== keysB.length) return false;
   const hasOwn = Object.prototype.hasOwnProperty;
   for (let i = 0; i < keysA.length; i++) {
-    if (hasOwn.call(objB, keysA[i])) {
-      if (!deepEqual(objB[keysA[i]], objB[keysA[i]])) {
-        return false
-      }
-    } else {
-      return false
+    if (!hasOwn.call(objB, keysA[i]) || !deepEqual(objB[keysA[i]], objB[keysA[i]])) {
+      return false;
     }
   }
   return true;
@@ -137,7 +133,11 @@ export function isShallowEqual(objA, objB) {
     return false;
   }
   for (let i = 0; i < keysA.length; i++) {
-    if (!objB.hasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
+    if (objB.hasOwnProperty(keysA[i])) {
+      if (objA[keysA[i]] !== objB[keysA[i]]) {
+        return false;
+      }
+    } else {
       return false;
     }
   }
@@ -167,12 +167,12 @@ export function isDeepEqual(objA, objB) {
     return false;
   }
   for (let i = 0; i < keysA.length; i++) {
-    if (objB.hasOwnProperty(keysA[i]) || objA[keysA[i]] !== objB[keysA[i]]) {
-      if (isDeepEqual(objA[keysA[i]], objB[keysA[i]])) {
+    if (objB.hasOwnProperty(keysA[i])) {
+      if (!isDeepEqual(objA[keysA[i]], objB[keysA[i]])) {
         return false;
       }
     } else {
-      return false
+      return false;
     }
   }
   return true;
@@ -180,21 +180,17 @@ export function isDeepEqual(objA, objB) {
 
 // 判断是不是等于undefined或者null
 export function isUndef(value) {
-  return value === undefined || value === null
+  return value === undefined || value === null;
 }
 
 // 判断是否定义
 export function isDef(value) {
-  return value !== undefined && value !== null
+  return value !== undefined && value !== null;
 }
 
 // 判断是否是promise
 export function isPromise(value) {
-  return (
-    isDef(value) &&
-    typeof value.then === 'function' &&
-    typeof value.catch === 'function'
-  )
+  return isDef(value) && typeof value.then === 'function' && typeof value.catch === 'function';
 }
 
 // 判断是否是原始数据（除symbol）
@@ -256,8 +252,8 @@ export function isLength(value) {
 
 // 判断是否是有效的数组index
 export function isValidArrayIndex(value: any): boolean {
-  const n = parseFloat(String(value))
-  return n >= 0 && Math.floor(n) === n && isFinite(value)
+  const n = parseFloat(String(value));
+  return n >= 0 && Math.floor(n) === n && isFinite(value);
 }
 
 // 判断是否是Map对象
@@ -313,47 +309,51 @@ export function isNaN(value) {
 
 // 判断是否是内置函数
 export function isNative(Ctor: any): boolean {
-  return typeof Ctor === 'function' && /native code/.test(Ctor.toString())
+  return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
 }
 //
 
 // 匹配URL地址
 export const isUrl = url => {
-  return /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i.test(url)
+  return /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i.test(
+    url
+  );
 };
 
 // 匹配Email地址
 export const isEmail = url => {
-  return /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(url)
-}
+  return /\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*/.test(url);
+};
 
 // 匹配手机号
 export const isPhone = value => {
-  return /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(value)
-}
+  return /^(0|86|17951)?(13[0-9]|15[012356789]|166|17[3678]|18[0-9]|14[57])[0-9]{8}$/.test(value);
+};
 
 // 匹配身份证号
 export const isIdCard = value => {
-  return /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/.test(value)
-}
+  return /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/.test(
+    value
+  );
+};
 
 // 匹配日期
 export const isDate = value => {
-  return /^[1-2][0-9][0-9][0-9][-/]?[0-1]{0,1}[0-9][-/]?[0-3]{0,1}[0-9]$/.test(value)
-}
+  return /^[1-2][0-9][0-9][0-9][-/]?[0-1]{0,1}[0-9][-/]?[0-3]{0,1}[0-9]$/.test(value);
+};
 
 // 判断是否是移动端
 export const isMobile = () => 'ontouchstart' in window;
 
 // Browser environment sniffing
 export const inBrowser = typeof window !== 'undefined';
-export const inWeex = typeof WXEnvironment !== "undefined" && !!WXEnvironment.platform
-const weexPlatform = inWeex && WXEnvironment.platform.toLowerCase()
+export const inWeex = typeof WXEnvironment !== 'undefined' && !!WXEnvironment.platform;
+const weexPlatform = inWeex && WXEnvironment.platform.toLowerCase();
 const UA = inBrowser && window.navigator.userAgent.toLowerCase();
 export const isIE = UA && /msie|trident/.test(UA);
 export const isIE9 = UA && UA.indexOf('msie 9.0') > 0;
 export const isEdge = UA && UA.indexOf('edge/') > 0;
-export const isAndroid = (UA && UA.indexOf("android") > 0) || weexPlatform === "android"
-export const isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || weexPlatform === "ios"
+export const isAndroid = (UA && UA.indexOf('android') > 0) || weexPlatform === 'android';
+export const isIOS = (UA && /iphone|ipad|ipod|ios/.test(UA)) || weexPlatform === 'ios';
 export const isChrome = UA && /chrome\/\d+/.test(UA) && !isEdge;
 export const isFF = UA && UA.match(/firefox\/(\d+)/);

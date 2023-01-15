@@ -10,7 +10,7 @@ module.exports = {
   },
   plugins: ['@typescript-eslint'],
   rules: {
-    'prettier/prettier': ['error', { endOfLine: 'lf' }],
+    'prettier/prettier': ['error', { endOfLine: 'auto' }],
     'no-undef': 'off',
     'no-unused-vars': 'off',
     'no-redeclare': 'off',

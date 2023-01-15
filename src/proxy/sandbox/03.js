@@ -2,8 +2,8 @@
 class SandboxGlobalProxy {
   constructor(blacklist) {
     // 创建一个 iframe 标签，取出其中的原生浏览器全局对象作为沙箱的全局对象
-    const iframe = document.createElement("iframe", { url: "about:blank" });
-    iframe.style.display = "none";
+    const iframe = document.createElement('iframe', { url: 'about:blank' });
+    iframe.style.display = 'none';
     document.body.appendChild(iframe);
 
     // 获取当前HTMLIFrameElement的Window对象
@@ -12,7 +12,6 @@ class SandboxGlobalProxy {
     return new Proxy(sandboxGlobal, {
       // has 可以拦截 with 代码块中任意属性的访问
       has: (target, prop) => {
-
         // 黑名单中的变量禁止访问
         if (blacklist.includes(prop)) {
           throw new Error(`Can't use: ${prop}!`);
@@ -31,8 +30,8 @@ class SandboxGlobalProxy {
 
 // 使用with关键字，来改变作用域
 function withedYourCode(code) {
-  code = "with(sandbox) {" + code + "}";
-  return new Function("sandbox", code);
+  code = 'with(sandbox) {' + code + '}';
+  return new Function('sandbox', code);
 }
 
 // 将指定的上下文对象，添加到待执行代码作用域的顶部

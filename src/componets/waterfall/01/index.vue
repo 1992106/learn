@@ -47,7 +47,7 @@ export default {
     }
   },
   methods: {
-    calculate() {
+    waterfall() {
       const [rowGap, colGap] = this.gap;
       const items = this.$refs['items'];
       //首先确定列数 = 页面的宽度 / 图片的宽度
@@ -83,13 +83,9 @@ export default {
           arr[index] = arr[index] + items[i].offsetHeight + rowGap;
         }
       }
-    },
-    waterFall() {
-      this.$nextTick(() => this.calculate());
     }
   },
   mounted() {
-    this.waterfall();
     window.addEventListener('resize', this.waterFall);
     // 使用$once和hook实现注销事件
     this.$once('hook:beforeDestroy', () => {
