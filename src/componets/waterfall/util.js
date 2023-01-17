@@ -1,4 +1,4 @@
-const inBrowser = typeof window !== 'undefined' && window !== null
+const inBrowser = typeof window !== 'undefined' && window !== null;
 
 function checkIntersectionObserver() {
   if (
@@ -11,14 +11,14 @@ function checkIntersectionObserver() {
     // See: https://github.com/w3c/IntersectionObserver/issues/211
     if (!('isIntersecting' in window.IntersectionObserverEntry.prototype)) {
       Object.defineProperty(window.IntersectionObserverEntry.prototype, 'isIntersecting', {
-        get: function() {
-          return this.intersectionRatio > 0
+        get: function () {
+          return this.intersectionRatio > 0;
         }
-      })
+      });
     }
-    return true
+    return true;
   }
-  return false
+  return false;
 }
 
-export { checkIntersectionObserver }
+export { checkIntersectionObserver };

@@ -11,20 +11,20 @@ function toString(val) {
   return val == null
     ? ''
     : Array.isArray(val) || (isPlainObject(val) && val.toString === Object.prototype.toString)
-      ? JSON.stringify(val, null, 2)
-      : String(val);
+    ? JSON.stringify(val, null, 2)
+    : String(val);
 }
 
 // 将类数组对象转化为真实数组
 // 扩展运算符/Array.form/Array.prototype.slice
 function toArray(list: any, start?: number): Array<any> {
-  start = start || 0
-  let i = list.length - start
-  const ret: Array<any> = new Array(i)
+  start = start || 0;
+  let i = list.length - start;
+  const ret: Array<any> = new Array(i);
   while (i--) {
-    ret[i] = list[i + start]
+    ret[i] = list[i + start];
   }
-  return ret
+  return ret;
 }
 
 function forEach(list, callback) {
@@ -65,13 +65,12 @@ function remove(arr, item) {
 }
 
 // 判断对象上是否有属性(不包扩原型链上的)
-const hasOwnProperty = Object.prototype.hasOwnProperty
+const hasOwnProperty = Object.prototype.hasOwnProperty;
 export const hasOwn = (obj, key) => {
-  return hasOwnProperty.call(obj, key)
+  return hasOwnProperty.call(obj, key);
   // in 比 hasOwnProperty 范围大，包括原型上定义的属性
   // return key in obj && !(key in Object.prototype)
-}
-
+};
 
 // 带有范围的随机数生成器
 const randomNumber = (max = 1, min = 0) => {
@@ -170,7 +169,15 @@ function repeat(str, n) {
 
 // 颜色值16进制转10进制rgb
 function toRGB(color) {
-  const regex = /^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/ //匹配十六进制的正则
-  const match = color.match(regex)  // 判断是否是十六进制颜色值
-  return match ? 'rgb(' + parseInt(match[1], 16) + ',' + parseInt(match[2], 16) + ',' + parseInt(match[3], 16) + ')' : color
+  const regex = /^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/; //匹配十六进制的正则
+  const match = color.match(regex); // 判断是否是十六进制颜色值
+  return match
+    ? 'rgb(' +
+        parseInt(match[1], 16) +
+        ',' +
+        parseInt(match[2], 16) +
+        ',' +
+        parseInt(match[3], 16) +
+        ')'
+    : color;
 }

@@ -1,7 +1,7 @@
 // 创建自定义事件，并派发自定义事件
 const triggerEvent = (el, eventType, detail) => {
   el.dispatchEvent(new CustomEvent(eventType, { detail }));
-}
+};
 
 // 去除字符串中的html代码
 const removeHtml = (str = '') => str.replace(/<[\/\!]*[^<>]*>/gi, '');

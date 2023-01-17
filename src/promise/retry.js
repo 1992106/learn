@@ -27,10 +27,10 @@ export async function retry(
   timeout = 5000 // 重试的延迟
 ) {
   let tryCount = 1;
-  let timeId
+  let timeId;
 
   const exec = async () => {
-    const res = await fn().catch((err) => {
+    const res = await fn().catch(err => {
       if (tryCount > count) {
         throw err;
       } else {
@@ -42,7 +42,7 @@ export async function retry(
       return res;
     } else {
       if (timeout) {
-        await new Promise((resolve) => {
+        await new Promise(resolve => {
           timeId = setTimeout(() => {
             resolve();
           }, timeout);

@@ -4,7 +4,7 @@
   "description": "cli and Some utility functions(ts/js)",
   "private": true,
   "scripts": {
-    "lint": "npm run lint:ts && npm run lint:style",
+    "lint": "npm run lint:es && npm run lint:style",
     "lint:es": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
     "lint:style": "stylelint src/**/*.less --syntax less --fix",
     "test": "echo \"Error: no test specified\" && exit 1"

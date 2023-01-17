@@ -1,4 +1,4 @@
-import { isEmpty } from './is'
+import { isEmpty } from './is';
 
 export function getTag(value) {
   // 在 es5 之前，并没有对 null 和 undefined 进行处理，所以返回的都是 [object Object]
@@ -10,7 +10,7 @@ export function getTag(value) {
 
 // 获取数据类型
 export function getType(value) {
-  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase()
+  return Object.prototype.toString.call(value).slice(8, -1).toLowerCase();
 }
 
 // 获取数据类型
@@ -54,28 +54,28 @@ export function toFixed(value: number, length = 2): string {
 
 // 填充对象
 export function polyfill(target, source) {
-  const obj = Array.isArray(target) ? [] : {}
+  const obj = Array.isArray(target) ? [] : {};
   Object.keys(target).forEach(key => {
     if (getType(target[key]) === 'object') {
-      obj[key] = isEmpty(source[key]) ? target[key] : polyfill(target[key], source[key])
+      obj[key] = isEmpty(source[key]) ? target[key] : polyfill(target[key], source[key]);
     } else {
-      obj[key] = isEmpty(source[key]) ? target[key] : source[key]
+      obj[key] = isEmpty(source[key]) ? target[key] : source[key];
     }
-  })
-  return obj
+  });
+  return obj;
 }
 
 // 扩展
 function extend(target, source) {
-  const obj = Array.isArray(target) ? [] : {}
+  const obj = Array.isArray(target) ? [] : {};
   Object.keys(target).forEach(key => {
     if (getType(target[key]) === 'object') {
-      obj[key] = extend(target[key], source[key])
+      obj[key] = extend(target[key], source[key]);
     } else {
-      obj[key] = source[key]
+      obj[key] = source[key];
     }
-  })
-  return obj
+  });
+  return obj;
 }
 
 // 深拷贝
@@ -87,7 +87,7 @@ export function deepClone(target) {
   if (target instanceof Function) {
     return function () {
       return target.apply(this, arguments);
-    }
+    };
   }
   // 日期
   if (target instanceof Date) return new Date(target);
@@ -99,8 +99,7 @@ export function deepClone(target) {
   Object.keys(target).forEach(key => {
     if (getType(target[key]) === 'object') {
       targetClone[key] = deepClone(target[key]);
-    }
-    else {
+    } else {
       targetClone[key] = target[key];
     }
   });

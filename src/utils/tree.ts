@@ -89,38 +89,38 @@ function treeForeach4(tree, func) {
  * @return {Array}      转换后的 tree
  */
 function convertTree(tree, map) {
-  const result = []
+  const result = [];
 
   // 遍历 tree
-  tree.forEach((item) => {
+  tree.forEach(item => {
     // 读取 map 的键值映射
-    const label = item[map.label]
-    const value = item[map.value]
-    let children = item[map.children]
+    const label = item[map.label];
+    const value = item[map.value];
+    let children = item[map.children];
 
     // 如果有子节点，递归
     if (children) {
-      children = convertTree(children, map)
+      children = convertTree(children, map);
     }
 
     result.push({
       label,
       value,
       children
-    })
-  })
+    });
+  });
 
-  return result
+  return result;
 }
 function formatTree(tree, map) {
   return tree.reduce((arr, item) => {
-    const children = item[map.children]
+    const children = item[map.children];
     arr.push({
       label: item[map.label],
       value: item[map.value],
-      ...(children ? { children: formatTree(children, map)} : {})
-    })
-  }, [])
+      ...(children ? { children: formatTree(children, map) } : {})
+    });
+  }, []);
 }
 
 // ! 列表和树相互转换
@@ -166,13 +166,13 @@ function treeFilter2(tree, func) {
   return treeClone.filter(node => {
     if (node.children) {
       node.children = treeFilter(node.children, func);
-      return node.children.length
+      return node.children.length;
     } else {
-      return func(node)
+      return func(node);
     }
   });
 }
-const resultTree = treeFilter(treeFilter, node => node.id == '2-1')
+const resultTree = treeFilter(treeFilter, node => node.id == '2-1');
 
 // ! 查找节点
 function treeFindNode(tree, func) {

@@ -17,17 +17,17 @@ const toPromise = x => {
 };
 
 const toAwait = (awaited, errorExt) => {
-  const promise = toPromise(awaited)
+  const promise = toPromise(awaited);
   return promise
-    .then((data) => [null, data]) // 成功,返回[null,响应结果]
-    .catch((err) => {
-      // 失败,返回[错误信息,undefined]
+    .then(data => [null, data]) // 成功,返回[null,响应结果]
+    .catch(err => {
+      // 失败,返回[错误信息,undefined]
       if (errorExt) {
         const parsedError = Object.assign({}, err, errorExt);
         return [parsedError, undefined];
       }
       return [err, undefined];
     });
-}
+};
 
 export { sleep, toPromise, toAwait };

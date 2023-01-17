@@ -1,35 +1,35 @@
 import React, { useReducer, useRef } from 'react';
 
-import { useFetch, useInfiniteScroll, useLazyLoading } from './hooks'
+import { useFetch, useInfiniteScroll, useLazyLoading } from './hooks';
 import './index.css';
 
 function App() {
   const imgReducer = (state, action) => {
     switch (action.type) {
       case 'STACK_IMAGES':
-        return { ...state, images: state.images.concat(action.images) }
+        return { ...state, images: state.images.concat(action.images) };
       case 'FETCHING_IMAGES':
-        return { ...state, fetching: action.fetching }
+        return { ...state, fetching: action.fetching };
       default:
         return state;
     }
-  }
+  };
 
   const pageReducer = (state, action) => {
     switch (action.type) {
       case 'ADVANCE_PAGE':
-        return { ...state, page: state.page + 1 }
+        return { ...state, page: state.page + 1 };
       default:
         return state;
     }
-  }
+  };
 
-  const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 })
-  const [imgData, imgDispatch] = useReducer(imgReducer, { images: [], fetching: true, })
+  const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 });
+  const [imgData, imgDispatch] = useReducer(imgReducer, { images: [], fetching: true });
 
   let bottomBoundaryRef = useRef(null);
   useFetch(pager, imgDispatch);
-  useLazyLoading('.card-img-top', imgData.images)
+  useLazyLoading('.card-img-top', imgData.images);
   useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
 
   return (
@@ -42,10 +42,10 @@ function App() {
         </div>
       </nav>
 
-      <div id='images' className="container">
+      <div id="images" className="container">
         <div className="row">
           {imgData.images.map((image, index) => {
-            const { author, download_url } = image
+            const { author, download_url } = image;
             return (
               <div key={index} className="card">
                 <div className="card-body ">
@@ -57,10 +57,12 @@ function App() {
                   />
                 </div>
                 <div className="card-footer">
-                  <p className="card-text text-center text-capitalize text-primary">Shot by: {author}</p>
+                  <p className="card-text text-center text-capitalize text-primary">
+                    Shot by: {author}
+                  </p>
                 </div>
               </div>
-            )
+            );
           })}
         </div>
       </div>
@@ -70,7 +72,11 @@ function App() {
           <p className="m-0 text-white">Getting images</p>
         </div>
       )}
-      <div id='page-bottom-boundary' style={{ border: '1px solid red' }} ref={bottomBoundaryRef}></div>
+      <div
+        id="page-bottom-boundary"
+        style={{ border: '1px solid red' }}
+        ref={bottomBoundaryRef}
+      ></div>
     </div>
   );
 }

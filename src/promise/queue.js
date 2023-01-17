@@ -1,25 +1,24 @@
-import { toPromise } from "./utils";
+import { toPromise } from './utils';
 
 // 串行promise：把上一个的结果传给下一个的参数串行执行
 function asyncQueue(list, initialValue) {
-  return list.reduce(
-    (queue, hook) => queue.then(res => hook(res)),
-    Promise.resolve(initialValue)
-  )
+  return list.reduce((queue, hook) => queue.then(res => hook(res)), Promise.resolve(initialValue));
 }
 
 // 串行promise：串行执行，最后统一返回结果
 function asyncQueue(list) {
   const results = [];
-  return list
-    .reduce((previousPromise, currentPromise) => {
-      return previousPromise.then(res => {
-        results.push(res); // collect the results
-        return toPromise(currentPromise);
-      });
-    }, toPromise(list.shift()))
-    // collect the final result and return the array of results as resolved promise
-    .then(res => Promise.resolve([...results, res]))
+  return (
+    list
+      .reduce((previousPromise, currentPromise) => {
+        return previousPromise.then(res => {
+          results.push(res); // collect the results
+          return toPromise(currentPromise);
+        });
+      }, toPromise(list.shift()))
+      // collect the final result and return the array of results as resolved promise
+      .then(res => Promise.resolve([...results, res]))
+  );
 }
 
 // 以下只是串行执行，不返回结果

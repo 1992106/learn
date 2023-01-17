@@ -17,6 +17,7 @@ module.exports = {
     'no-useless-escape': 'off',
     'no-prototype-builtins': 'off',
     'no-constant-condition': 'off',
+    'no-useless-catch': 'off',
     'guard-for-in': 'off'
   }
 };
