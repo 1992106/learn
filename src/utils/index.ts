@@ -80,29 +80,41 @@ function extend(target, source) {
 
 // 深拷贝
 // JSON.stringify和JSON.parse
-export function deepClone(target) {
+export function deepCopy(target, cache = []) {
   // 非引用类型
   if (target == null || typeof target !== 'object') return target;
   // 函数
   if (target instanceof Function) {
-    return function () {
-      return target.apply(this, arguments);
-    };
+    // return function () {
+    //   return target.apply(this, arguments);
+    // };
+    return new Function('return ' + target.toString())();
   }
+
   // 日期
   if (target instanceof Date) return new Date(target);
   // 正则
   if (target instanceof RegExp) return new RegExp(target.source, target.flags);
+  // 错误
+  if (target instanceof Error) return new Error(target.message);
 
-  // 数组、对象
-  let targetClone = Array.isArray(target) ? [] : {};
-  Object.keys(target).forEach(key => {
-    if (getType(target[key]) === 'object') {
-      targetClone[key] = deepClone(target[key]);
-    } else {
-      targetClone[key] = target[key];
-    }
+  // 循环引用
+  const hit = cache.filter(c => c.original === target)[0];
+  if (hit) {
+    return hit.copy;
+  }
+
+  const targetClone = Array.isArray(target) ? [] : {};
+  // 缓存对象，用于循环引用
+  cache.push({
+    original: target,
+    copy: targetClone
   });
+
+  Object.keys(target).forEach(key => {
+    targetClone[key] = deepCopy(target[key], cache);
+  });
+
   return targetClone;
 }
 
