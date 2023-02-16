@@ -203,7 +203,8 @@ function treeFindPath(tree, func, path = []) {
 }
 const resultPath = treeFindPath(tree, node => node.id === '2-1');
 
-// !查找所有叶子节点
+// 查找所有叶子节点(2个方法)
+// ! 循环实现
 function findAllLeafNode(tree) {
   let leafList = [];
   let node;
@@ -216,4 +217,15 @@ function findAllLeafNode(tree) {
     }
   }
   return leafList;
+}
+// ! 递归实现
+function findAllLeafNode2(tree, list = []) {
+  tree.forEach((item: any) => {
+    if (item?.children) {
+      return findAllLeafNode2(item.children, list);
+    } else {
+      list.push(item);
+    }
+  });
+  return list;
 }
