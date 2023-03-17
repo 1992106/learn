@@ -165,6 +165,141 @@ export const removeClass = (el, cls) => {
   }
 };
 
+// 获取查询对象
+export const getQueryParams = (queryString = window.location.search) => {
+  const searchParams = new URLSearchParams(queryString);
+  return [...searchParams].reduce((cur, [key, value]) => ((cur[key] = value), cur), {});
+};
+export const getQueryParams = (url = window.location.href) => {
+  const searchParams = new URL(url).searchParams;
+  return [...searchParams].reduce((cur, [key, value]) => ((cur[key] = value), cur), {});
+};
+export const getQueryParams = url => {
+  const paramArr = url.slice(url.indexOf('?') + 1).split('&');
+  const params = {};
+  paramArr.forEach(param => {
+    const [key, value] = param.split('=');
+    params[key] = decodeURIComponent(value);
+  });
+  return params;
+};
+
+// 获取查询字符串
+export const getQueryString = (params: Record<string, string>) => {
+  const searchParams = new URLSearchParams(params);
+  searchParams.sort();
+  return searchParams.toString();
+};
+export const getQueryString = (params: Record<string, string>) => {
+  return Object.keys(params)
+    .sort()
+    .map(key => `${key}=${params[key]}`)
+    .join('&');
+};
+
+// 通过key获取查询字符串值
+export const getQueryValue = (name: string) => {
+  const searchParams = new URLSearchParams(window.location.search);
+  return searchParams.get(name);
+};
+export const getQueryValue = (name: string) => {
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+};
+export const getQueryValue = (name: string) => {
+  const reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)');
+  const value = window.location.search.substr(1).match(reg);
+  return value != null ? decodeURIComponent(value[2]) : null;
+};
+
+// 解析html
+export const parseHtml = (str: string, mimeType: DOMParserSupportedType = 'text/html') => {
+  const domparser = new DOMParser();
+  return domparser.parseFromString(str, mimeType);
+};
+export const parseHtml = (str: string) => {
+  const doc = document.implementation.createHTMLDocument('');
+  if (str.toLowerCase().indexOf('<!doctype') > -1) {
+    doc.documentElement.innerHTML = str;
+  } else {
+    doc.body.innerHTML = str;
+  }
+  return doc;
+};
+
+// 序列化html
+export const stringifyHtml = (html: HTMLElement) => {
+  const serializer = new XMLSerializer();
+  return serializer.serializeToString(html);
+};
+
+// 转义HTML
+export const encodeHTML = (str: string) => {
+  let textNode = document.createTextNode(str);
+  let div = document.createElement('div');
+  div.append(textNode);
+  return div.innerHTML;
+};
+export const encodeHTML = (str: string) => {
+  if (typeof str == 'string') {
+    return str.replace(/<|&|>/g, function (matches) {
+      return {
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;'
+      }[matches];
+    });
+  }
+  return '';
+};
+
+// 反转义HTML
+export const decodeHTML = (str: string) => {
+  const doc = new DOMParser().parseFromString(str, 'text/html');
+  return doc.documentElement.textContent;
+};
+export const decodeHTML = (str: string) => {
+  if (typeof str == 'string') {
+    return str.replace(/&lt;|&gt;|&amp;/g, function (matches) {
+      return {
+        '&lt;': '<',
+        '&gt;': '>',
+        '&amp;': '&'
+      }[matches];
+    });
+  }
+  return '';
+};
+
+// 解析script
+export const parseScripts = (str: string) => {
+  const reg = new RegExp(/<script(?:\s+[^>]*)?>(.*?)<\/script\s*>/gi); // script正则
+  return str.match(reg);
+};
+// 获取script url
+export const getScriptUrls = (str: string) => {
+  const reg = new RegExp(/src=['"]?([^'"]*)['"]?/i);
+  const scripts = parseScripts(str);
+  return scripts.map(val => val.match(reg)?.[1]);
+};
+
+// 解析图片
+export const parseImages = (str: string) => {
+  const reg = new RegExp(/<img.*?(?:>|\/>)/gi); // image正则
+  return str.match(reg);
+};
+// 获取图片url
+export const getImageUrls = (str: string) => {
+  const reg = new RegExp(/src=['"]?([^'"]*)['"]?/i);
+  const imgs = parseImages(str);
+  return imgs.map(val => val.match(reg)?.[1]);
+};
+export const getImageUrls = (str: string) => {
+  return str.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (_, url) {
+    return url;
+  });
+};
+
 const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
   if (!window.requestAnimationFrame) {
     window.requestAnimationFrame =
