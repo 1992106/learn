@@ -257,8 +257,9 @@ export const encodeHTML = (str: string) => {
 
 // 反转义HTML
 export const decodeHTML = (str: string) => {
-  const doc = new DOMParser().parseFromString(str, 'text/html');
-  return doc.documentElement.textContent;
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = str;
+  return textarea.childNodes[0].nodeValue;
 };
 export const decodeHTML = (str: string) => {
   if (typeof str == 'string') {
@@ -301,6 +302,13 @@ export const getImageUrls = (str: string) => {
 export const getImageUrls = (str: string) => {
   return str.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (_, url) {
     return url;
+  });
+};
+
+// 替换标签<head></head> => <micro-app-head></micro-app-head>
+export const replaceTag = (str: string) => {
+  return str.replace(/<head[^>]*>[\s\S]*?<\/head>/i, match => {
+    return match.replace(/<head/i, '<micro-app-head').replace(/<\/head>/i, '</micro-app-head>');
   });
 };
 
