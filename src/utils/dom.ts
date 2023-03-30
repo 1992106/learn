@@ -242,11 +242,13 @@ export const encodeHTML = (str: string) => {
 };
 export const encodeHTML = (str: string) => {
   if (typeof str == 'string') {
-    return str.replace(/<|&|>/g, function (matches) {
+    return str.replace(/<|&|>|"|'/g, function (matches) {
       return {
         '<': '&lt;',
         '>': '&gt;',
-        '&': '&amp;'
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&#x27;'
       }[matches];
     });
   }
@@ -260,11 +262,13 @@ export const decodeHTML = (str: string) => {
 };
 export const decodeHTML = (str: string) => {
   if (typeof str == 'string') {
-    return str.replace(/&lt;|&gt;|&amp;/g, function (matches) {
+    return str.replace(/&lt;|&gt;|&amp;|&quot;|&#x27;/g, function (matches) {
       return {
         '&lt;': '<',
         '&gt;': '>',
-        '&amp;': '&'
+        '&amp;': '&',
+        '&quot;': '"',
+        '&#x27;': "'"
       }[matches];
     });
   }
@@ -298,6 +302,15 @@ export const getImageUrls = (str: string) => {
   return str.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (_, url) {
     return url;
   });
+};
+
+export const is32bit = (char: string) => {
+  //如果码点大于了16位二进制的最大值，则其是32位的
+  return char.codePointAt(0) > 0xffff;
+};
+
+export const getStringLen = (str: string) => {
+  return Array.from(str).length;
 };
 
 const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {

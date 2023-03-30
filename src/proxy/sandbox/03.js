@@ -2,6 +2,7 @@
 class SandboxGlobalProxy {
   constructor(blacklist) {
     // 创建一个 iframe 标签，取出其中的原生浏览器全局对象作为沙箱的全局对象
+    // 只有同域的iframe才能取出对应的contentWindow, iframe的src设置为about:blank,可以保证一定是同域的
     const iframe = document.createElement('iframe', { url: 'about:blank' });
     iframe.style.display = 'none';
     document.body.appendChild(iframe);
@@ -28,6 +29,15 @@ class SandboxGlobalProxy {
   }
 }
 
+// 设置黑名单
+const blacklist = ['window', 'document', 'XMLHttpRequest', 'fetch', 'WebSocket', 'Image'];
+
+// 将globalProxy对象，添加到新环境作用域链的顶部
+const globalProxy = new SandboxGlobalProxy(blacklist);
+
+// 待执行的代码code，获取document对象
+const code = `console.log(document)`;
+
 // 使用with关键字，来改变作用域
 function withedYourCode(code) {
   code = 'with(sandbox) {' + code + '}';
@@ -38,14 +48,5 @@ function withedYourCode(code) {
 function makeSandbox(code, ctx) {
   withedYourCode(code).call(ctx, ctx);
 }
-
-// 待执行的代码code，获取document对象
-const code = `console.log(document)`;
-
-// 设置黑名单
-const blacklist = ['window', 'document', 'XMLHttpRequest', 'fetch', 'WebSocket', 'Image'];
-
-// 将globalProxy对象，添加到新环境作用域链的顶部
-const globalProxy = new SandboxGlobalProxy(blacklist);
 
 makeSandbox(code, globalProxy);

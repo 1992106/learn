@@ -85,6 +85,96 @@ function blobToBase64(blob) {
 //   console.log('base64', res)
 // })
 
-// 下载
 // 利用URL.createObjectURL为File对象、Blob对象创建临时的URL
 // https://developer.mozilla.org/zh-CN/docs/Web/API/URL/createObjectURL
+/**
+ * 下载图片/文件
+ * @param url
+ * @param fileName
+ */
+const download = (url, fileName) => {
+  const aLink = document.createElement('a');
+  aLink.style.display = 'none';
+  aLink.href = url;
+  aLink.download = fileName || '';
+  document.body.appendChild(aLink);
+  aLink.click();
+  document.body.removeChild(aLink);
+};
+
+/**
+ * 下载图片/文件-文件流
+ * @param content
+ * @param fileName
+ * @param type
+ */
+const downloadByBlob = (content, fileName, type) => {
+  const blob = new Blob([content], {
+    type
+  });
+  // 生成ObjectURL
+  const src = URL.createObjectURL(blob);
+  // 下载
+  download(src, fileName);
+  // 释放URL对象
+  URL.revokeObjectURL(src);
+};
+
+/**
+ * 下载图片/文件-http url
+ * @param url
+ * @param fileName
+ * @returns {Promise<void>}
+ */
+const downloadByUrl = async (url, fileName) => {
+  const res = await fetch(url, {
+    method: 'GET',
+    responseType: 'blob',
+    mode: 'cors',
+    cache: 'no-cache'
+  }).then(res => {
+    return res.blob();
+  });
+  downloadByBlob(res, fileName, res.type);
+};
+
+/**
+ * 压缩图片
+ * @param src
+ * @param width
+ * @param height
+ * @param quality
+ * @returns {Promise<unknown>}
+ */
+const compressImage = (src, width, height, quality = 1) => {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    width = getPixelSize(width);
+    height = getPixelSize(height);
+    image.setAttribute('crossOrigin', 'Anonymous');
+    image.onload = () => {
+      // 有宽度无高度时，等比例计算高度
+      if (!isEmpty(width) && isEmpty(height)) {
+        height = (width / image.width) * image.height;
+      }
+      // 有高度无宽度时：等比例计算宽度
+      if (!isEmpty(height) && isEmpty(width)) {
+        width = (height / image.height) * image.width;
+      }
+      if (isEmpty(width) && isEmpty(height)) {
+        width = image.width;
+        height = image.height;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+      const canvasURL = canvas.toDataURL('image/*', quality);
+      resolve(canvasURL);
+    };
+    image.onerror = err => {
+      reject(err);
+    };
+    image.src = src;
+  });
+};

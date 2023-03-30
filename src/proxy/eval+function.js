@@ -28,12 +28,12 @@ function evalParse(str) {
 }
 
 // eval + with
-// 1、eval是当前作用域，使用with限制作用域
+// 1、(0, eval)是全局作用域，使用with限制作用域
 // 2、支持传参
 function evalParse(ctx, str) {
   // eslint-disable-next-line no-with
   with (ctx) {
-    return eval('(' + str + ')');
+    return (0, eval)('(' + str + ')');
   }
 }
 
