@@ -17,20 +17,20 @@ String.prototype.render = function (obj) {
     }
     return variableValue;
   };
-  const renderStr = template.replace(variableRegex, ($0, variable) => {
+  const renderStr = template.replace(variableRegex, (_, variable) => {
     return getVariableValue(variable);
   });
   return renderStr;
 };
 
 const template = 'My name is ${name}, age ${age}, I am a ${job.name}';
-const employee = {
+const data = {
   name: 'fatfish',
   age: 100,
   job: {
     name: 'front end development'
   }
 };
-const renderStr = template.render(employee);
+const renderStr = template.render(data);
 
 console.log(renderStr);

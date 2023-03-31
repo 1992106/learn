@@ -4,7 +4,7 @@
  * @returns 为空返回false,不为空返回true
  */
 export const isEmpty = (x: any): boolean => {
-  if (x === null || x === undefined) {
+  if (x == null) {
     return true;
   }
   if (Array.isArray(x) || typeof x === 'string' || x instanceof String) {
@@ -18,6 +18,35 @@ export const isEmpty = (x: any): boolean => {
   }
   return false;
 };
+
+// 判断是否不为空
+export const notEmpty = (x: any): boolean => {
+  if (x == null) {
+    return false;
+  }
+  if (Array.isArray(x) || typeof x === 'string' || x instanceof String) {
+    return x.length > 0;
+  }
+  if (x instanceof Map || x instanceof Set) {
+    return x.size > 0;
+  }
+  if (Object.prototype.toString.call(x) === '[object Object]') {
+    return Object.keys(x).length > 0;
+  }
+  return true;
+};
+
+// 判断是否等于undefined或null或''
+export function isNil(value) {
+  return value == null || value === '';
+  // return value === undefined || value === null || value === '';
+}
+
+// 判断是否不等于undefined或null或''
+export function notNil(value) {
+  return value != null && value != '';
+  // return value !== undefined && value !== null && value != '';
+}
 
 /**
  * Object.is()的polyfill
@@ -178,19 +207,19 @@ export function isDeepEqual(objA, objB) {
   return true;
 }
 
-// 判断是不是等于undefined或者null
+// 判断是否undefined
 export function isUndef(value) {
-  return value === undefined || value === null;
+  return value === undefined;
 }
 
-// 判断是否定义
-export function isDef(value) {
-  return value !== undefined && value !== null;
+// 判断是否null
+export function isNull(value) {
+  return value === null;
 }
 
 // 判断是否是promise
 export function isPromise(value) {
-  return isDef(value) && typeof value.then === 'function' && typeof value.catch === 'function';
+  return notNil(value) && typeof value.then === 'function' && typeof value.catch === 'function';
 }
 
 // 判断是否是原始数据（除symbol）

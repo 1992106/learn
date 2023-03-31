@@ -130,7 +130,7 @@ const timeout = (fn: Promise<any>, ms: number) => {
 };
 
 // 函数柯里化
-const curring = (fn: any) => {
+const curry = (fn: any) => {
   const { length } = fn;
   const curried = (...args: any[]) => {
     return args.length >= length
@@ -138,6 +138,21 @@ const curring = (fn: any) => {
       : (...args2: any[]) => curried(...args.concat(args2));
   };
   return curried;
+};
+const curry = (fn: any, ...args) => {
+  // 获取函数的参数个数
+  const length = fn.length;
+
+  return function (...innerArgs) {
+    innerArgs = args.concat(innerArgs);
+    // 参数未搜集足的话，继续递归搜集
+    if (innerArgs.length < length) {
+      return curry.call(this, fn, ...innerArgs);
+    } else {
+      // 否则拿着搜集的参数调用fu
+      fn.apply(this, innerArgs);
+    }
+  };
 };
 
 // 偏函数
@@ -216,28 +231,38 @@ export function once(fn: Function): Function {
 
 // 防抖
 export function debounce(fn: any, wait: number): any {
-  let timeout: any;
+  let timer: any;
   return function () {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
+    clearTimeout(timer);
     const args = Array.prototype.slice.call(arguments);
-    timeout = setTimeout(() => {
+    timer = setTimeout(() => {
       fn.apply(this, args);
     }, wait);
   };
 }
 
 // 节流
-export function throttle(fn: any, wait: number): any {
-  let timeout: any;
+export function throttle(fn: any, delay: number): any {
+  let timer: any;
   return function () {
-    if (!timeout) {
+    if (!timer) {
       const args = Array.prototype.slice.call(arguments);
-      timeout = setTimeout(() => {
-        timeout = null;
+      timer = setTimeout(() => {
         fn.apply(this, args);
-      }, wait);
+        timer = null;
+      }, delay);
+    }
+  };
+}
+export function throttle(fn: any, delay: number): any {
+  let startTime = Date.now();
+
+  return function (...args) {
+    let lastTime = Date.now();
+
+    if (lastTime - startTime > delay) {
+      fn.apply(this, args);
+      startTime = Date.now();
     }
   };
 }

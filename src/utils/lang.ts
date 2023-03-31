@@ -27,18 +27,6 @@ function toArray(list: any, start?: number): Array<any> {
   return ret;
 }
 
-function forEach(list, callback) {
-  const entries = Object.entries(list);
-  let i = 0;
-  const len = entries.length;
-
-  for (; i < len; i++) {
-    const res = callback(entries[i][1], entries[i][0], list);
-
-    if (res === true) break;
-  }
-}
-
 // 获取列表最后一项
 const lastItem = (list: Array<any> | Set<any> | Map<any, any>) => {
   if (Array.isArray(list)) {
@@ -62,6 +50,24 @@ function remove(arr, item) {
       return arr.splice(index, 1);
     }
   }
+}
+
+// 数组去重
+function unique(arr) {
+  return [...new Set(arr)];
+}
+function unique2(arr) {
+  var obj = {};
+  return arr.filter(ele => {
+    if (!obj[ele]) {
+      obj[ele] = true;
+      return true;
+    }
+  });
+}
+// 去除连续的字符串
+function unique(str) {
+  return str.replace(/(\w)\1+/g, '$1');
 }
 
 // 判断对象上是否有属性(不包扩原型链上的)
@@ -147,6 +153,7 @@ const range = (maxOrStart, end = null, step = null) => {
 // https://segmentfault.com/a/1190000020221170
 const fillArray = (length: number, data: any) => Array.from({ length }, () => data);
 const fillArray2 = (length: number, data: any) => Array(length).fill(data);
+
 // 生成数组 由于new Array(10)与Array(10)一样，会生成稀疏数组[,,,]，所以采用下面三种方法
 const emptyArray = (length: number) => Array.from({ length });
 const emptyArray2 = (length: number) => Array.apply(null, { length });
@@ -180,4 +187,15 @@ function toRGB(color) {
         parseInt(match[3], 16) +
         ')'
     : color;
+}
+
+// 单例模式
+function getSingle(func) {
+  let result;
+  return function () {
+    if (!result) {
+      result = new func(arguments);
+    }
+    return result;
+  };
 }

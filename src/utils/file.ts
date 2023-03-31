@@ -1,20 +1,21 @@
+import { isEmpty } from './is';
+
 const fs = require('fs');
 
 /**
  * 下载文件
  * @param url 文件url (DataURL、ObjectURL、仅支持同源链接下载)
  * 非同源链接会直接打开图片，需要把图片url转成DataURL/ObjectURL，如下：downloadByOnlineUrl
- * @param name 文件名
- * @param target
+ * @param filename 文件名
  */
-const download = (url, name) => {
+const download = (url, filename) => {
   // 创建可下载隐藏链接
   const eleLink = document.createElement('a');
   eleLink.style.display = 'none';
   // 设置文件url
   eleLink.href = url;
   // 设置文件名
-  eleLink.setAttribute('download', name);
+  eleLink.setAttribute('download', filename);
   // 插入a标签
   document.body.appendChild(eleLink);
   // 触发点击
@@ -27,19 +28,19 @@ const download = (url, name) => {
  *【文件/图片】下载
  * new Blob() 与 URL.createObjectURL（将二进制数据封装为Blob对象）
  * @param content 由ArrayBuffer, ArrayBufferView, Blob, DOMString等对象构成
- * @param fileName 文件名
+ * @param filename 文件名
  */
 const downloadByObjectURL = (
   content: ArrayBuffer | ArrayBufferView | Blob | string,
-  fileName: string,
-  mime?: string
+  filename: string,
+  mimetype?: string
 ) => {
-  const blob = new Blob([content], { type: mime || 'application/octet-stream' });
+  const blob = new Blob([content], { type: mimetype });
   // 生成ObjectURL
   const src = URL.createObjectURL(blob);
 
   // 下载
-  download(src, fileName);
+  download(src, filename);
 
   // 释放URL对象
   URL.revokeObjectURL(src);
@@ -47,11 +48,11 @@ const downloadByObjectURL = (
 
 /**
  * 【文件/图片】下载
- * new FileReader() 与 readAsDataURL（将二进制数据封装为文件读取FileReader对象）
+ * new FileReader()（将二进制数据封装为文件读取FileReader对象）
  * @param content 文件流
- * @param fileName 文件名
+ * @param filename 文件名
  */
-const downloadByDataURL = (content: Blob, fileName: string) => {
+const downloadByDataURL = (content: Blob, filename: string) => {
   const fileReader = new FileReader();
 
   fileReader.onload = function () {
@@ -59,7 +60,7 @@ const downloadByDataURL = (content: Blob, fileName: string) => {
     const src = fileReader.result;
 
     // 下载
-    download(src, fileName);
+    download(src, filename);
   };
 
   // 生成DataURL
@@ -73,15 +74,16 @@ const downloadByDataURL = (content: Blob, fileName: string) => {
  */
 const downLoadFile = (url: string, fileName: string) => {
   fetch(url, {
-    method: 'get',
+    method: 'GET',
+    mode: 'cors',
     cache: 'no-cache'
   })
     .then(res => {
       return res.blob();
     })
     .then(content => {
-      downloadByObjectURL(content, fileName);
-      downloadByDataURL(content, fileName);
+      downloadByObjectURL(content, fileName, content.type);
+      // downloadByDataURL(content, fileName);
     });
 };
 
@@ -91,7 +93,7 @@ const downLoadFile = (url: string, fileName: string) => {
  * @param fileName
  */
 const downloadByOnlineUrl = async (url: string, fileName: string) => {
-  // 如果图片有跨域问题，需要把url转成base64
+  // 如果图片有跨域问题，需要把url转成base64或ObjectURL
   const src = await urlToDataURL(url);
   // const src = await urlToObjectURL(url);
   // 下载
@@ -160,6 +162,45 @@ const urlToObjectURL = (url: string, type?: string): Promise<string> => {
       }, type || 'image/png');
     };
     img.src = url;
+  });
+};
+
+/**
+ * 压缩图片
+ * @param src
+ * @param width
+ * @param height
+ * @param quality
+ * @returns {Promise<unknown>}
+ */
+const compressImage = (src, width, height, quality = 1) => {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.setAttribute('crossOrigin', 'Anonymous');
+    image.onload = () => {
+      // 有宽度无高度时，等比例计算高度
+      if (!isEmpty(width) && isEmpty(height)) {
+        height = (width / image.width) * image.height;
+      }
+      // 有高度无宽度时：等比例计算宽度
+      if (!isEmpty(height) && isEmpty(width)) {
+        width = (height / image.height) * image.width;
+      }
+      if (isEmpty(width) && isEmpty(height)) {
+        width = image.width;
+        height = image.height;
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      canvas.getContext('2d').drawImage(image, 0, 0, width, height);
+      const canvasURL = canvas.toDataURL('image/*', quality);
+      resolve(canvasURL);
+    };
+    image.onerror = err => {
+      reject(err);
+    };
+    image.src = src;
   });
 };
 

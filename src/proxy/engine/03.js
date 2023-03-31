@@ -5,13 +5,13 @@ String.prototype.render = function (obj) {
   }
 };
 const template = 'My name is ${name}, age ${age}, I am a ${job.name}';
-const employee = {
+const data = {
   name: 'fatfish',
   age: 100,
   job: {
     name: 'front end development'
   }
 };
-const renderStr = template.render(employee);
+const renderStr = template.render(data);
 
 console.log(renderStr);

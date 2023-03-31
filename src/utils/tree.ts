@@ -124,7 +124,7 @@ function formatTree(tree, map) {
 }
 
 // ! 列表和树相互转换
-// 列表转树
+// 列表转树(2个方法)
 function listToTree(list = []) {
   let info = list.reduce((map, node) => ((map[node.id] = node), (node.children = []), map), {});
   return list.filter(node => {
@@ -132,6 +132,40 @@ function listToTree(list = []) {
     return !node.parentId;
   });
 }
+function listToTree2(list = []) {
+  const hashMap = {};
+  let result = [];
+  list.forEach(item => {
+    const { id, parentId } = item;
+    // 不存在时，先声明children树形
+    if (!hashMap[id]) {
+      hashMap[id] = {
+        children: []
+      };
+    }
+    hashMap[id] = {
+      ...item,
+      children: hashMap[id].children
+    };
+    // 处理当前的item
+    const treeItem = hashMap[id];
+    // 根节点，直接push
+    if (!parentId) {
+      result.push(treeItem);
+    } else {
+      // 也有可能当前节点的父节点还没有加入hashMap，所以需要单独处理一下
+      if (!hashMap[parentId]) {
+        hashMap[parentId] = {
+          children: []
+        };
+      }
+      // 非根节点的话，找到父节点，把自己塞到父节点的children中即可
+      hashMap[parentId].children.push(treeItem);
+    }
+  });
+  return result;
+}
+
 // 树转列表(2个方法)
 // ! 递归实现
 function treeToList1(tree, result = [], level = 0) {
@@ -144,11 +178,27 @@ function treeToList1(tree, result = [], level = 0) {
 }
 // ! 循环实现
 function treeToList2(tree) {
+  let result = [];
+  let queue = tree.map(node => ((node.level = 1), node));
+  while (queue.length) {
+    const node = queue.shift();
+    const children = node.children;
+    if (children && children.length) {
+      const list = children.map(subNode => ((subNode.level = node.level + 1), subNode));
+      queue.push(...list);
+    }
+    result.push(node);
+  }
+  return result;
+}
+function treeToList3(tree) {
   let result = tree.map(node => ((node.level = 1), node));
   for (let i = 0; i < result.length; i++) {
-    if (!result[i].children) continue;
-    let list = result[i].children.map(node => ((node.level = result[i].level + 1), node));
-    result.splice(i + 1, 0, ...list);
+    const children = result[i].children;
+    if (children && children.length) {
+      let list = children.map(node => ((node.level = result[i].level + 1), node));
+      result.splice(i + 1, 0, ...list);
+    }
   }
   return result;
 }
@@ -165,7 +215,7 @@ function treeFilter2(tree, func) {
   let treeClone = [...tree];
   return treeClone.filter(node => {
     if (node.children) {
-      node.children = treeFilter(node.children, func);
+      node.children = treeFilter2(node.children, func);
       return node.children.length;
     } else {
       return func(node);

@@ -41,6 +41,89 @@ export const myInstance = (L, R) => {
   }
 };
 
+Array.prototype.forEach = function (func) {
+  let len = this.length;
+  let _this = arguments[1] || window;
+  for (let i = 0; i < len; i++) {
+    func.call(_this, this[i], i, this);
+  }
+};
+
+Array.prototype.map = function (func) {
+  let len = this.length;
+  let arr = [];
+  let _this = arguments[1] || window;
+  for (let i = 0; i < len; i++) {
+    arr.push(func.call(_this, this[i], i, this));
+  }
+  return arr;
+};
+
+Array.prototype.filter = function (func) {
+  let len = this.length;
+  let arr = [];
+  let _this = arguments[1] || window;
+  for (let i = 0; i < len; i++) {
+    func.call(_this, this[i], i, this) && arr.push(this[i]);
+  }
+  return arr;
+};
+
+Array.prototype.every = function (func) {
+  let flag = true;
+  let len = this.length;
+  let _this = arguments[1] || window;
+  for (let i = 0; i < len; i++) {
+    if (func.apply(_this, [this[i], i, this]) == false) {
+      flag = false;
+      break;
+    }
+  }
+  return flag;
+};
+
+Array.prototype.some = function (func) {
+  let flag = false;
+  let len = this.length;
+  let _this = arguments[1] || window;
+  for (let i = 0; i < len; i++) {
+    if (func.apply(_this, [this[i], i, this]) === true) {
+      flag = true;
+      break;
+    }
+  }
+  return flag;
+};
+
+Array.prototype.reduce = function (func, initialValue?: any) {
+  let len = this.length,
+    preValue,
+    i;
+  if (!initialValue) {
+    // 没有传第二个参数
+    preValue = this[0];
+    i = 1;
+  } else {
+    // 传了第二个参数
+    preValue = initialValue;
+    i = 0;
+  }
+  for (; i < len; i++) {
+    preValue = func(preValue, this[i], i, this);
+  }
+  return preValue;
+};
+
+Array.prototype.reverse = function () {
+  let len = this.length;
+  for (let i = 0; i < len; i++) {
+    let temp = this[i];
+    this[i] = this[len - 1 - i];
+    this[len - 1 - i] = temp;
+  }
+  return this;
+};
+
 // eslint-disable-next-line no-extend-native
 Function.prototype.call = function (): any {
   if (typeof this !== 'function') {
@@ -233,6 +316,25 @@ Object.values =
 
 //   return Set;
 // }());
+
+// 异步加载script
+export function loadScript(url, callback) {
+  let script = document.createElement('script');
+  if (script.readyState) {
+    // ie8及以下版本
+    script.onreadystatechange = function () {
+      if (script.readyState === 'complete' || script.readyState === 'loaded') {
+        callback();
+      }
+    };
+  } else {
+    script.onload = function () {
+      callback();
+    };
+  }
+  script.src = url;
+  document.body.appendChild(script);
+}
 
 /**
  * JSONP请求工具
