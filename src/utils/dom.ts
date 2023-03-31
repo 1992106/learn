@@ -242,13 +242,11 @@ export const encodeHTML = (str: string) => {
 };
 export const encodeHTML = (str: string) => {
   if (typeof str == 'string') {
-    return str.replace(/<|&|>|"|'/g, function (matches) {
+    return str.replace(/<|&|>/g, function (matches) {
       return {
         '<': '&lt;',
         '>': '&gt;',
-        '&': '&amp;',
-        '"': '&quot;',
-        "'": '&#x27;'
+        '&': '&amp;'
       }[matches];
     });
   }
@@ -263,13 +261,11 @@ export const decodeHTML = (str: string) => {
 };
 export const decodeHTML = (str: string) => {
   if (typeof str == 'string') {
-    return str.replace(/&lt;|&gt;|&amp;|&quot;|&#x27;/g, function (matches) {
+    return str.replace(/&lt;|&amp;|&gt;/g, function (matches) {
       return {
         '&lt;': '<',
         '&gt;': '>',
-        '&amp;': '&',
-        '&quot;': '"',
-        '&#x27;': "'"
+        '&amp;': '&'
       }[matches];
     });
   }

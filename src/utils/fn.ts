@@ -319,7 +319,7 @@ Object.values =
 
 // 异步加载script
 export function loadScript(url, callback) {
-  let script = document.createElement('script');
+  let script = document.createElement('script') as any;
   if (script.readyState) {
     // ie8及以下版本
     script.onreadystatechange = function () {
