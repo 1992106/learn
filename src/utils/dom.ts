@@ -280,8 +280,17 @@ export const parseScripts = (str: string) => {
 // 获取script url
 export const getScriptUrls = (str: string) => {
   const reg = new RegExp(/src=['"]?([^'"]*)['"]?/i);
-  const scripts = parseScripts(str);
+  const scripts = parseScripts(str) || [];
   return scripts.map(val => val.match(reg)?.[1]);
+};
+export const getScriptUrls2 = (str: string) => {
+  const reg = new RegExp(/<script [^>]*src=['"]([^'"]+)[^>]*>/gi);
+  const urls = [];
+  str.replace(reg, function (_, url) {
+    urls.push(url);
+    return url;
+  });
+  return urls;
 };
 
 // 解析图片
@@ -292,20 +301,17 @@ export const parseImages = (str: string) => {
 // 获取图片url
 export const getImageUrls = (str: string) => {
   const reg = new RegExp(/src=['"]?([^'"]*)['"]?/i);
-  const imgs = parseImages(str);
+  const imgs = parseImages(str) || [];
   return imgs.map(val => val.match(reg)?.[1]);
 };
-export const getImageUrls = (str: string) => {
-  return str.replace(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi, function (_, url) {
+export const getImageUrls2 = (str: string) => {
+  const reg = new RegExp(/<img [^>]*src=['"]([^'"]+)[^>]*>/gi);
+  const urls = [];
+  str.replace(reg, function (_, url) {
+    urls.push(url);
     return url;
   });
-};
-
-// 替换标签<head></head> => <micro-app-head></micro-app-head>
-export const replaceTag = (str: string) => {
-  return str.replace(/<head[^>]*>[\s\S]*?<\/head>/i, match => {
-    return match.replace(/<head/i, '<micro-app-head').replace(/<\/head>/i, '</micro-app-head>');
-  });
+  return urls;
 };
 
 // DOM2JSON 一个函数，可以把一个 DOM 节点输出 JSON 的格式
