@@ -76,7 +76,7 @@ export function is(x: any, y: any) {
     // 1/+0 // 结果为Infinity
     // 1/-0 // 结果为-Infinity
     // Infinity === -Infinity; // false
-    return x !== 0 || y !== 0 || 1 / x === 1 / y;
+    return x !== 0 || 1 / x === 1 / y;
   } else {
     // 解决NaN === NaN为false，可以通过NaN和自身不相等的特性来解决
     return x !== x && y !== y;
