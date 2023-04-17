@@ -176,15 +176,49 @@ const partial2 = (fn: any, ...args: any[]) => {
   };
 };
 
-const compose = (...args: any[]) => {
-  const start = args.length - 1;
+// thunk函数
+const thunk = function (fn: any) {
   return function () {
-    let i = start,
-      result = args[start].apply(this, arguments);
-    while (i--) result = args[i].call(this, result);
-    return result;
+    var args = Array.prototype.slice.call(arguments);
+    return function (callback) {
+      args.push(callback);
+      return fn.apply(this, args);
+    };
   };
 };
+const thunk = (fn: any) => {
+  return function (...args: any[]) {
+    return function (cb) {
+      return fn.call(this, ...args, cb);
+    };
+  };
+};
+function thunkify(fn) {
+  return function () {
+    const args = new Array(arguments.length);
+    const ctx = this;
+
+    for (let i = 0; i < args.length; ++i) {
+      args[i] = arguments[i];
+    }
+
+    return function (done) {
+      let called;
+
+      args.push(function () {
+        if (called) return;
+        called = true;
+        done.apply(null, arguments);
+      });
+
+      try {
+        fn.apply(ctx, args);
+      } catch (err) {
+        done(err);
+      }
+    };
+  };
+}
 
 // 记忆函数
 const cached = (fn: any, hasher: string) => {
@@ -266,6 +300,79 @@ export function throttle(fn: any, delay: number): any {
     }
   };
 }
+
+// 组合（从右到左执行）
+const compose = (...fns) => {
+  return result => {
+    const list = fns.slice();
+    while (list.length > 0) {
+      // 将最后一个函数从列表尾部拿出
+      // 并执行它
+      result = list.pop()(result);
+    }
+    return result;
+  };
+};
+const compose = (...fns) => {
+  return x => fns.reduceRight((v, f) => f(v), x);
+};
+const compose = (...fns) => {
+  return (...args) => {
+    return fns.reduceRight(
+      (acc, fn, index) => (index == fns.length - 1 ? fn.apply(this, acc) : fn.call(this, acc)),
+      args
+    );
+  };
+};
+const compose = (...fns) => {
+  if (fns.length === 0) {
+    return arg => arg;
+  }
+  if (fns.length === 1) {
+    return fns[0];
+  }
+  return fns.reduceRight((a, b) => {
+    return (...args) => b(a(...args));
+  });
+  // return fns.reduce((a, b) => {
+  //   return (...args) => a(b(...args));
+  // });
+};
+
+// 管道（从左到右执行）
+const pipe = (...fns) => {
+  return result => {
+    const list = fns.slice();
+    while (list.length > 0) {
+      // 将最后一个函数从列表头部拿出
+      // 并执行它
+      result = list.shift()(result);
+    }
+    return result;
+  };
+};
+const pipe = (...fns) => {
+  return (...args) => {
+    return fns.reduce(
+      (acc, fn, index) => (index == 0 ? fn.apply(this, acc) : fn.call(this, acc)),
+      args
+    );
+  };
+};
+const pipe = (...fns) => {
+  if (fns.length === 0) {
+    return arg => arg;
+  }
+  if (fns.length === 1) {
+    return fns[0];
+  }
+  return fns.reduce((a, b) => {
+    return (...args) => b(a(...args));
+  });
+  // return fns.reduceRight((a, b) => {
+  //   return (...args) => a(b(...args));
+  // });
+};
 
 /**
  * kebabCase/hyphenate (中横线分隔命名)
