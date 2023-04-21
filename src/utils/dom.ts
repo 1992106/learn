@@ -335,7 +335,8 @@ const dom2json = rootDom => {
 };
 
 export const is32bit = (char: string) => {
-  //如果码点大于了16位二进制的最大值，则其是32位的
+  // 如果码点大于了16位二进制的最大值，则其是32位的
+  // 0xffff === 65535
   return char.codePointAt(0) > 0xffff;
 };
 
