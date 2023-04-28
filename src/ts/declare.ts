@@ -21,7 +21,7 @@
 // 定义：.d.ts 后缀的文件
 // 特点：
 // 里面不允许有任何函数的实现
-// 顶层作用域里只能出现 declare import export interface、type三斜线指令
+// 顶层作用域里只能出现 declare/import/export/interface/type三斜线指令
 
 // !!!全局类声明文件：
 // 定义：如果一个声明文件的顶层作用域中没有 import && export，那么这个声明文件就是一个全局类声明文件
