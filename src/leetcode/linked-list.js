@@ -69,7 +69,7 @@ function SinglyLinkedList() {
 
   // 从链表的特定位置移除一项
   this.removeAt = function (position) {
-    if ((position < 0 && position >= length) || length === 0) {
+    if (position < 0 || position >= length || length === 0) {
       // 越界
       return false;
     } else {
@@ -213,7 +213,7 @@ function DoublyLinkedList() {
 
   // 向链表特定位置插入一个新的项
   this.insert = function (position, element) {
-    if (position < 0 && position > length) {
+    if (position < 0 || position > length) {
       // 越界
       return false;
     } else {
@@ -255,7 +255,7 @@ function DoublyLinkedList() {
 
   // 从链表的特定位置移除一项
   this.removeAt = function (position) {
-    if ((position < 0 && position >= length) || length === 0) {
+    if (position < 0 || position >= length || length === 0) {
       // 越界
       return false;
     } else {

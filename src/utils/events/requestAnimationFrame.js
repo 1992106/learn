@@ -21,66 +21,40 @@ window.cancelAnimationFrame =
     clearTimeout(id);
   };
 
-// https://blog.csdn.net/weixin_46837985/article/details/126258582
 // 1、大量数据渲染
 // 比如对十万条数据进行渲染，主要由以下几种方法：
 // requestAnimationFrame用法
-//需要插入的容器
-let ul = document.getElementById('container');
 // 插入十万条数据
-let total = 100000;
-// 一次插入 20 条
-let once = 20;
-//总页数
-let page = total / once;
-//每条记录的索引
-let index = 0;
-//循环加载数据
-function loop(curTotal, curIndex) {
-  if (curTotal <= 0) {
-    return false;
+const total = 100000;
+// 一次插入的数据
+const once = 20;
+// 插入数据需要的次数
+const loopCount = Math.ceil(total / once);
+let countOfRender = 0;
+const ul = document.querySelector('ul');
+// 添加数据的方法
+function add() {
+  const fragment = document.createDocumentFragment();
+  for (let i = 0; i < once; i++) {
+    const li = document.createElement('li');
+    li.innerText = Math.floor(Math.random() * total);
+    fragment.appendChild(li);
   }
-  //每页多少条
-  let pageCount = Math.min(curTotal, once);
-  window.requestAnimationFrame(function () {
-    for (let i = 0; i < pageCount; i++) {
-      let li = document.createElement('li');
-      li.innerText = curIndex + i + ' : ' + ~~(Math.random() * total);
-      ul.appendChild(li);
-    }
-    loop(curTotal - pageCount, curIndex + pageCount);
-  });
+  ul.appendChild(fragment);
+  countOfRender += 1;
+  loop();
 }
-loop(total, index);
 
-//需要插入的容器
-let ul = document.getElementById('container');
-// 插入十万条数据
-let total = 100000;
-// 一次插入 20 条
-let once = 20;
-//总页数
-let page = total / once;
-//每条记录的索引
-let index = 0;
-//循环加载数据
-function loop(curTotal, curIndex) {
-  if (curTotal <= 0) {
-    return false;
+function loop() {
+  if (countOfRender < loopCount) {
+    // requestAnimationFrame
+    window.requestAnimationFrame(add);
+    // setTimeout(add, 0);
   }
-  //每页多少条
-  let pageCount = Math.min(curTotal, once);
-  setTimeout(() => {
-    for (let i = 0; i < pageCount; i++) {
-      let li = document.createElement('li');
-      li.innerText = curIndex + i + ' : ' + ~~(Math.random() * total);
-      ul.appendChild(li);
-    }
-    loop(curTotal - pageCount, curIndex + pageCount);
-  }, 0);
 }
-loop(total, index);
+loop();
 
+// https://blog.csdn.net/weixin_46837985/article/details/126258582
 // 2、监听 scroll 函数
 // 页面滚动事件（scroll）的监听函数，就很适合用这个 api，推迟到下一次重新渲染。
 

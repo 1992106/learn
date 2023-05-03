@@ -334,6 +334,30 @@ const dom2json = rootDom => {
   return rootObj;
 };
 
+// 真正的渲染函数
+function _render(vnode) {
+  // 如果是数字类型转化为字符串
+  if (typeof vnode === 'number') {
+    vnode = String(vnode);
+  }
+  // 字符串类型直接就是文本节点
+  if (typeof vnode === 'string') {
+    return document.createTextNode(vnode);
+  }
+  // 普通DOM
+  const dom = document.createElement(vnode.tag);
+  if (vnode.attrs) {
+    // 遍历属性
+    Object.keys(vnode.attrs).forEach(key => {
+      const value = vnode.attrs[key];
+      dom.setAttribute(key, value);
+    });
+  }
+  // 子数组进行递归操作
+  vnode.children.forEach(child => dom.appendChild(_render(child)));
+  return dom;
+}
+
 export const is32bit = (char: string) => {
   // 如果码点大于了16位二进制的最大值，则其是32位的
   // 0xffff === 65535
@@ -354,6 +378,7 @@ const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
         return window.setTimeout(callback, 1000 / 60);
       };
   }
+
   const difference = Math.abs(from - to);
   const step = Math.ceil((difference / duration) * 50);
 
