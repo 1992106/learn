@@ -1,4 +1,3 @@
-<!-- https://zhuanlan.zhihu.com/p/498417458 -->
 <template>
   <div class="waterfall-wrapper" :style="{ 'column-gap': gap[1] }">
     <div
@@ -9,7 +8,7 @@
       :style="{ 'row-gap': gap[0] }"
     >
       <div class="row-wrapper" :class="[animation]" v-for="(row, j) in col" :key="j">
-        <slot :item="row" />
+        <slot :record="row" />
       </div>
     </div>
   </div>
@@ -61,9 +60,9 @@ export default {
   },
   watch: {
     col: {
-      handler: function (num) {
+      handler: function (val) {
         // 初始化各列数据
-        for (let i = 0; i < num; i++) {
+        for (let i = 0; i < val; i++) {
           this.$set(this.colData, i, []);
         }
       },
@@ -95,7 +94,7 @@ export default {
 
     startObserver() {
       // 开始监测新增加的瀑布流元素
-      const nodes = this.$refs['cols'][minCol].querySelectorAll('.waterfall-img');
+      const nodes = this.$refs['cols'][minCol].querySelectorAll('img');
       const lastNode = nodes[nodes.length - 1];
       observerObj.observe(lastNode);
     },
@@ -130,7 +129,7 @@ export default {
                 if (innerData.length) {
                   this.waterfall();
                 } else {
-                  this.$emit('rendered');
+                  this.$emit('scrollReachBottom');
                 }
                 // 停止观察，防止回拉时二次触发监听逻辑
                 observerObj.unobserve(target);

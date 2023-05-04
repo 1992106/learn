@@ -7,14 +7,14 @@
 
 ## 2种布局方案
 
-1、绝对定位【固定宽度/百分比宽度】 => 一维数组
+1、绝对定位（通过已知宽度计算出列数）【固定宽度/百分比宽度】 => 一维数组
 <!-- https://zhuanlan.zhihu.com/p/55575862 -->
 <!-- https://juejin.cn/post/7026253551361851405
 https://github.com/parrot-design/parrot-ve-waterfall -->
 <!-- https://github.com/MopTym/vue-waterfall 
 http://app.moptym.com/vue-waterfall/demo/vertical-line.html-->
 
-2、多列【百分比宽度/Flex布局】 => 二维数组
+2、多列（通过已知列数计算出宽度）【百分比宽度/Flex布局】 => 二维数组
 <!-- https://zhuanlan.zhihu.com/p/498417458 -->
 <!-- https://github.com/AwesomeDevin/vue-waterfall2
 https://codesandbox.io/embed/vue-template-99ps6 -->
