@@ -199,3 +199,47 @@ function getSingle(func) {
     return result;
   };
 }
+
+// 获取某月的第一天
+function getStartDate(time) {
+  const date = new Date(time || null);
+  date.setDate(1); // 将当前时间的日期设置成第一天
+  const year = date.getFullYear(); // 得到当前年份
+  let month = date.getMonth() + 1; // 得到当前月份（0-11月份，+1是当前月份）
+  month = month > 10 ? month : '0' + month; // 补零
+  const day = date.getDate(); // 得到当前天数，实际是本月第一天，因为前面setDate(1) 设置过了
+  return new Date(year + '-' + month + '-' + day); // 这里传入的是字符串
+}
+function getStartDate(time) {
+  const date = new Date(time || null);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  return new Date(year, month - 1, 1);
+}
+
+// 获取某月的最后一天
+function getEndDate(time) {
+  const date = new Date(time || null);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  // 这里传入的是整数时间，返回的是下个月的第一天，因为月份是0-11
+  const nextMonthFirthDay = new Date(year, month, 1).getTime(); // 下个月的第一天
+  const oneDay = 1000 * 60 * 60 * 24; // 一天的时间毫秒数
+  const endDay = new Date(nextMonthFirthDay - oneDay);
+  const day = endDay.getDate(); // 本月最后一天
+  return new Date(year + '-' + month + '-' + day);
+}
+function getEndDate(time) {
+  const date = new Date(time || null);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  return new Date(year, month, 0);
+}
+
+// 获取某月有多少天
+function getMonthDay(time) {
+  const date = new Date(time || null);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  return new Date(year, month, 0).getDate();
+}

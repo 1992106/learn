@@ -16,6 +16,7 @@
 
 <script>
 import { checkIntersectionObserver } from '../util';
+let isIntersectionObserver = checkIntersectionObserver();
 let observerObj;
 let minCol = 0; // 最小列索引
 let innerData = []; // 瀑布流数据队列
@@ -51,6 +52,10 @@ export default {
     rootMargin: {
       type: String,
       default: '0px 0px 400px 0px'
+    },
+    reachBottomDistance: {
+      type: Number,
+      default: 400
     }
   },
   data() {
@@ -95,8 +100,30 @@ export default {
     startObserver() {
       // 开始监测新增加的瀑布流元素
       const nodes = this.$refs['cols'][minCol].querySelectorAll('img');
-      const lastNode = nodes[nodes.length - 1];
-      observerObj.observe(lastNode);
+      const target = nodes[nodes.length - 1];
+      observerObj.observe(target);
+    },
+
+    startScroll() {
+      const nodes = this.$refs['cols'][minCol].querySelectorAll('img');
+      const target = nodes[nodes.length - 1];
+      if (
+        target.getBoundingClientRect().top <
+        document.documentElement.clientHeight + this.reachBottomDistance
+      ) {
+        const done = () => {
+          if (innerData.length) {
+            this.waterfall();
+          } else {
+            this.$emit('scrollReachBottom');
+          }
+        };
+        if (target.complete) {
+          done();
+        } else {
+          target.onload = target.onerror = done;
+        }
+      }
     },
 
     waterfall() {
@@ -108,17 +135,18 @@ export default {
       if (++count < this.firstPageCount) {
         this.$nextTick(() => this.waterfall());
       } else {
-        this.$nextTick(() => this.startObserver());
+        this.$nextTick(() => {
+          if (isIntersectionObserver) {
+            this.startObserver();
+          } else {
+            this.startScroll();
+          }
+        });
       }
     }
   },
   created() {
-    // 不支持IntersectionObserver的场景下，动态引入polyfill
-    const ioPromise = checkIntersectionObserver()
-      ? Promise.resolve()
-      : import('intersection-observer');
-
-    ioPromise.then(() => {
+    if (isIntersectionObserver) {
       // 瀑布流布局：取出数据源中最靠前的一个并添加到瀑布流高度最小的那一列，等图片完全加载后重复该循环
       observerObj = new IntersectionObserver(
         entries => {
@@ -134,7 +162,6 @@ export default {
                 // 停止观察，防止回拉时二次触发监听逻辑
                 observerObj.unobserve(target);
               };
-
               if (target.complete) {
                 done();
               } else {
@@ -143,11 +170,14 @@ export default {
             }
           }
         },
-        {
-          rootMargin: this.rootMargin
-        }
+        { rootMargin: this.rootMargin }
       );
-    });
+    } else {
+      window.addEventListener('scroll', this.startScroll);
+      this.$once('hook:beforeDestroy', () => {
+        window.removeEventListener('scroll', this.startScroll);
+      });
+    }
   }
 };
 </script>
