@@ -80,7 +80,8 @@ function extend(target, source) {
 
 // 深拷贝
 // JSON.stringify和JSON.parse
-export function deepCopy(target, cache = []) {
+// structuredClone
+export function deepClone(target, cache = []) {
   // 非引用类型
   if (target == null || typeof target !== 'object') return target;
   // 函数
@@ -112,7 +113,7 @@ export function deepCopy(target, cache = []) {
   });
 
   Object.keys(target).forEach(key => {
-    targetClone[key] = deepCopy(target[key], cache);
+    targetClone[key] = deepClone(target[key], cache);
   });
 
   return targetClone;

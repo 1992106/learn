@@ -162,6 +162,7 @@ export default {
                 // 停止观察，防止回拉时二次触发监听逻辑
                 observerObj.unobserve(target);
               };
+              // img加载完成就会解除onload事件，src是异步加载图片的，如果在绑定事件前就已经加载完成，onload事件不会触发。img.complete是一直都有的属性，加载完成后为true。
               if (target.complete) {
                 done();
               } else {

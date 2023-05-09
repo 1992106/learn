@@ -176,9 +176,10 @@ export default {
     },
     scrollFn() {
       if (this.isLoading) return;
-      let waterfallEl = this.$refs.waterfall;
-      let minHeight = Math.min.apply(null, colsHeight);
-      if (waterfallEl.scrollTop + waterfallEl.offsetHeight > minHeight - this.reachBottomDistance) {
+      let minHeight = Math.min.apply(null, colsHeight); // minHeight约等于document.body.scrollHeight
+      // let scrollEl = this.$refs['waterfall'];
+      // scrollEl.getBoundingClientRect().bottom < document.documentElement.clientHeight + this.reachBottomDistance
+      if (document.body.scrollTop + document.body.clientHeight >= minHeight - this.reachBottomDistance) {
         if (innerData.length) {
           this.preload();
         } else {
@@ -222,9 +223,6 @@ export default {
 <style lang="scss" scoped>
 .waterfall-wrapper {
   width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
   position: relative;
 
   .waterfall-container {

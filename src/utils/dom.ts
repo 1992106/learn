@@ -39,6 +39,20 @@ const getOffset = el => {
   };
 };
 
+// 获取当前元素相对于document的偏移量
+function getOffset(el) {
+  var top = 0;
+  var left = 0;
+  do {
+    top += el.offsetTop;
+    left += el.offsetLeft;
+  } while ((el = el.offsetParent)); // 存在兼容性问题，需要兼容
+  return {
+    top: top,
+    left: left
+  };
+}
+
 // 获取当前页面的滚动位置
 const getScrollPosition = el => ({
   x: el.pageXOffset ? el.pageXOffset : el.scrollLeft,
