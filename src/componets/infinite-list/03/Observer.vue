@@ -32,10 +32,10 @@ export default defineComponent({
   },
   emits: ['intersect'],
   setup(props, { emit }) {
-    let observer = null;
+    let observerObj = null;
     const target = ref(null);
 
-    const startScroll = () => {
+    const scrollFn = () => {
       if (
         target.value.getBoundingClientRect().top <
           document.documentElement.clientHeight + props.reachBottomDistance &&
@@ -44,10 +44,11 @@ export default defineComponent({
         emit('intersect');
       }
     };
+
     onMounted(() => {
       try {
         // 构建观察器
-        observer = new IntersectionObserver(
+        observerObj = new IntersectionObserver(
           ([entry]) => {
             // 目标元素与根元素相交
             if (entry && entry.isIntersecting && props.status !== 'end') {
@@ -58,18 +59,18 @@ export default defineComponent({
         );
 
         // 观察目标元素
-        observer.observe(target.value);
+        observerObj.observe(target.value);
       } catch (e) {
-        window.addEventListener('scroll', startScroll);
+        window.addEventListener('scroll', scrollFn);
       }
     });
 
     // 组件销毁前停止监听
     onBeforeUnmount(() => {
-      if (observer) {
+      if (observerObj) {
         observer.disconnect();
       } else {
-        window.removeEventListener('scroll', startScroll);
+        window.removeEventListener('scroll', scrollFn);
       }
     });
 

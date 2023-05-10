@@ -2,7 +2,7 @@ import { sleep } from './utils';
 
 // 请求超时
 function timeoutPromise(requestFn, timeout) {
-  return Promise.race([requestFn, sleep(timeout)]);
+  return Promise.race([requestFn(), sleep(timeout)]);
 }
 
 // 自定义实现Promise.race

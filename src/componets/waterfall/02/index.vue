@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import { checkIntersectionObserver } from '../util';
+import { checkIntersectionObserver } from './util';
 let isIntersectionObserver = checkIntersectionObserver();
 let observerObj;
 let minCol = 0; // 最小列索引

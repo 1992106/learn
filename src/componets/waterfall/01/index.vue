@@ -25,7 +25,7 @@
               class="card-box"
               :style="{
                 width: '100%',
-                height: item._height + 'px'
+                height: (item._height || 0) + 'px'
               }"
             >
               <img class="waterfall-img" :src="item[imgKey]" />
@@ -117,10 +117,11 @@ export default {
       this.isLoading = true;
       for (let i = 0; i < this.onceCount; i++) {
         const record = innerData[i] || {};
+        const imgUrl = record[this.imgKey]
         // 有图片时，先预加载图片获取图片宽高
-        if (record[this.imgKey]) {
+        if (imgUrl) {
           const img = new Image();
-          img.src = record[this.imgKey];
+          img.src = imgUrl;
           img.onload = img.onerror = () => {
             innerData[i]._height = Math.round(this.colWidth * (img.height / img.width));
             if (this.onceCount === i) {
@@ -129,7 +130,6 @@ export default {
           };
         } else {
           // 无图或无数据时，直接跳过预加载
-          innerData[i] && (innerData[i]._height = 0);
           if (this.onceCount === i) {
             this.$emit('preloaded');
           }
@@ -177,8 +177,8 @@ export default {
     scrollFn() {
       if (this.isLoading) return;
       let minHeight = Math.min.apply(null, colsHeight); // minHeight约等于document.body.scrollHeight
-      // let scrollEl = this.$refs['waterfall'];
-      // scrollEl.getBoundingClientRect().bottom < document.documentElement.clientHeight + this.reachBottomDistance
+      // let waterfallEl = this.$refs['waterfall'];
+      // waterfallEl.getBoundingClientRect().bottom < minHeight + this.reachBottomDistance
       if (document.body.scrollTop + document.body.clientHeight >= minHeight - this.reachBottomDistance) {
         if (innerData.length) {
           this.preload();
@@ -226,7 +226,6 @@ export default {
   position: relative;
 
   .waterfall-container {
-    width: 100%;
     position: absolute;
   }
 

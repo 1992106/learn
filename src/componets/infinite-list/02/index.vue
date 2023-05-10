@@ -7,7 +7,6 @@
 </template>
 <script>
 import { onMounted, onBeforeUnmount, defineComponent, watch, ref, nextTick } from 'vue';
-import { checkIntersectionObserver } from '../util';
 export default defineComponent({
   props: {
     data: {
@@ -30,8 +29,7 @@ export default defineComponent({
   },
   emits: ['intersect'],
   setup(props, { emit }) {
-    let isIntersectionObserver = checkIntersectionObserver();
-    let observer = null;
+    let observerObj = null;
     let innerData = [];
     let count = 0;
 
@@ -47,7 +45,7 @@ export default defineComponent({
       const nodes = infiniteEl.value.querySelectorAll('.infinite-cell');
       const target = nodes[nodes.length - 1];
       // 观察目标元素
-      observer.observe(target);
+      observerObj.observe(target);
     };
 
     const startScroll = () => {
@@ -79,7 +77,7 @@ export default defineComponent({
         });
       } else {
         nextTick(() => {
-          if (isIntersectionObserver) {
+          if (observerObj) {
             startObserver();
           } else {
             startScroll();
@@ -89,9 +87,9 @@ export default defineComponent({
     };
 
     onMounted(() => {
-      if (isIntersectionObserver) {
+      try {
         // 构建观察器
-        observer = new IntersectionObserver(
+        observerObj = new IntersectionObserver(
           ([entry]) => {
             const { target, isIntersecting } = entry || {};
             // 目标元素与根元素相交
@@ -102,12 +100,12 @@ export default defineComponent({
                 emit('scrollReachBottom');
               }
               // 停止观察，防止回拉时二次触发监听逻辑
-              observer.unobserve(target);
+              observerObj.unobserve(target);
             }
           },
           { rootMargin: props.rootMargin }
         );
-      } else {
+      } catch (e) {
         window.addEventListener('scroll', startScroll);
       }
     });

@@ -1,3 +1,75 @@
+// https://www.jianshu.com/p/5009fb2f8239
+class AsyncPool {
+  constructor(limit) {
+    this.limit = limit || 5;
+    this.count = 0;
+    this.tasks = [];
+  }
+
+  add(task) {
+    return new Promise((resolve, reject) => {
+      this.tasks.push({ task, resolve, reject });
+      this.run();
+    });
+  }
+
+  run() {
+    // 当任务列表不为空且正在运行的任务不超过并发上限;则继续执行下一个任务
+    while (this.tasks.length > 0 && this.count < this.limit) {
+      const { task, resolve, reject } = this.tasks.shift();
+      this.count++;
+      const result = task();
+      if (result instanceof Promise) {
+        result.then(resolve, reject).finally(() => {
+          this.count--;
+          this.run();
+        });
+      } else {
+        this.count--;
+        this.run();
+      }
+    }
+  }
+}
+
+// https://blog.51cto.com/u_15492153/5277919
+class AsyncPool {
+  constructor(limit) {
+    this.limit = limit || 5;
+    this.count = 0;
+    this.blockList = [];
+  }
+
+  async add(fn) {
+    if (!fn) {
+      throw new Error('fn is required.');
+    }
+    if (Object.prototype.toString.call(fn) !== '[object Function]') {
+      throw new Error('fn must be a function.');
+    }
+    if (this.count >= this.limit) {
+      await new Promise(resolve => this.blockList.push(resolve)); // 如果当前请求数大于设置的 limit 程序进入阻塞状态
+    }
+    return this.execute(fn); // 如果当前请求数小于设置的 limit，处理传入的请求
+  }
+
+  async execute(fn) {
+    this.count++; // 在处理传入的请求开始时要对当前请求数做加 1 操作
+    try {
+      return await fn();
+    } catch (err) {
+      return Promise.reject(err);
+    } finally {
+      this.count--; // 在处理传入的请求完成时要对当前请求数做减 1 操作
+      if (this.blockList.length) {
+        this.blockList[0](); // 在处理传入的请求完成时判断如果阻塞队列有值，将最先进入到阻塞队列的请求从 Pending 变为 Fulfilled 这样就会开始处理传入的请求
+        this.blockList.shift();
+      }
+    }
+  }
+}
+
+// https://github.com/rxaviers/async-pool/blob/1.x/lib/es6.js
 // 并发promise：并行执行，最后统一返回结果
 function asyncPool(limit, list, iteratorFn) {
   let i = 0;
@@ -27,6 +99,7 @@ function asyncPool(limit, list, iteratorFn) {
   return enqueue().then(() => Promise.all(ret));
 }
 
+// https://github.com/rxaviers/async-pool/blob/1.x/lib/es7.js
 // 并发promise（async/await）：并行执行，最后统一返回结果
 async function asyncPool(limit, list, iteratorFn) {
   const ret = []; // 存储所有的异步任务
@@ -53,7 +126,7 @@ async function asyncPool(limit, list, iteratorFn) {
   return Promise.all(ret); // 所有任务完成之后返回
 }
 
-// 以下只是串行执行，不返回结果
+// 以下只是并行执行，不返回结果
 // 法一，递归法
 function runAsyncPool(list, limit) {
   // 递归函数
