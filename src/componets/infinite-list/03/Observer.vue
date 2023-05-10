@@ -8,7 +8,7 @@ export default defineComponent({
     status: {
       type: String,
       validator(value) {
-        return ['', 'success', 'error', 'loading', 'end'].includes(value);
+        return ['', 'error', 'loading', 'finished'].includes(value);
       },
       required: true,
       default: ''
@@ -18,7 +18,7 @@ export default defineComponent({
       default: () => ({
         error: '加载失败',
         loading: '加载中...',
-        end: '—— 到底了 ——'
+        finished: '—— 到底了 ——'
       })
     },
     rootMargin: {
@@ -39,7 +39,7 @@ export default defineComponent({
       if (
         target.value.getBoundingClientRect().top <
           document.documentElement.clientHeight + props.reachBottomDistance &&
-        props.status !== 'end'
+        props.status !== 'finished'
       ) {
         emit('intersect');
       }
@@ -51,7 +51,7 @@ export default defineComponent({
         observerObj = new IntersectionObserver(
           ([entry]) => {
             // 目标元素与根元素相交
-            if (entry && entry.isIntersecting && props.status !== 'end') {
+            if (entry && entry.isIntersecting && props.status !== 'finished') {
               emit('intersect');
             }
           },

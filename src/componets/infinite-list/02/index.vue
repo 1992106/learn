@@ -22,12 +22,12 @@ export default defineComponent({
       type: String,
       default: '0px 0px 400px 0px'
     },
-    reachBottomDistance: {
+    distance: {
       type: Number,
       default: 400
     }
   },
-  emits: ['intersect'],
+  emits: ['load'],
   setup(props, { emit }) {
     let observerObj = null;
     let innerData = [];
@@ -53,12 +53,12 @@ export default defineComponent({
       const target = nodes[nodes.length - 1];
       if (
         target.getBoundingClientRect().top <
-        document.documentElement.clientHeight + props.reachBottomDistance
+        document.documentElement.clientHeight + props.distance
       ) {
         if (innerData.length) {
           init();
         } else {
-          emit('scrollReachBottom');
+          emit('load');
         }
       }
     };
@@ -97,7 +97,7 @@ export default defineComponent({
               if (innerData.length) {
                 init();
               } else {
-                emit('scrollReachBottom');
+                emit('load');
               }
               // 停止观察，防止回拉时二次触发监听逻辑
               observerObj.unobserve(target);
