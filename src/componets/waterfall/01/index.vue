@@ -75,14 +75,13 @@ export default {
       type: String,
       default: 'src'
     },
-    reachBottomDistance: {
+    distance: {
       type: Number,
       default: 400
     }
   },
   data() {
     return {
-      isLoading: false,
       cols: 0, // 列数
       colsData: [] // 真实渲染的数据
     };
@@ -114,7 +113,6 @@ export default {
       return Math.min(cols, this.maxCols);
     },
     preload() {
-      this.isLoading = true;
       for (let i = 0; i < this.onceCount; i++) {
         const record = innerData[i] || {};
         const imgUrl = record[this.imgKey]
@@ -172,18 +170,16 @@ export default {
         this.$refs['cols'][i].style.left = left + 'px';
       }
       count = this.colsData.length;
-      this.isLoading = false;
     },
     scrollFn() {
-      if (this.isLoading) return;
+      let waterfallEl = this.$refs['waterfall'];
       let minHeight = Math.min.apply(null, colsHeight); // minHeight约等于document.body.scrollHeight
-      // let waterfallEl = this.$refs['waterfall'];
-      // waterfallEl.getBoundingClientRect().bottom < minHeight + this.reachBottomDistance
-      if (document.body.scrollTop + document.body.clientHeight >= minHeight - this.reachBottomDistance) {
+      // document.body.scrollTop + document.body.clientHeight >= document.documentElement.scrollHeight
+      if (waterfallEl.scrollTop + waterfallEl.clientHeight >= minHeight - this.distance) {
         if (innerData.length) {
           this.preload();
         } else {
-          this.$emit('scrollReachBottom'); // 滚动触底
+          this.$emit('load'); // 滚动触底
         }
       }
     },
@@ -223,9 +219,13 @@ export default {
 <style lang="scss" scoped>
 .waterfall-wrapper {
   width: 100%;
+  height: 100%;
   position: relative;
+  overflow-x: hidden;
+  overflow-y: auto;
 
   .waterfall-container {
+    width: 100%;
     position: absolute;
   }
 
