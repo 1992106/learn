@@ -290,14 +290,14 @@ export function throttle(fn: any, delay: number): any {
   };
 }
 export function throttle(fn: any, delay: number): any {
-  let startTime = Date.now();
+  let last = 0;
 
   return function (...args) {
-    let lastTime = Date.now();
+    let now = +Date.now();
 
-    if (lastTime - startTime > delay) {
+    if (now - last > delay) {
       fn.apply(this, args);
-      startTime = Date.now();
+      last = now;
     }
   };
 }
@@ -381,9 +381,9 @@ const pipe = (...fns) => {
  * camelCase (驼峰命名)
  * PascalCase (单词首字母大写命名：帕斯卡命名)
  */
-// 中横线转驼峰命名
+// 中横线/下划线转驼峰命名
 export function camelCase(str: string) {
-  const reg = /-(\w)/g;
+  const reg = /[-_\s]+(.)?/g;
   return str.replace(reg, (_, $1) => ($1 ? $1.toUpperCase() : ''));
 }
 // 驼峰转中横线分隔命名
@@ -399,3 +399,8 @@ export function pascalCase(str: string) {
 export function capitalize(str: string) {
   return str.charAt(0).toUpperCase() + str.slice(1);
 }
+
+// 手机号脱敏
+export const hideMobile = mobile => {
+  return mobile.replace(/^(\d{3})\d{4}(\d{4})$/, '$1****$2');
+};

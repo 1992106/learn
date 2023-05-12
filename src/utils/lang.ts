@@ -52,6 +52,18 @@ function remove(arr, item) {
   }
 }
 
+// 模糊搜索
+function fuzzySearch(list, keyWord, attribute = 'name') {
+  const reg = new RegExp(keyWord);
+  const arr = [];
+  for (let i = 0; i < list.length; i++) {
+    if (reg.test(list[i][attribute])) {
+      arr.push(list[i]);
+    }
+  }
+  return arr;
+}
+
 // 数组去重
 function unique(arr) {
   return [...new Set(arr)];
@@ -66,7 +78,7 @@ function unique2(arr) {
   });
 }
 // 去除连续的字符串
-function unique(str) {
+function unique3(str) {
   return str.replace(/(\w)\1+/g, '$1');
 }
 
@@ -97,31 +109,36 @@ const hash = str => {
   return hash >>> 0;
 };
 
+// uuid
+const uuid = () => {
+  const temp_url = URL.createObjectURL(new Blob());
+  const uuid = temp_url.toString();
+  URL.revokeObjectURL(temp_url);
+  return uuid.substring(uuid.lastIndexOf('/') + 1);
+};
+
 // 随机 ID 生成器
-const uniqueId = () => {
+const uniqueId = (() => {
   const id = (function* () {
     let mil = new Date().getTime();
 
     while (true) yield (mil += 1);
   })();
-
   return () => id.next().value;
-};
-const uniqueIncrementingId = (lastId = 0) => {
+})();
+const uniqueIncrementingId = ((lastId = 0) => {
   const id = (function* () {
     let numb = lastId;
 
     while (true) yield (numb += 1);
   })();
-
   return (length = 12) => `${id.next().value}`.padStart(length, '0');
-};
-const uniqueAlphaNumericId = () => {
+})();
+const uniqueAlphaNumericId = (() => {
   const heyStack = '0123456789abcdefghijklmnopqrstuvwxyz';
   const randomInt = () => Math.floor(Math.random() * Math.floor(heyStack.length));
-
   return (length = 24) => Array.from({ length }, () => heyStack[randomInt()]).join('');
-};
+})();
 
 // 创建一个范围内的数组
 const rangeSimple = end => {

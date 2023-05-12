@@ -256,11 +256,13 @@ export const encodeHTML = (str: string) => {
 };
 export const encodeHTML = (str: string) => {
   if (typeof str == 'string') {
-    return str.replace(/<|&|>/g, function (matches) {
+    return str.replace(/[&<>"']/g, function (matches) {
       return {
         '<': '&lt;',
         '>': '&gt;',
-        '&': '&amp;'
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&#39;'
       }[matches];
     });
   }
@@ -275,11 +277,13 @@ export const decodeHTML = (str: string) => {
 };
 export const decodeHTML = (str: string) => {
   if (typeof str == 'string') {
-    return str.replace(/&lt;|&amp;|&gt;/g, function (matches) {
+    return str.replace(/&lt;|&amp;|&gt;|&quot;|&#39;/g, function (matches) {
       return {
         '&lt;': '<',
         '&gt;': '>',
-        '&amp;': '&'
+        '&amp;': '&',
+        '&quot;': '"',
+        '&#39;': "'"
       }[matches];
     });
   }
@@ -382,6 +386,7 @@ export const getStringLen = (str: string) => {
   return Array.from(str).length;
 };
 
+// 滚动到页面顶部
 const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
   if (!window.requestAnimationFrame) {
     window.requestAnimationFrame =
@@ -415,4 +420,20 @@ const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
     window.requestAnimationFrame(() => scroll(d, end, step));
   }
   scroll(from, to, step);
+};
+
+// 滚动到页面顶部
+const scrollToTop = () => {
+  const c = document.documentElement.scrollTop || document.body.scrollTop;
+  if (c > 0) {
+    window.requestAnimationFrame(scrollToTop);
+    window.scrollTo(0, c - c / 8);
+  }
+};
+
+// 滚动到元素位置
+export const smoothScroll = element => {
+  document.querySelector(element).scrollIntoView({
+    behavior: 'smooth'
+  });
 };
