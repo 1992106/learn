@@ -1,8 +1,8 @@
 <template>
-  <div ref="target" class="observer">{{ statusText[status] || '' }}</div>
+  <div ref="observerEl" class="observer" @click="handleClick">{{ statusText[status] || '' }}</div>
 </template>
 <script>
-import { ref, onMounted, onUnmount, defineComponent } from 'vue';
+import { onMounted, onUnmount, defineComponent, ref, nextTick } from 'vue';
 export default defineComponent({
   props: {
     status: {
@@ -23,28 +23,36 @@ export default defineComponent({
     },
     rootMargin: {
       type: String,
-      default: '0px 0px 20px 0px'
+      default: '0px 0px 30px 0px'
     },
-    reachBottomDistance: {
+    distance: {
       type: Number,
-      default: 20
+      default: 30
     }
   },
-  emits: ['intersect'],
+  emits: ['intersect', 'error'],
   setup(props, { emit }) {
     let observerObj = null;
-    const target = ref(null);
+    const observerEl = ref(null);
 
-    const scrollFn = () => {
-      if (['loading', 'finished', 'error'].includes(props.status)) {
-        return;
+    const handleClick = () => {
+      if (props.status === 'error') {
+        emit('error');
       }
-      if (
-        target.value.getBoundingClientRect().top <
-        document.documentElement.clientHeight + props.reachBottomDistance
-      ) {
-        emit('intersect');
-      }
+    };
+
+    const doCheck = () => {
+      nextTick(() => {
+        if (['loading', 'finished', 'error'].includes(props.status)) {
+          return;
+        }
+        if (
+          observerEl.value.getBoundingClientRect().top <
+          document.documentElement.clientHeight + props.distance
+        ) {
+          emit('intersect');
+        }
+      });
     };
 
     onMounted(() => {
@@ -64,23 +72,24 @@ export default defineComponent({
         );
 
         // 观察目标元素
-        observerObj.observe(target.value);
+        observerObj.observe(observerEl.value);
       } catch (e) {
-        window.addEventListener('scroll', scrollFn);
+        window.addEventListener('scroll', doCheck);
       }
     });
 
     // 组件销毁前停止监听
     onUnmount(() => {
       if (observerObj) {
-        observer.disconnect();
+        observerObj.disconnect();
       } else {
-        window.removeEventListener('scroll', scrollFn);
+        window.removeEventListener('scroll', doCheck);
       }
     });
 
     return {
-      target
+      observerEl,
+      handleClick
     };
   }
 });

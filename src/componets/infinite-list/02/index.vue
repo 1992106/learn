@@ -3,42 +3,63 @@
     <div v-for="(item, index) in list" :key="index" class="infinite-cell">
       <slot :record="item"></slot>
     </div>
+    <div v-if="loading && !finished && !error" class="loading-text">{{ loadingText }}</div>
+    <div v-if="finished" class="finished-text">{{ finishedText }}</div>
+    <div v-if="error" @click="handleError" class="error-text">{{ errorText }}</div>
   </div>
 </template>
 <script>
-import { onMounted, onBeforeUnmount, defineComponent, watch, ref, nextTick } from 'vue';
+import { onMounted, onMounted, defineComponent, watch, ref, nextTick } from 'vue';
 export default defineComponent({
   props: {
     data: {
       type: Array,
       default: () => []
     },
-    // 首屏并行渲染数量
-    firstPageCount: {
-      type: Number,
-      default: 12
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    loadingText: {
+      type: String,
+      default: '加载中...'
+    },
+    finished: {
+      type: Boolean,
+      default: false
+    },
+    finishedText: {
+      type: String,
+      default: '—— 到底了 ——'
+    },
+    error: {
+      type: Boolean,
+      default: false
+    },
+    errorText: {
+      type: String,
+      default: '加载失败'
     },
     rootMargin: {
       type: String,
-      default: '0px 0px 400px 0px'
+      default: '0px 0px 30px 0px'
     },
     distance: {
       type: Number,
-      default: 400
+      default: 30
     }
   },
-  emits: ['load'],
+  emits: ['load', 'update:loading', 'update:error'],
   setup(props, { emit }) {
     let observerObj = null;
     let innerData = [];
-    let count = 0;
 
     const infiniteEl = ref(null);
-
     const list = ref([]);
-    const appendColData = () => {
-      const data = innerData.shift();
-      list.value.push(data);
+
+    const load = () => {
+      emit('update:loading', true);
+      emit('load');
     };
 
     const startObserver = () => {
@@ -49,41 +70,37 @@ export default defineComponent({
     };
 
     const startScroll = () => {
+      if (props.loading || props.finished || props.error) return;
       const nodes = infiniteEl.value.querySelectorAll('.infinite-cell');
       const target = nodes[nodes.length - 1];
       if (
         target.getBoundingClientRect().top <
         document.documentElement.clientHeight + props.distance
       ) {
-        if (innerData.length) {
-          init();
-        } else {
-          emit('load');
-        }
+        load();
       }
     };
 
     watch(props.data, val => {
-      innerData = [...innerData, ...val];
+      innerData = [...val];
       init();
     });
 
     const init = () => {
-      appendColData();
-      // 首次开启并行渲染
-      if (++count < props.firstPageCount) {
-        nextTick(() => {
-          init();
-        });
-      } else {
-        nextTick(() => {
-          if (observerObj) {
-            startObserver();
-          } else {
-            startScroll();
-          }
-        });
-      }
+      const data = innerData.splice(0);
+      list.value.push(...data);
+      nextTick(() => {
+        if (observerObj) {
+          startObserver();
+        } else {
+          startScroll();
+        }
+      });
+    };
+
+    const handleError = () => {
+      emit('update:error', false);
+      load();
     };
 
     onMounted(() => {
@@ -94,11 +111,7 @@ export default defineComponent({
             const { target, isIntersecting } = entry || {};
             // 目标元素与根元素相交
             if (isIntersecting) {
-              if (innerData.length) {
-                init();
-              } else {
-                emit('load');
-              }
+              load();
               // 停止观察，防止回拉时二次触发监听逻辑
               observerObj.unobserve(target);
             }
@@ -110,13 +123,18 @@ export default defineComponent({
       }
     });
 
-    onBeforeUnmount(() => {
-      window.removeEventListener('scroll', startScroll);
+    onMounted(() => {
+      if (observerObj) {
+        observerObj.disconnect();
+      } else {
+        window.removeEventListener('scroll', startScroll);
+      }
     });
 
     return {
       infiniteEl,
-      list
+      list,
+      handleError
     };
   }
 });
@@ -126,5 +144,14 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+
+  .loading-text,
+  .finished-text,
+  .error-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ccc;
+  }
 }
 </style>

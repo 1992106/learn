@@ -9,9 +9,6 @@ A、
 document.body.scrollTop + document.body.clientHeight >= document.documentElement.scrollHeight
 scrollEl.scrollTop + scrollEl.clientHeight >= document.documentElement.scrollHeight
 
-<!-- window.onscroll + getBoundingClientRect -->
-B、targetEl.getBoundingClientRect().bottom < document.documentElement.clientHeight
-
 ### 2、存储图片信息列表，在回调函数内判断如果当前元素是列表的最后一项，则触发加载下一页的数据，新加载的数据与原来的列表合并即可，加载数据后要监听新附加的元素
 
 ### 3、页面加入页尾栏（又称sentinels），一旦页尾栏可见，就表示用户到达了页面底部，从而加载新的数据放在页尾栏前面
@@ -20,5 +17,5 @@ B、targetEl.getBoundingClientRect().bottom < document.documentElement.clientHei
 
 A、new MutationObserver()
 
-<!-- 使用window.onscroll + getBoundingClientRect实现MutationObserver -->
-B、targetEl.getBoundingClientRect().top < document.documentElement.clientHeight
+<!-- 使用window.onscroll + getBoundingClientRect实现MutationObserver效果 -->
+B、targetEl.getBoundingClientRect().top <= document.documentElement.clientHeight

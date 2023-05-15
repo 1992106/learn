@@ -1,9 +1,10 @@
 <template>
-  <div class="infinite-list-wrapper" ref="infiniteEl">
+  <div class="infinite-list-wrapper">
     <slot></slot>
     <div v-if="loading && !finished && !error" class="loading-text">{{ loadingText }}</div>
     <div v-if="finished" class="finished-text">{{ finishedText }}</div>
     <div v-if="error" @click="handleError" class="error-text">{{ errorText }}</div>
+    <div ref="placeholderEl" class="placeholder"></div>
   </div>
 </template>
 <script>
@@ -34,6 +35,10 @@ export default defineComponent({
       type: String,
       default: '加载失败'
     },
+    rootMargin: {
+      type: String,
+      default: '0px 0px 30px 0px'
+    },
     distance: {
       type: Number,
       default: 30
@@ -41,7 +46,13 @@ export default defineComponent({
   },
   emits: ['load', 'update:loading', 'update:error'],
   setup(props, { emit }) {
-    const infiniteEl = ref(null);
+    let observerObj = null;
+    const placeholderEl = ref(null);
+
+    const load = () => {
+      emit('update:loading', true);
+      emit('load');
+    };
 
     const doCheck = () => {
       nextTick(() => {
@@ -50,11 +61,10 @@ export default defineComponent({
         }
 
         if (
-          infiniteEl.value.scrollTop + infiniteEl.value.clientHeight >=
-          document.documentElement.scrollHeight - props.distance
+          placeholderEl.value.getBoundingClientRect().top <
+          document.documentElement.clientHeight + props.distance
         ) {
-          emit('update:loading', true);
-          emit('load');
+          load();
         }
       });
     };
@@ -63,19 +73,43 @@ export default defineComponent({
 
     const handleError = () => {
       emit('update:error', false);
-      doCheck()
-    }
+      load();
+    };
 
     onMounted(() => {
-      window.addEventListener('scroll', doCheck);
+      try {
+        // 构建观察器
+        observerObj = new IntersectionObserver(
+          ([entry]) => {
+            if (props.loading || props.finished || props.error) {
+              return;
+            }
+            // 目标元素与根元素相交
+            if (entry && entry.isIntersecting) {
+              load();
+            }
+          },
+          { rootMargin: props.rootMargin }
+        );
+
+        // 观察目标元素
+        observerObj.observe(placeholderEl.value);
+      } catch (e) {
+        window.addEventListener('scroll', doCheck);
+      }
     });
 
+    // 组件销毁前停止监听
     onUnmount(() => {
-      window.removeEventListener('scroll', doCheck);
+      if (observerObj) {
+        observerObj.disconnect();
+      } else {
+        window.removeEventListener('scroll', doCheck);
+      }
     });
 
     return {
-      infiniteEl,
+      placeholderEl,
       handleError
     };
   }
@@ -94,6 +128,11 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     color: #ccc;
+  }
+
+  .placeholder {
+    height: 0;
+    pointer-events: none;
   }
 }
 </style>
