@@ -43,6 +43,7 @@
 let colsHeight = []; // 每列的高度
 let innerData = []; // 瀑布流数据队列
 let count = 0; // 已经渲染的数量
+let loading = false;
 export default {
   props: {
     // 瀑布流数据
@@ -64,11 +65,6 @@ export default {
     gap: {
       type: [Array, Number],
       default: () => [10, 10]
-    },
-    // 每次加载的数量
-    onceCount: {
-      type: Number,
-      default: 12
     },
     // 图片的key
     imgKey: {
@@ -102,7 +98,11 @@ export default {
   },
   watch: {
     data(newVal) {
-      innerData = [...innerData, ...newVal];
+      if (newVal.length === 0) {
+        loading = false
+        return
+      }
+      innerData = [...newVal];
       this.preload();
     }
   },
@@ -113,29 +113,32 @@ export default {
       return Math.min(cols, this.maxCols);
     },
     preload() {
-      for (let i = 0; i < this.onceCount; i++) {
-        const record = innerData[i] || {};
+      let index = 0
+      for (let i = 0; i < innerData.length; i++) {
+        const record = innerData[i];
         const imgUrl = record[this.imgKey]
         // 有图片时，先预加载图片获取图片宽高
         if (imgUrl) {
           const img = new Image();
           img.src = imgUrl;
           img.onload = img.onerror = () => {
+            index++
             innerData[i]._height = Math.round(this.colWidth * (img.height / img.width));
-            if (this.onceCount === i) {
+            if (index === i) {
               this.$emit('preloaded');
             }
           };
         } else {
+          index++
+          innerData[i]._height = 0;
           // 无图或无数据时，直接跳过预加载
-          if (this.onceCount === i) {
+          if (index === i) {
             this.$emit('preloaded');
           }
         }
       }
     },
     waterfall() {
-      if (!this.$refs['cols']) return;
       let top, left;
       for (let i = count; i < this.colsData.length; i++) {
         const colHeight = this.$refs['cols'][i].offsetHeight;
@@ -172,15 +175,13 @@ export default {
       count = this.colsData.length;
     },
     scrollFn() {
+      if (loading) return
       let waterfallEl = this.$refs['waterfall'];
       let minHeight = Math.min.apply(null, colsHeight); // minHeight约等于document.body.scrollHeight
       // document.body.scrollTop + document.body.clientHeight >= document.documentElement.scrollHeight
       if (waterfallEl.scrollTop + waterfallEl.clientHeight >= minHeight - this.distance) {
-        if (innerData.length) {
-          this.preload();
-        } else {
-          this.$emit('load'); // 滚动触底
-        }
+        loading = true;
+        this.$emit('load'); // 滚动触底
       }
     },
     resizeFn() {
@@ -195,11 +196,13 @@ export default {
     }
   },
   mounted() {
+    loading = true;
     this.cols = this.calcCols();
     this.$on('preloaded', () => {
-      const data = innerData.splice(0, this.onceCount);
+      const data = innerData.splice(0);
       this.colsData = this.colsData.concat(data);
       this.$nextTick(() => {
+        loading = false
         this.waterfall();
       });
     });

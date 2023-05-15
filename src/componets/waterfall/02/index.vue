@@ -21,6 +21,7 @@ let observerObj;
 let minCol = 0; // 最小列索引
 let innerData = []; // 瀑布流数据队列
 let count = 0; // 已经渲染的数量
+let loading = false;
 
 export default {
   props: {
@@ -105,12 +106,14 @@ export default {
     },
 
     startScroll() {
+      if (loading) return
       const nodes = this.$refs['cols'][minCol].querySelectorAll('img');
       const target = nodes[nodes.length - 1];
       if (
         target.getBoundingClientRect().top <
         document.documentElement.clientHeight + this.distance
       ) {
+        loading = true;
         const done = () => {
           if (innerData.length) {
             this.waterfall();
@@ -139,6 +142,7 @@ export default {
           if (isIntersectionObserver) {
             this.startObserver();
           } else {
+            loading = false;
             this.startScroll();
           }
         });
@@ -173,6 +177,9 @@ export default {
         },
         { rootMargin: this.rootMargin }
       );
+      this.$once('hook:beforeDestroy', () => {
+        observerObj.disconnect();
+      });
     } else {
       window.addEventListener('scroll', this.startScroll);
       this.$once('hook:beforeDestroy', () => {
