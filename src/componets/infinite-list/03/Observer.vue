@@ -2,13 +2,13 @@
   <div ref="target" class="observer">{{ statusText[status] || '' }}</div>
 </template>
 <script>
-import { ref, onMounted, onBeforeUnmount, defineComponent } from 'vue';
+import { ref, onMounted, onUnmount, defineComponent } from 'vue';
 export default defineComponent({
   props: {
     status: {
       type: String,
       validator(value) {
-        return ['', 'error', 'loading', 'finished'].includes(value);
+        return ['', 'loading', 'finished', 'error'].includes(value);
       },
       required: true,
       default: ''
@@ -16,9 +16,9 @@ export default defineComponent({
     statusText: {
       type: Object,
       default: () => ({
-        error: '加载失败',
         loading: '加载中...',
-        finished: '—— 到底了 ——'
+        finished: '—— 到底了 ——',
+        error: '加载失败'
       })
     },
     rootMargin: {
@@ -36,10 +36,12 @@ export default defineComponent({
     const target = ref(null);
 
     const scrollFn = () => {
+      if (['loading', 'finished', 'error'].includes(props.status)) {
+        return;
+      }
       if (
         target.value.getBoundingClientRect().top <
-          document.documentElement.clientHeight + props.reachBottomDistance &&
-        props.status !== 'finished'
+        document.documentElement.clientHeight + props.reachBottomDistance
       ) {
         emit('intersect');
       }
@@ -50,8 +52,11 @@ export default defineComponent({
         // 构建观察器
         observerObj = new IntersectionObserver(
           ([entry]) => {
+            if (['loading', 'finished', 'error'].includes(props.status)) {
+              return;
+            }
             // 目标元素与根元素相交
-            if (entry && entry.isIntersecting && props.status !== 'finished') {
+            if (entry && entry.isIntersecting) {
               emit('intersect');
             }
           },
@@ -66,7 +71,7 @@ export default defineComponent({
     });
 
     // 组件销毁前停止监听
-    onBeforeUnmount(() => {
+    onUnmount(() => {
       if (observerObj) {
         observer.disconnect();
       } else {
