@@ -37,11 +37,11 @@ export default defineComponent({
     },
     rootMargin: {
       type: String,
-      default: '0px 0px 30px 0px'
+      default: '0px 0px 0px 0px'
     },
     distance: {
       type: Number,
-      default: 30
+      default: 0
     }
   },
   emits: ['load', 'update:loading', 'update:error'],
@@ -60,7 +60,7 @@ export default defineComponent({
         if (props.loading || props.finished || props.error) {
           return;
         }
-        // targetEl.value.getBoundingClientRect().bottom - infiniteEl.value.getBoundingClientRect().bottom <= props.distance
+        // targetEl.value.getBoundingClientRect().top - infiniteEl.value.getBoundingClientRect().bottom <= props.distance
         if (
           targetEl.value.getBoundingClientRect().top - document.documentElement.clientHeight <= props.distance
         ) {

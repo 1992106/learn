@@ -36,7 +36,7 @@ export default defineComponent({
     },
     distance: {
       type: Number,
-      default: 30
+      default: 0
     }
   },
   emits: ['load', 'update:loading', 'update:error'],

@@ -42,11 +42,11 @@ export default defineComponent({
     },
     rootMargin: {
       type: String,
-      default: '0px 0px 30px 0px'
+      default: '0px 0px 0px 0px'
     },
     distance: {
       type: Number,
-      default: 30
+      default: 0
     }
   },
   emits: ['load', 'update:loading', 'update:error'],
@@ -73,12 +73,12 @@ export default defineComponent({
       if (props.loading || props.finished || props.error) {
         return;
       }
-      // 通过列表最末尾元素来判断
+      // 判断最末尾元素是否触底
       const nodes = infiniteEl.value.querySelectorAll('.infinite-cell');
       const targetEl = nodes[nodes.length - 1];
       // targetEl.getBoundingClientRect().bottom - infiniteEl.value.getBoundingClientRect().bottom <= props.distance
       if (
-        targetEl.getBoundingClientRect().top - document.documentElement.clientHeight <=
+        targetEl.getBoundingClientRect().bottom - document.documentElement.clientHeight <=
         props.distance
       ) {
         load();
@@ -112,9 +112,9 @@ export default defineComponent({
         // 构建观察器
         observerObj = new IntersectionObserver(
           ([entry]) => {
-            const { target, isIntersecting } = entry || {};
-            // 目标元素与根元素相交
-            if (isIntersecting) {
+            const { target, intersectionRatio  } = entry || {};
+            // 目标元素完全可见
+            if (intersectionRatio === 1) {
               load();
               // 停止观察，防止回拉时二次触发监听逻辑
               observerObj.unobserve(target);

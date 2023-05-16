@@ -23,21 +23,22 @@ export default defineComponent({
     },
     rootMargin: {
       type: String,
-      default: '0px 0px 30px 0px'
+      default: '0px 0px 0px 0px'
     },
     distance: {
       type: Number,
-      default: 30
+      default: 0
     }
   },
-  emits: ['intersect', 'error'],
+  emits: ['intersect', 'update:status'],
   setup(props, { emit }) {
     let observerObj = null;
     const observerEl = ref(null);
 
     const handleClick = () => {
       if (props.status === 'error') {
-        emit('error');
+        emit('update:status', 'loading');
+        emit('intersect');
       }
     };
 
@@ -50,6 +51,7 @@ export default defineComponent({
           observerEl.value.getBoundingClientRect().top - document.documentElement.clientHeight <
           props.distance
         ) {
+          emit('update:status', 'loading');
           emit('intersect');
         }
       });
