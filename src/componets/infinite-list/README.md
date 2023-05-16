@@ -6,8 +6,12 @@
 
 <!-- window.onscroll -->
 A、
-document.body.scrollTop + document.body.clientHeight >= document.documentElement.scrollHeight
-scrollEl.scrollTop + scrollEl.clientHeight >= document.documentElement.scrollHeight
+document.body.scrollTop + document.body.clientHeight + offset >= document.documentElement.scrollHeight
+scrollEl.scrollHeight - (scrollEl.scrollTop + scrollEl.clientHeight) <= offset
+
+B、<!-- 使用window.onscroll + getBoundingClientRect实现滚动到底部效果 -->
+targetEl.getBoundingClientRect().top - document.documentElement.clientHeight <= offset
+targetEl.getBoundingClientRect().bottom - scrollEl.getBoundingClientRect().bottom <= offset
 
 ### 2、存储图片信息列表，在回调函数内判断如果当前元素是列表的最后一项，则触发加载下一页的数据，新加载的数据与原来的列表合并即可，加载数据后要监听新附加的元素
 
@@ -17,5 +21,6 @@ scrollEl.scrollTop + scrollEl.clientHeight >= document.documentElement.scrollHei
 
 A、new MutationObserver()
 
-<!-- 使用window.onscroll + getBoundingClientRect实现MutationObserver效果 -->
-B、targetEl.getBoundingClientRect().top <= document.documentElement.clientHeight
+B、<!-- 使用window.onscroll + getBoundingClientRect实现MutationObserver效果 -->
+targetEl.getBoundingClientRect().top - document.documentElement.clientHeight <= offset
+targetEl.getBoundingClientRect().bottom - scrollEl.getBoundingClientRect().bottom <= offset

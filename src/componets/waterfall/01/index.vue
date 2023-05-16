@@ -177,9 +177,9 @@ export default {
     scrollFn() {
       if (loading) return
       let waterfallEl = this.$refs['waterfall'];
-      let minHeight = Math.min.apply(null, colsHeight); // minHeight约等于document.body.scrollHeight
+      let minHeight = Math.min.apply(null, colsHeight); // minHeight 约等于 waterfallEl.scrollHeight
       // document.body.scrollTop + document.body.clientHeight >= document.documentElement.scrollHeight
-      if (waterfallEl.scrollTop + waterfallEl.clientHeight >= minHeight - this.distance) {
+      if (waterfallEl.scrollTop + waterfallEl.clientHeight + this.distance >= minHeight) {
         loading = true;
         this.$emit('load'); // 滚动触底
       }

@@ -2,7 +2,7 @@
   <div ref="observerEl" class="observer" @click="handleClick">{{ statusText[status] || '' }}</div>
 </template>
 <script>
-import { onMounted, onUnmount, defineComponent, ref, nextTick } from 'vue';
+import { onMounted, onUnmounted, defineComponent, ref, nextTick } from 'vue';
 export default defineComponent({
   props: {
     status: {
@@ -47,8 +47,8 @@ export default defineComponent({
           return;
         }
         if (
-          observerEl.value.getBoundingClientRect().top <
-          document.documentElement.clientHeight + props.distance
+          observerEl.value.getBoundingClientRect().top - document.documentElement.clientHeight <
+          props.distance
         ) {
           emit('intersect');
         }
@@ -79,7 +79,7 @@ export default defineComponent({
     });
 
     // 组件销毁前停止监听
-    onUnmount(() => {
+    onUnmounted(() => {
       if (observerObj) {
         observerObj.disconnect();
       } else {

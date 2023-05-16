@@ -7,7 +7,7 @@
   </div>
 </template>
 <script>
-import { onMounted, onUnmount, defineComponent, watch, ref, nextTick } from 'vue';
+import { onMounted, onUnmounted, defineComponent, watch, ref, nextTick } from 'vue';
 export default defineComponent({
   props: {
     loading: {
@@ -50,8 +50,9 @@ export default defineComponent({
         }
 
         if (
-          infiniteEl.value.scrollTop + infiniteEl.value.clientHeight >=
-          document.documentElement.scrollHeight - props.distance
+          infiniteEl.value.scrollHeight -
+            (infiniteEl.value.scrollTop + infiniteEl.value.clientHeight) <=
+          props.distance
         ) {
           emit('update:loading', true);
           emit('load');
@@ -63,14 +64,14 @@ export default defineComponent({
 
     const handleError = () => {
       emit('update:error', false);
-      doCheck()
-    }
+      doCheck();
+    };
 
     onMounted(() => {
       window.addEventListener('scroll', doCheck);
     });
 
-    onUnmount(() => {
+    onUnmounted(() => {
       window.removeEventListener('scroll', doCheck);
     });
 

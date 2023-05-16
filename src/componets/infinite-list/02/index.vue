@@ -64,18 +64,22 @@ export default defineComponent({
 
     const startObserver = () => {
       const nodes = infiniteEl.value.querySelectorAll('.infinite-cell');
-      const target = nodes[nodes.length - 1];
-      // 观察目标元素
-      observerObj.observe(target);
+      const targetEl = nodes[nodes.length - 1];
+      // 观察最末尾元素
+      observerObj.observe(targetEl);
     };
 
     const startScroll = () => {
-      if (props.loading || props.finished || props.error) return;
+      if (props.loading || props.finished || props.error) {
+        return;
+      }
+      // 通过列表最末尾元素来判断
       const nodes = infiniteEl.value.querySelectorAll('.infinite-cell');
-      const target = nodes[nodes.length - 1];
+      const targetEl = nodes[nodes.length - 1];
+      // targetEl.getBoundingClientRect().bottom - infiniteEl.value.getBoundingClientRect().bottom <= props.distance
       if (
-        target.getBoundingClientRect().top <
-        document.documentElement.clientHeight + props.distance
+        targetEl.getBoundingClientRect().top - document.documentElement.clientHeight <=
+        props.distance
       ) {
         load();
       }

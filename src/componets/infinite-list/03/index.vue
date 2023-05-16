@@ -1,14 +1,14 @@
 <template>
-  <div class="infinite-list-wrapper">
+  <div class="infinite-list-wrapper" ref="infiniteEl">
     <slot></slot>
     <div v-if="loading && !finished && !error" class="loading-text">{{ loadingText }}</div>
     <div v-if="finished" class="finished-text">{{ finishedText }}</div>
     <div v-if="error" @click="handleError" class="error-text">{{ errorText }}</div>
-    <div ref="placeholderEl" class="placeholder"></div>
+    <div ref="targetEl" class="placeholder"></div>
   </div>
 </template>
 <script>
-import { onMounted, onUnmount, defineComponent, watch, ref, nextTick } from 'vue';
+import { onMounted, onUnmounted, defineComponent, watch, ref, nextTick } from 'vue';
 export default defineComponent({
   props: {
     loading: {
@@ -47,7 +47,8 @@ export default defineComponent({
   emits: ['load', 'update:loading', 'update:error'],
   setup(props, { emit }) {
     let observerObj = null;
-    const placeholderEl = ref(null);
+    const infiniteEl = ref(null);
+    const targetEl = ref(null);
 
     const load = () => {
       emit('update:loading', true);
@@ -59,10 +60,9 @@ export default defineComponent({
         if (props.loading || props.finished || props.error) {
           return;
         }
-
+        // targetEl.value.getBoundingClientRect().bottom - infiniteEl.value.getBoundingClientRect().bottom <= props.distance
         if (
-          placeholderEl.value.getBoundingClientRect().top <
-          document.documentElement.clientHeight + props.distance
+          targetEl.value.getBoundingClientRect().top - document.documentElement.clientHeight <= props.distance
         ) {
           load();
         }
@@ -93,14 +93,14 @@ export default defineComponent({
         );
 
         // 观察目标元素
-        observerObj.observe(placeholderEl.value);
+        observerObj.observe(targetEl.value);
       } catch (e) {
         window.addEventListener('scroll', doCheck);
       }
     });
 
     // 组件销毁前停止监听
-    onUnmount(() => {
+    onUnmounted(() => {
       if (observerObj) {
         observerObj.disconnect();
       } else {
@@ -109,7 +109,8 @@ export default defineComponent({
     });
 
     return {
-      placeholderEl,
+      infiniteEl,
+      targetEl,
       handleError
     };
   }
