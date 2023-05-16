@@ -15,9 +15,8 @@ https://github.com/parrot-design/parrot-ve-waterfall -->
 http://app.moptym.com/vue-waterfall/demo/vertical-line.html-->
 
 2、多列（通过已知列数计算出宽度）【百分比宽度/Flex布局】 => 二维数组
+<!-- https://mp.weixin.qq.com/s/bzkj65WMoixRSdlBLJgOZg -->
 <!-- https://zhuanlan.zhihu.com/p/498417458 -->
-<!-- https://github.com/AwesomeDevin/vue-waterfall2
-https://codesandbox.io/embed/vue-template-99ps6 -->
 
 
 ### 瀑布流逻辑实现
