@@ -48,7 +48,6 @@ export default defineComponent({
         if (props.loading || props.finished || props.error) {
           return;
         }
-
         if (
           infiniteEl.value.scrollHeight -
             (infiniteEl.value.scrollTop + infiniteEl.value.clientHeight) <=

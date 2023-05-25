@@ -15,16 +15,15 @@ class asyncQueue {
 
   execute() {
     if (this.asyncList.length > 0) {
-      const currentAsyncTask = this.asyncList.shift();
+      const { asyncFunc, resolve, reject } = this.asyncList.shift();
 
-      currentAsyncTask
-        .asyncFunc()
+      asyncFunc()
         .then(result => {
-          currentAsyncTask.resolve(result);
+          resolve(result);
           this.execute();
         })
         .catch(error => {
-          currentAsyncTask.reject(error);
+          reject(error);
           this.execute();
         });
 

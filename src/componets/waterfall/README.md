@@ -18,7 +18,6 @@ http://app.moptym.com/vue-waterfall/demo/vertical-line.html-->
 <!-- https://mp.weixin.qq.com/s/bzkj65WMoixRSdlBLJgOZg -->
 <!-- https://zhuanlan.zhihu.com/p/498417458 -->
 
-
 ### 瀑布流逻辑实现
 
 1、 新建 image 对象，onload 时先获取图片的原始宽高，再根据瀑布流分配的宽度计算出实际渲染的高度，作为内联样式挂载到 DOM 上

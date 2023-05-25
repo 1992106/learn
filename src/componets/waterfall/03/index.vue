@@ -7,7 +7,7 @@
       :key="i"
       :style="{ 'row-gap': gap[0] }"
     >
-      <div class="row-wrapper" :class="[animation]" v-for="(row, j) in col" :key="j">
+      <div class="cell" :class="[animation]" v-for="(row, j) in col" :key="j">
         <slot :item="row" />
       </div>
     </div>

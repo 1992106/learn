@@ -7,7 +7,7 @@
       :key="i"
       :style="{ 'row-gap': gap[0] }"
     >
-      <div class="row-wrapper" :class="[animation]" v-for="(row, j) in col" :key="j">
+      <div class="cell" :class="[animation]" v-for="(row, j) in col" :key="j">
         <slot :record="row" />
       </div>
     </div>
@@ -41,7 +41,7 @@ export default {
     },
     distance: {
       type: Number,
-      default: 400
+      default: 20
     }
   },
   data() {
@@ -83,20 +83,13 @@ export default {
     },
 
     startScroll() {
-      const nodes = this.$refs['cols'][minCol].querySelectorAll('img');
+      const nodes = this.$refs['cols'][minCol].querySelectorAll('.cell');
       const target = nodes[nodes.length - 1];
       if (
         target.getBoundingClientRect().bottom - document.documentElement.clientHeight <=
         this.distance
       ) {
-        const done = () => {
-          this.$emit('load');
-        };
-        if (target.complete) {
-          done();
-        } else {
-          target.onload = target.onerror = done;
-        }
+        this.$emit('load');
       }
     }
   },

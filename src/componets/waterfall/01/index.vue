@@ -73,7 +73,7 @@ export default {
     },
     distance: {
       type: Number,
-      default: 400
+      default: 20
     }
   },
   data() {
