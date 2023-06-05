@@ -260,3 +260,17 @@ function getMonthDay(time) {
   const month = date.getMonth() + 1;
   return new Date(year, month, 0).getDate();
 }
+
+// 获取某天的日期
+function getDateByDay(d = 0) {
+  const date = new Date();
+  date.setDate(date.getDate() + d);
+  const year = date.getFullYear();
+  let month = date.getMonth() + 1;
+  month = month > 10 ? month : '0' + month;
+  const day = date.getDate();
+  return year + '-' + month + '-' + day;
+}
+// 获取明天的日期  getDateByDay(1)
+// 获取今天的日期  getDateByDay(0)
+// 获取昨天的日期  getDateByDay(-1)
