@@ -37,15 +37,35 @@ export const notEmpty = (x: any): boolean => {
 };
 
 // 判断是否等于undefined或null或''
-export function isNil(value) {
+export function isBlank(value) {
   return value == null || value === '';
   // return value === undefined || value === null || value === '';
 }
-
 // 判断是否不等于undefined或null或''
-export function notNil(value) {
+export function notBlank(value) {
   return value != null && value != '';
   // return value !== undefined && value !== null && value != '';
+}
+
+// 判断是否等于undefined或null
+export function isNil(value) {
+  return value == null;
+  // return value === undefined || value === null;
+}
+// 判断是否不等于undefined或null
+export function notNil(value) {
+  return value != null;
+  // return value !== undefined && value !== null;
+}
+
+// 判断是否undefined
+export function isUndef(value) {
+  return value === undefined;
+}
+
+// 判断是否null
+export function isNull(value) {
+  return value === null;
 }
 
 /**
@@ -207,16 +227,6 @@ export function isDeepEqual(objA, objB) {
   return true;
 }
 
-// 判断是否undefined
-export function isUndef(value) {
-  return value === undefined;
-}
-
-// 判断是否null
-export function isNull(value) {
-  return value === null;
-}
-
 // 判断是否是promise
 export function isPromise(value) {
   return notNil(value) && typeof value.then === 'function' && typeof value.catch === 'function';
@@ -347,6 +357,11 @@ export const isUrl = url => {
   return /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i.test(
     url
   );
+};
+
+// 是否是中文
+export const isChinese = value => {
+  return /[^\u4e00-\u9fa5]/.test(url);
 };
 
 // 匹配Email地址

@@ -7,14 +7,14 @@ const triggerEvent = (el, eventType, detail) => {
 const removeHtml = (str = '') => str.replace(/<[\/\!]*[^<>]*>/gi, '');
 
 // 字符串前后去空
-export const trim = string => {
-  return (string || '').replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
-  // return (string || '').replace(/(^\s*)|(\s*$)/g, '');
+export const trim = (str = '') => {
+  return str.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
+  // return str.replace(/(^\s*)|(\s*$)/g, '');
 };
 
 // 去除所有空
-export const allTrim = string => {
-  return (string || '').replace(/\s/g, '');
+export const allTrim = (str = '') => {
+  return str.replace(/\s/g, '');
 };
 
 // 获取当前子元素是其父元素下子元素的排位
@@ -40,9 +40,9 @@ const getOffset = el => {
 };
 
 // 获取当前元素相对于document的偏移量
-function getOffset(el) {
-  var top = 0;
-  var left = 0;
+const getOffset = el => {
+  let top = 0;
+  let left = 0;
   do {
     top += el.offsetTop;
     left += el.offsetLeft;
@@ -51,7 +51,7 @@ function getOffset(el) {
     top: top,
     left: left
   };
-}
+};
 
 // 获取当前页面的滚动位置
 const getScrollPosition = el => ({
@@ -95,6 +95,12 @@ const elementIsVisibleInViewport = (el, partiallyVisible = false) => {
     : top >= 0 && left >= 0 && bottom <= innerHeight && right <= innerWidth;
 };
 
+// 判断当前选项卡是否处于活动状态
+const checkTabInView = () => !document.hidden;
+
+// 检查某个元素是否获得焦点
+const isFocus = ele => ele === document.activeElement;
+
 // 获取标签内容（包含标签）
 function getOuterHTML(el) {
   if (el.outerHTML) {
@@ -105,6 +111,9 @@ function getOuterHTML(el) {
     return container.innerHTML;
   }
 }
+
+// 获取文本（从给定文本中剥离html）
+const stripHtml = html => new DOMParser().parseFromString(html, 'text/html').body.textContent || '';
 
 // 复制
 const copyToClipboard = str => {
@@ -124,6 +133,17 @@ const copyToClipboard = str => {
     document.getSelection().addRange(selected);
   }
 };
+const copyToClipboard = str => {
+  navigator.clipboard.writeText(str);
+};
+
+// 快捷键及右键菜单触发
+document.addEventListener('copy', event => {
+  event.preventDefault();
+  const text = document.getSelection().toString();
+  const clipboardData = event.clipboardData || event?.originalEvent?.clipboardData;
+  clipboardData?.setData('text/plain', text);
+});
 
 export const hasClass = (el, cls) => {
   if (!el || !cls) return false;
@@ -430,10 +450,12 @@ const scrollToTop = () => {
     window.scrollTo(0, c - c / 8);
   }
 };
+const goToTop = () => window.scrollTo(0, 0);
 
 // 滚动到元素位置
-export const smoothScroll = element => {
+export const smoothScroll = (element, block: 'start' | 'end' = 'start') => {
   document.querySelector(element).scrollIntoView({
-    behavior: 'smooth'
+    behavior: 'smooth',
+    block
   });
 };

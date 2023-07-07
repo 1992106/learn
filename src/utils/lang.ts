@@ -64,6 +64,14 @@ function fuzzySearch(list, keyWord, attribute = 'name') {
   return arr;
 }
 
+// 查找最大值索引
+function indexOfMax(arr) {
+  return arr.reduce((prev, curr, i, a) => (curr > a[prev] ? i : prev), 0);
+}
+// 查找最小值索引
+function indexOfMin(arr) {
+  return arr.reduce((prev, curr, i, a) => (curr < a[prev] ? i : prev), 0);
+}
 // 数组去重
 function unique(arr) {
   return [...new Set(arr)];
@@ -77,9 +85,27 @@ function unique2(arr) {
     }
   });
 }
-// 去除连续的字符串
-function unique3(str) {
-  return str.replace(/(\w)\1+/g, '$1');
+// 数组唯一id数据去重
+function duplicateById(arr, prop) {
+  return [...arr.reduce((prev, cur) => prev.set(cur[prop], cur), new Map()).values()];
+}
+function duplicateById2(arr, prop) {
+  var obj = {};
+  return arr.filter(ele => {
+    let val = ele[prop];
+    if (!obj[val]) {
+      obj[val] = true;
+      return true;
+    }
+  });
+}
+
+// 中文按照拼音顺序排序
+function sort(arr) {
+  return arr.sort((a, b) => a.localeCompare(b));
+}
+function sortById(arr, prop) {
+  return arr.sort((a, b) => a[prop].localeCompare(b[prop]));
 }
 
 // 判断对象上是否有属性(不包扩原型链上的)
@@ -191,30 +217,55 @@ function repeat(str, n) {
   return res;
 }
 
-// 颜色值16进制转10进制rgb
-function toRGB(color) {
-  const regex = /^#([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/; //匹配十六进制的正则
-  const match = color.match(regex); // 判断是否是十六进制颜色值
-  return match
-    ? 'rgb(' +
-        parseInt(match[1], 16) +
-        ',' +
-        parseInt(match[2], 16) +
-        ',' +
-        parseInt(match[3], 16) +
-        ')'
-    : color;
+// 十进制转n进制
+function toDecimal(num, n = 2) {
+  return num.toString(n);
+}
+// n进制转十进制
+function toDecimalism(num, n = 2) {
+  return parseInt(num, n);
 }
 
-// 单例模式
-function getSingle(func) {
-  let result;
-  return function () {
-    if (!result) {
-      result = new func(arguments);
-    }
-    return result;
-  };
+// 16进制颜色值转RGB
+function hexToRGB(hex) {
+  hex = hex.replace('#', '0x');
+  let r = hex >> 16;
+  let g = (hex >> 8) & 0xff;
+  let b = hex & 0xff;
+  return 'rgb(' + r + ',' + g + ',' + b + ')';
+}
+hexToRGB('#cccccc'); // rgb(204,204,204)
+
+function hexToRgba(hex) {
+  const [r, g, b] = hex
+    .replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (_, r, g, b) => `${r}${r}${g}${g}${b}${b}`)
+    .match(/.{2}/g)
+    .map(x => parseInt(x, 16));
+  return `rgba(${r},${g},${b},1)`;
+}
+hexToRgba('#cccccc'); // rgb(204,204,204, 1)
+
+// RGB转16进制颜色值
+function RGBToHex(rgb) {
+  let rgbArr = rgb.split(/[^\d]+/);
+  let color = (rgbArr[1] << 16) | (rgbArr[2] << 8) | rgbArr[3];
+  return '#' + color.toString(16);
+}
+RGBToHex('rgb(204,204,204)'); // #cccccc
+
+function rgbaToHex(r, g, b) {
+  return '#' + [r, g, b].map(num => parseInt(num).toString(16).padStart(2, '0')).join('');
+}
+rgbaToHex(255, 0, 127); //#ff007f
+
+// 生成随机颜色
+function getRandomColor() {
+  return `#${Math.floor(Math.random() * 0xffffff).toString(16)}`;
+}
+
+// 随机IP
+function generateRandomIP() {
+  return Array.from({ length: 4 }, () => Math.floor(Math.random() * 256)).join('.');
 }
 
 // 获取某月的第一天
@@ -274,3 +325,35 @@ function getDateByDay(d = 0) {
 // 获取明天的日期  getDateByDay(1)
 // 获取今天的日期  getDateByDay(0)
 // 获取昨天的日期  getDateByDay(-1)
+
+// 计算两个日期之间的间隔
+function dayDiff(d1, d2) {
+  return Math.ceil(Math.abs(d1.getTime() - d2.getTime()) / 86400000);
+}
+
+// 是否有效日期
+function isDate(str) {
+  return typeof str !== 'number' && str !== null && new Date(str).toString() !== 'Invalid Date';
+}
+
+// 判断日期是否为今天
+function isToday(time) {
+  const date = new Date(time || null);
+  return date.toISOString().slice(0, 10) === new Date().toISOString().slice(0, 10);
+}
+
+// 日期转换 YYYY-MM-DD
+function formatDate(time) {
+  const date = new Date(time || null);
+  return date.toISOString().slice(0, 10);
+}
+// 日期转换 YYYY-MM-DD HH:mm:ss
+function formatTime(time) {
+  const date = new Date(time || null);
+  const iso = date.toISOString();
+  return `${iso.slice(0, 10)} ${iso.substring(11, 8)}`;
+}
+// 秒数转换: HH:mm:ss
+function formatSeconds(s) {
+  return new Date(s * 1000).toISOString().substring(11, 8);
+}

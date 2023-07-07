@@ -22,34 +22,37 @@ export function getDataType(value: any) {
 }
 
 /**
- * 四舍五入
+ * 小数四舍五入
  * @param value 需要舍入的数
  * @param length 保留小数点后位数
  */
-export function toFixed(value: number, length = 2): string {
+export function toFixed(value: number, length = 2): number {
   if (typeof value !== 'number') {
     throw new Error('value不是数字');
   }
   if (length < 0) {
     throw new Error('length不能为负数');
   }
-  // return Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
-  let result = Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
+  return Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
+  // return Number(`${Math.round(`${value}e${length}`)}e-${length}`);
+  // return Number(Math.round(value + "e" + length) + "e-" + length)
 
-  let str = String(result);
-  let arr = str.split('.');
-  if (arr.length === 1) {
-    if (length != 0) {
-      str += '.';
-      str += new Array(length + 1).join('0');
-    }
-  } else {
-    if (arr[1].length < length) {
-      arr[1] += new Array(length - arr[1].length + 1).join('0');
-    }
-    str = arr.join('.');
-  }
-  return str;
+  // let result = Math.round(Math.pow(10, length) * value) / Math.pow(10, length);
+
+  // let str = String(result);
+  // let arr = str.split('.');
+  // if (arr.length === 1) {
+  //   if (length != 0) {
+  //     str += '.';
+  //     str += new Array(length + 1).join('0');
+  //   }
+  // } else {
+  //   if (arr[1].length < length) {
+  //     arr[1] += new Array(length - arr[1].length + 1).join('0');
+  //   }
+  //   str = arr.join('.');
+  // }
+  // return str;
 }
 
 // 填充对象
@@ -76,6 +79,17 @@ function extend(target, source) {
     }
   });
   return obj;
+}
+
+// 单例模式
+function getSingle(func) {
+  let result;
+  return function () {
+    if (!result) {
+      result = new func(arguments);
+    }
+    return result;
+  };
 }
 
 // 深拷贝

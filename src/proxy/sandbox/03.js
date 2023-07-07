@@ -1,52 +1,61 @@
 // 沙箱全局代理对象类
 class SandboxGlobalProxy {
-  constructor(blacklist) {
+  constructor(sharedState) {
     // 创建一个 iframe 标签，取出其中的原生浏览器全局对象作为沙箱的全局对象
-    // 只有同域的iframe才能取出对应的contentWindow, iframe的src设置为about:blank,可以保证一定是同域的
     const iframe = document.createElement('iframe', { url: 'about:blank' });
     iframe.style.display = 'none';
     document.body.appendChild(iframe);
 
-    // 获取当前HTMLIFrameElement的Window对象
+    // sandboxGlobal作为沙箱运行时的全局对象
     const sandboxGlobal = iframe.contentWindow;
 
     return new Proxy(sandboxGlobal, {
-      // has 可以拦截 with 代码块中任意属性的访问
       has: (target, prop) => {
-        // 黑名单中的变量禁止访问
-        if (blacklist.includes(prop)) {
-          throw new Error(`Can't use: ${prop}!`);
+        // has 可以拦截 with 代码块中任意属性的访问
+        if (sharedState.includes(prop)) {
+          // 如果属性存在于共享的全局状态中，则让其沿着原型链在外层查找
+          return false;
         }
-        // sandboxGlobal对象上不存在的属性，直接报错，实现禁用三方库调接口
+
+        // 如果没有该属性，直接报错
         if (!target.hasOwnProperty(prop)) {
           throw new Error(`Not find: ${prop}!`);
         }
 
-        // 返回true，获取当前提供上下文对象中的变量；如果返回false，会继续向上层作用域链中查找
+        // 属性存在，返回sandboxGlobal中的值
         return true;
       }
     });
   }
 }
 
-// 设置黑名单
-const blacklist = ['window', 'document', 'XMLHttpRequest', 'fetch', 'WebSocket', 'Image'];
-
-// 将globalProxy对象，添加到新环境作用域链的顶部
-const globalProxy = new SandboxGlobalProxy(blacklist);
-
-// 待执行的代码code，获取document对象
-const code = `console.log(document)`;
-
-// 使用with关键字，来改变作用域
+// 构造一个 with 来包裹需要执行的代码，返回 with 代码块的一个函数实例
 function withedYourCode(code) {
   code = 'with(sandbox) {' + code + '}';
   return new Function('sandbox', code);
 }
-
-// 将指定的上下文对象，添加到待执行代码作用域的顶部
-function makeSandbox(code, ctx) {
+function maybeAvailableSandbox(code, ctx) {
   withedYourCode(code).call(ctx, ctx);
 }
 
-makeSandbox(code, globalProxy);
+// 要执行的代码
+const code = `
+  console.log(history == window.history) // false
+  window.abc = 'sandbox'
+  Object.prototype.toString = () => {
+      console.log('Traped!')
+  }
+  console.log(window.abc) // sandbox
+`;
+
+// sharedGlobal作为与外部执行环境共享的全局对象
+// code中获取的history为最外层作用域的history
+const sharedGlobal = ['history'];
+
+const globalProxy = new SandboxGlobalProxy(sharedGlobal);
+
+maybeAvailableSandbox(code, globalProxy);
+
+// 对外层的window对象没有影响
+console.log(window.abc); // undefined
+Object.prototype.toString(); // 并没有打印 Traped

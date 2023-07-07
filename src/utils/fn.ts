@@ -1,3 +1,4 @@
+import * as System from 'systemjs';
 import { isArrayLike, isPlainObject } from './is';
 
 export function newFn(): any {
@@ -294,6 +295,96 @@ export function loadScript(url, callback) {
   script.src = url;
   document.body.appendChild(script);
 }
+
+// 动态加载script
+// 方法一：（动态创建一个 script，加载完成后再删掉（和 jsonp 类似））
+const importScript = (() => {
+  // 自执行函数，创建一个闭包，保存 cache 结果
+  const cache = {};
+  return url => {
+    // 如果有缓存，则直接返回缓存内容
+    if (cache[url]) return Promise.resolve(cache[url]);
+
+    return new Promise((resolve, reject) => {
+      // 保存最后一个 window 属性 key
+      const lastWindowKey = Object.keys(window).pop();
+
+      // 创建 script
+      const script = document.createElement('script');
+      script.setAttribute('src', url);
+      document.head.appendChild(script);
+
+      // 监听加载完成事件
+      script.addEventListener('load', () => {
+        document.head.removeChild(script);
+        // 最后一个新增的 key，就是 umd 挂载的，可自行验证
+        const newLastWindowKey = Object.keys(window).pop();
+
+        // 获取到导出的组件
+        const res = lastWindowKey !== newLastWindowKey ? window[newLastWindowKey] : {};
+        const Com = res.default ? res.default : res;
+
+        cache[url] = Com;
+
+        resolve(Com);
+      });
+
+      // 监听加载失败情况
+      script.addEventListener('error', error => {
+        reject(error);
+      });
+    });
+  };
+})();
+
+// 方法二：fetch + eval/new Function
+const importScript = (() => {
+  // 自执行函数，创建一个闭包，保存 cache 结果（如果是用打包工具编写就大可不必这样，只需要在文件中定义一个 cache 变量即可）
+  const cache = {};
+  return url => {
+    // 如果有缓存，则直接返回缓存内容
+    if (cache[url]) return Promise.resolve(cache[url]);
+
+    // 发起 get 请求
+    return fetch(url)
+      .then(response => response.text())
+      .then(code => {
+        // 记录最后一个 window 的属性
+        const lastWindowKey = Object.keys(window).pop();
+
+        // eval 执行
+        (0, eval)(code);
+        // new Function 执行
+        // new Function(`${code}`)();
+
+        // 获取最新 key
+        const newLastWindowKey = Object.keys(window).pop();
+
+        const res = lastWindowKey !== newLastWindowKey ? window[newLastWindowKey] : {};
+        const Com = res.default ? res.default : res;
+        cache[url] = Com;
+
+        return Com;
+      });
+  };
+})();
+
+// 方法三：SystemJS【内部使用方法一实现】
+const importScript = (() => {
+  const cache = {};
+  return url => {
+    // 如果有缓存，则直接返回缓存内容
+    if (cache[url]) return Promise.resolve(cache[url]);
+
+    // 使用System加载
+    return System.import.then(res => {
+      const Com = res.default ? res.default : res;
+      cache[url] = Com;
+
+      return Com;
+    });
+  };
+})();
 
 /**
  * JSONP请求工具

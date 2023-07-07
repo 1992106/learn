@@ -30,8 +30,8 @@ const code = `func(foo)`;
 
 // 构造一个 with 来包裹需要执行的代码，返回 with 代码块的一个函数实例
 function withedYourCode(code) {
-  code = 'with(shadow) {' + code + '}';
-  return new Function('shadow', code);
+  code = 'with(ctx) {' + code + '}';
+  return new Function('ctx', code);
 }
 
 // 没那么简陋的沙箱

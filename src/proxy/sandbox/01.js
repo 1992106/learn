@@ -2,7 +2,7 @@
 // https://zhuanlan.zhihu.com/p/428039764
 // qiankun的沙箱方案
 // https://juejin.cn/post/6981374562877308936 https://github.com/jiechud/micro-frontend-demo/blob/master/js-sandbox/ifream/sandbox.js
-// https://juejin.cn/post/7210387904748552247
+// https://www.zhangshengrong.com/p/Z9a2Q3jk1V/
 
 // 定义全局变量foo
 var foo = 'foo1';
@@ -24,8 +24,7 @@ function veryPoorSandbox(code, ctx) {
   // eslint-disable-next-line no-with
   with (ctx) {
     // eval可以将字符串按js代码执行，如eval('1+2')
-    // eval默认是当前作用域，使用(0, eval)改成全局作用域
-    (0, eval)(code);
+    eval(code);
   }
 }
 
