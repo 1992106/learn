@@ -38,12 +38,12 @@ function runEval(str) {
 // eval + with
 // 1、(0, eval)()/window.eval()是全局作用域，使用with限制作用域
 // 2、支持传参
-// 写法一：with在eval外层时，eval只能直接调用，不能使用全局调用。
+// 写法一：with在eval外层时，eval只能直接调用，不能全局调用。【如果eval全局调用，那么模板字符串中的变量就是全局作用域，会导致with无效果】
 function runCode(ctx, code) {
   const str = `;${code}\n`;
   // eslint-disable-next-line no-with
   with (ctx) {
-    return eval(str); // 如果eval全局调用，那么模板字符串中的变量就是全局作用域，会导致with无效果。
+    return eval(str); // 直接调用
   }
 }
 // 写法二

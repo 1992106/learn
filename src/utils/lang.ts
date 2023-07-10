@@ -108,6 +108,52 @@ function sortById(arr, prop) {
   return arr.sort((a, b) => a[prop].localeCompare(b[prop]));
 }
 
+// 获取字符串的字节长度【英文1个字节，中文2个字节或4个字节】
+function getByteLength(str: string) {
+  let len = 0;
+  for (let i = 0; i < str.length; i++) {
+    if (str.charCodeAt(i) > 255) {
+      len += 2;
+    } else {
+      len += 1;
+    }
+  }
+  return len;
+}
+function getByteLength(str: string) {
+  let len = 0;
+  for (let i = 0; i < str.length; i++) {
+    if ((str.charCodeAt(i) & 0xff00) != 0) {
+      len++;
+    }
+    len++;
+  }
+  return len;
+}
+
+// 获取字符串的真实长度【str.length返回的是码元长度】
+const getStringLength = (str: string) => {
+  return Array.from(str).length;
+};
+const getStringLength = (str: string) => {
+  let len = 0;
+  for (let i = 0; i < str.length; i++) {
+    // i在索引码元
+    if (is32bit(str, i)) {
+      // 当前字符串，在i这个位置，占用了两个码元
+      i++;
+    }
+    len++;
+  }
+  return len;
+};
+// 判断字符串是两个字节还是四个字节
+const is32bit = (char: string, i: number) => {
+  // 如果码点大于了16位二进制的最大值，则其是32位的
+  // 0xffff === 65535
+  return char.codePointAt(i) > 0xffff;
+};
+
 // 判断对象上是否有属性(不包扩原型链上的)
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 export const hasOwn = (obj, key) => {

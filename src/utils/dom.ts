@@ -118,20 +118,14 @@ const stripHtml = html => new DOMParser().parseFromString(html, 'text/html').bod
 // 复制
 const copyToClipboard = str => {
   const el = document.createElement('textarea');
-  el.value = str;
+  el.value = str ?? 0;
   el.setAttribute('readonly', 'readonly');
   el.style.position = 'absolute';
-  el.style.left = '-9999px';
+  el.style.opacity = '0';
   document.body.appendChild(el);
-  const selected =
-    document.getSelection().rangeCount > 0 ? document.getSelection().getRangeAt(0) : false;
   el.select();
   document.execCommand('copy');
-  document.body.removeChild(el);
-  if (selected) {
-    document.getSelection().removeAllRanges();
-    document.getSelection().addRange(selected);
-  }
+  el.remove();
 };
 const copyToClipboard = str => {
   navigator.clipboard.writeText(str);
@@ -396,17 +390,14 @@ function _render(vnode) {
   return dom;
 }
 
-export const is32bit = (char: string) => {
-  // 如果码点大于了16位二进制的最大值，则其是32位的
-  // 0xffff === 65535
-  return char.codePointAt(0) > 0xffff;
-};
-
-export const getStringLen = (str: string) => {
-  return Array.from(str).length;
-};
-
-// 滚动到页面顶部
+/**
+ * 垂直方向的平滑滚动
+ * @param el dom元素
+ * @param from y轴移动的开始坐标
+ * @param to y轴移动的目标位置坐标
+ * @param duration 滚动时间
+ * @param endCallback 滚动结束的回调
+ */
 const scrollTop = (el, from = 0, to, duration = 500, endCallback) => {
   if (!window.requestAnimationFrame) {
     window.requestAnimationFrame =
