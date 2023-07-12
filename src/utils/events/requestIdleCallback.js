@@ -1,3 +1,8 @@
+//每个tick执行逻辑如下：
+// ...->上一个宏任务 -> 微任务(下一个宏任务前的所有微任务) -> 渲染任务(requestAnimationFrame) -> 更新渲染(Update Rendering) -> 空闲任务(requestIdleCallback) -> 下一个宏任务 ->...
+// https://github.com/behnammodi/polyfill/blob/master/window.polyfill.js
+
+// https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestIdleCallback
 // https://developer.mozilla.org/zh-CN/docs/Web/API/Background_Tasks_API#example
 window.requestIdleCallback =
   window.requestIdleCallback ||

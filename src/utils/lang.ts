@@ -64,6 +64,17 @@ function fuzzySearch(list, keyWord, attribute = 'name') {
   return arr;
 }
 
+// 递归获取对象属性
+function get(obj, path, fallback) {
+  const parts = path.split('.');
+  const key = parts.shift();
+  if (typeof obj[key] !== 'undefined') {
+    return parts.length > 0 ? get(obj[key], parts.join('.'), fallback) : obj[key];
+  }
+  // 如果没有找到key返回fallback
+  return fallback;
+}
+
 // 查找最大值索引
 function indexOfMax(arr) {
   return arr.reduce((prev, curr, i, a) => (curr > a[prev] ? i : prev), 0);
@@ -131,7 +142,7 @@ function getByteLength(str: string) {
   return len;
 }
 
-// 获取字符串的真实长度【str.length返回的是码元长度】
+// 获取字符串的真实长度【string.length返回是码元的个数，不是字符串真实长度】
 const getStringLength = (str: string) => {
   return Array.from(str).length;
 };
@@ -167,7 +178,6 @@ const randomNumber = (max = 1, min = 0) => {
   if (min >= max) {
     return max;
   }
-
   return Math.floor(Math.random() * (max - min) + min);
 };
 

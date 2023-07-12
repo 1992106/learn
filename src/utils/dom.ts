@@ -6,10 +6,13 @@ const triggerEvent = (el, eventType, detail) => {
 // 去除字符串中的html代码
 const removeHtml = (str = '') => str.replace(/<[\/\!]*[^<>]*>/gi, '');
 
-// 字符串前后去空
-export const trim = (str = '') => {
-  return str.replace(/^[\s\uFEFF]+|[\s\uFEFF]+$/g, '');
-  // return str.replace(/(^\s*)|(\s*$)/g, '');
+// 去除空格法
+const trim = str => {
+  return str.replace(/^\s*|\s*$/g, '');
+};
+// 提取非空格法
+const trim = str => {
+  return str.replace(/^\s*(.*?)\s*$/g, '$1');
 };
 
 // 去除所有空

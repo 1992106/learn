@@ -1,6 +1,8 @@
 //每个tick执行逻辑如下：
-// ...->上一个宏任务 -> 微任务(下一个宏任务前的所有微任务) -> 渲染任务(requestAnimationFrame) -> 下一个宏任务 ->...
+// ...->上一个宏任务 -> 微任务(下一个宏任务前的所有微任务) -> 渲染任务(requestAnimationFrame) -> 更新渲染(Update Rendering) -> 空闲任务(requestIdleCallback) -> 下一个宏任务 ->...
+// https://github.com/behnammodi/polyfill/blob/master/window.polyfill.js
 
+// https://developer.mozilla.org/zh-CN/docs/Web/API/Window/requestAnimationFrame
 let lastTime = 0;
 window.requestAnimationFrame =
   window.requestAnimationFrame ||
@@ -49,6 +51,7 @@ function loop() {
   if (countOfRender < loopCount) {
     // requestAnimationFrame
     window.requestAnimationFrame(add);
+    // setTimeout
     // setTimeout(add, 0);
   }
 }
@@ -118,5 +121,4 @@ const scrollToTop = () => {
     window.scrollTo(0, c - c / 8);
   }
 };
-
 scrollToTop();

@@ -146,13 +146,15 @@ const timeout = (fn: Promise<any>, ms: number) => {
 
 // 函数柯里化
 const curry = (fn: any) => {
-  const { length } = fn;
-  const curried = (...args: any[]) => {
-    return args.length >= length
-      ? fn(...args)
-      : (...args2: any[]) => curried(...args.concat(args2));
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args);
+    } else {
+      return function (...args2) {
+        return curried.apply(this, args.concat(args2));
+      };
+    }
   };
-  return curried;
 };
 const curry = (fn: any, ...args) => {
   // 获取函数的参数个数
