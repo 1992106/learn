@@ -1,7 +1,7 @@
 // https://segmentfault.com/a/1190000040830661
 
 // 递归获取对象属性
-function get(obj, path, fallback) {
+function get(obj, path, fallback = '') {
   const parts = path.split('.');
   const key = parts.shift();
   if (typeof obj[key] !== 'undefined') {
@@ -19,8 +19,7 @@ const render = (template, data) => {
   // \s*?是为了兼容{{name}} {{ name }}这种写法
   return template.replace(/{{\s*?([\w.]+)\s*?}}/g, (match, key) => {
     // 匹配中了则读取替换，否则替换为空字符串
-    // return key && data.hasOwnProperty(key) ? data[key] : '';
-    return get(data, key, '');
+    return get(data, key);
   });
 };
 

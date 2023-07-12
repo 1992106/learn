@@ -74,6 +74,15 @@ function get(obj, path, fallback) {
   // 如果没有找到key返回fallback
   return fallback;
 }
+// 循环获取对象属性
+function get(obj, path, fallback) {
+  const parts = path.split('.');
+  let value = obj;
+  while (parts.length) {
+    value = value[parts.shift()] ?? fallback;
+  }
+  return value;
+}
 
 // 查找最大值索引
 function indexOfMax(arr) {
