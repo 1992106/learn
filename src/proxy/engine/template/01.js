@@ -20,7 +20,7 @@ String.prototype.render = function (obj) {
   return renderStr;
 };
 
-// 以下2个方法，只适用'${}'
+// 以下2个方法，只适用模板字符串'${}'
 // 方法二
 String.prototype.render = function (obj) {
   const template = this;

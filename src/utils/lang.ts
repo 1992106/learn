@@ -153,7 +153,11 @@ function getByteLength(str: string) {
 
 // 获取字符串的真实长度【string.length返回是码元的个数，不是字符串真实长度】
 const getStringLength = (str: string) => {
+  // return [...str].length;
   return Array.from(str).length;
+};
+const getStringLength = (str: string) => {
+  return str.replace(/[\\uD800-\\uDBFF][\\uDC00-\\uDFFF]/g, '_').length;
 };
 const getStringLength = (str: string) => {
   let len = 0;
