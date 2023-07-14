@@ -86,7 +86,38 @@ const type = obj =>
     .toLowerCase();
 
 // 父元素是否包含子元素
-const elementContains = (parent, child) => parent !== child && parent.contains(child);
+const elementContains = (parent, node) => parent !== node && parent.contains(node);
+const elementContains = (parent, node) => {
+  let result = parent !== node;
+
+  if (!result) {
+    // 排除parent与node传入相同的节点
+    return result;
+  }
+
+  if (result) {
+    while (node && (node = node.parentNode)) {
+      if (parent === node) {
+        return true;
+      }
+    }
+  }
+
+  return false;
+};
+
+// 查找两个节点的最近的一个共同父节点，可以包括节点自身
+function findCommonParent(oNode1, oNode2) {
+  if (oNode1.contains(oNode2)) return oNode1;
+  if (oNode2.contains(oNode1)) return oNode2;
+  let nodes = oNode1.parentNode;
+  while (true) {
+    if (nodes.contains(oNode2)) {
+      return nodes;
+    }
+    nodes = nodes.parentNode;
+  }
+}
 
 // 元素是否在视口可见
 const elementIsVisibleInViewport = (el, partiallyVisible = false) => {

@@ -1,3 +1,5 @@
+// 控制任务并发数
+
 // https://www.jianshu.com/p/5009fb2f8239
 class AsyncPool {
   constructor(limit) {
@@ -15,7 +17,7 @@ class AsyncPool {
 
   run() {
     // 当任务列表不为空且正在运行的任务不超过并发上限;则继续执行下一个任务
-    while (this.tasks.length > 0 && this.count < this.limit) {
+    if (this.tasks.length > 0 && this.count < this.limit) {
       const { task, resolve, reject } = this.tasks.shift();
       this.count++;
       const result = task();

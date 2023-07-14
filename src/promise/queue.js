@@ -1,5 +1,7 @@
 import { toPromise } from './utils';
 
+// 控制任务串联执行
+
 // https://mp.weixin.qq.com/s/bzkj65WMoixRSdlBLJgOZg
 class AsyncQueue {
   constructor() {
