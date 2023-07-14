@@ -13,11 +13,11 @@ function get(obj, path, fallback = '') {
 
 // 实现一个简易版模板引擎
 const render = (template, data) => {
-  //正则一 /{{([^{{}}]+)}}/g
+  //正则一 /{{([^{{}}]+)}}/g === /{{([^}]+)}}/g
   //正则二 /{{(.+?)}}/g
-  //正则三 /{{\s*?([\w.]+)\s*?}}/g
+  //正则三 /{{\s*?([\w?.]+)\s*?}}/g
   // \s*?是为了兼容{{name}} {{ name }}这种写法
-  return template.replace(/{{\s*?([\w.]+)\s*?}}/g, (match, key) => {
+  return template.replace(/{{\s*?([\w?.]+)\s*?}}/g, (match, key) => {
     // 匹配中了则读取替换，否则替换为空字符串
     return get(data, key);
   });

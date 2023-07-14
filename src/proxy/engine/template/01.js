@@ -13,8 +13,8 @@ const getVariableValue = (obj, variable, fallback = '') => {
 // 方法一
 String.prototype.render = function (obj) {
   const template = this;
-  const variableRegex = /\${([^${}]+)}/g;
-  const renderStr = template.replace(variableRegex, (_, variable) => {
+  // /\${([^${}]+)}/g === /\${([^}]+)}/g;
+  const renderStr = template.replace(/\${([^${}]+)}/g, (_, variable) => {
     return getVariableValue(obj, variable);
   });
   return renderStr;
@@ -39,7 +39,7 @@ String.prototype.render = function (obj) {
   }
 };
 
-const template = 'My name is ${name}, age ${age}, I am a ${job.name}';
+const template = `My name is \${name}, age \${age}, I am a \${job.name}`;
 const data = {
   name: 'fatfish',
   age: 100,
