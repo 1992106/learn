@@ -1,3 +1,5 @@
+// https://www.cnblogs.com/binglove/p/15687896.html
+
 // 取消重复请求
 class CancelRequest {
   constructor() {

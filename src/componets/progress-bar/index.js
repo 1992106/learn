@@ -28,3 +28,18 @@ export default {
     Vue.prototype.$progressBar = progressBar; // 将ProgressBar组件暴露出去，并挂载在Vue的prototype上
   }
 };
+
+// vue2 三种挂载方法
+const MyComponent = Vue.extend({
+  template: '<div>Hello!</div>'
+});
+
+// 创建并挂载到 #app (会替换 #app)
+new MyComponent().$mount('#app');
+
+// 同上
+new MyComponent({ el: '#app' });
+
+// 或者，在文档之外渲染并且随后挂载
+const component = new MyComponent().$mount();
+document.getElementById('app').appendChild(component.$el);

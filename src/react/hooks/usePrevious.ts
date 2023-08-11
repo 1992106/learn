@@ -7,7 +7,7 @@ export function usePrevious<T>(value: T): T | undefined {
   // useEffect 是副作用，所以会先执行 return ，然后在执行 useEffect
   useEffect(() => {
     ref.current = value;
-  }, [value]);
+  });
 
   return ref.current;
 }

@@ -288,6 +288,8 @@ export function debounce(fn: any, wait: number): any {
     const args = Array.prototype.slice.call(arguments);
     timer = setTimeout(() => {
       fn.apply(this, args);
+      clearTimeout(timer);
+      timer = null;
     }, wait);
   };
 }
@@ -300,6 +302,7 @@ export function throttle(fn: any, delay: number): any {
       const args = Array.prototype.slice.call(arguments);
       timer = setTimeout(() => {
         fn.apply(this, args);
+        clearTimeout(timer);
         timer = null;
       }, delay);
     }

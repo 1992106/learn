@@ -33,6 +33,37 @@ const createCancelPromise = promiseArg => {
   };
 };
 
+// https://mp.weixin.qq.com/s/opuip1E5hmzvsVYdgCqppw
+// https://developer.mozilla.org/zh-CN/docs/Web/API/AbortSignal/throwIfAborted
+const createAbortPromise = promiseArg => {
+  const controller = new AbortController();
+  const signal = controller.signal;
+
+  // If the signal is already aborted, immediately throw in order to reject the promise.
+  const wrappedPromise = new Promise((resolve, reject) => {
+    if (signal.aborted) {
+      reject(signal.reason);
+    }
+
+    // Call resolve(result) when done.
+    promiseArg.then(resolve, reject);
+
+    // Watch for 'abort' signals
+    signal.addEventListener('abort', () => {
+      // Stop the main operation
+      // Reject the promise wth the abort reason.
+      reject(signal.reason);
+    });
+  });
+
+  return {
+    promise: wrappedPromise,
+    cancel: () => {
+      controller.abort();
+    }
+  };
+};
+
 // 创建指令式的promise，提供取消方法
 // 将 resolve，reject 设为 null，让 promise 永远不会 resolve/reject。
 const createImperativePromise = promiseArg => {

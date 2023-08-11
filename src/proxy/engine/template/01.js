@@ -39,6 +39,7 @@ String.prototype.render = function (obj) {
   }
 };
 
+// const template = 'My name is ${name}, age ${age}, I am a ${job.name}';
 const template = `My name is \${name}, age \${age}, I am a \${job.name}`;
 const data = {
   name: 'fatfish',
