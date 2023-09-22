@@ -57,6 +57,7 @@ function loop() {
 }
 loop();
 
+// https://mp.weixin.qq.com/s/iyc2-QBfa1Ss_yKx4eJ5CQ
 // https://mp.weixin.qq.com/s/oVJs4C-AvCK-phAcAQOCdw
 // 分组分批分堆函数（一堆分10个）
 function averageFn(data, once = 10) {

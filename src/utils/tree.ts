@@ -1,6 +1,5 @@
 // https://mp.weixin.qq.com/s/dgY6cKOju2UpUEQk-7jHJQ
 
-// ! 树遍历5种方法
 let tree = [
   {
     id: '1',
@@ -27,60 +26,6 @@ let tree = [
     ]
   }
 ];
-
-// 广度优先遍历 (仅只有一种方法,用循环实现)
-function treeForeach(tree, func) {
-  let node,
-    list = [...tree];
-  while ((node = list.shift())) {
-    func(node);
-    node.children && list.push(...node.children);
-  }
-}
-// 测试代码
-treeForeach(tree, node => {
-  console.log(node.title);
-});
-
-// 深度优先遍历(有四种方法)
-// 先序遍历(递归)
-function treeForeach1(tree, func) {
-  tree.forEach(data => {
-    func(data);
-    data.children && treeForeach(data.children, func); // 遍历子级树
-  });
-}
-// 先序遍历(循环)
-function treeForeach2(tree, func) {
-  let node,
-    list = [...tree];
-  while ((node = list.shift())) {
-    func(node);
-    node.children && list.unshift(...node.children);
-  }
-}
-// 后序遍历(递归)
-function treeForeach3(tree, func) {
-  tree.forEach(data => {
-    data.children && treeForeach(data.children, func); // 遍历子级树
-    func(data);
-  });
-}
-// 后序遍历(循环)
-function treeForeach4(tree, func) {
-  let node,
-    list = [...tree],
-    i = 0;
-  while ((node = list[i])) {
-    let childCount = node.children ? node.children.length : 0;
-    if (!childCount || node.children[childCount - 1] === list[i - 1]) {
-      func(node);
-      i++;
-    } else {
-      list.splice(i, 0, ...node.children);
-    }
-  }
-}
 
 // 格式化树
 /**
@@ -121,6 +66,57 @@ function formatTree(tree, map) {
       ...(children ? { children: formatTree(children, map) } : {})
     });
   }, []);
+}
+
+// ! 树遍历5种方法
+// 广度优先遍历 (仅只有一种方法,用循环实现)
+function treeForeach(tree, func) {
+  let node,
+    list = [...tree];
+  while ((node = list.shift())) {
+    func(node);
+    node.children && list.push(...node.children);
+  }
+}
+
+// 深度优先遍历(有四种方法)
+// 先序遍历(递归)
+function treeForeach1(tree, func) {
+  tree.forEach(data => {
+    func(data);
+    data.children && treeForeach1(data.children, func); // 遍历子级树
+  });
+}
+// 先序遍历(循环)
+function treeForeach2(tree, func) {
+  let node,
+    list = [...tree];
+  while ((node = list.shift())) {
+    func(node);
+    node.children && list.unshift(...node.children);
+  }
+}
+// 后序遍历(递归)
+function treeForeach3(tree, func) {
+  tree.forEach(data => {
+    data.children && treeForeach(data.children, func); // 遍历子级树
+    func(data);
+  });
+}
+// 后序遍历(循环)
+function treeForeach4(tree, func) {
+  let node,
+    list = [...tree],
+    i = 0;
+  while ((node = list[i])) {
+    let childCount = node.children ? node.children.length : 0;
+    if (!childCount || node.children[childCount - 1] === list[i - 1]) {
+      func(node);
+      i++;
+    } else {
+      list.splice(i, 0, ...node.children);
+    }
+  }
 }
 
 // ! 列表和树相互转换
@@ -166,17 +162,17 @@ function listToTree2(list = []) {
   return result;
 }
 
-// 树转列表(2个方法)
-// ! 递归实现
-function treeToList1(tree, result = [], level = 0) {
+// ! 树转列表(3个方法)
+// 递归实现
+function treeToList(tree, result = [], level = 0) {
   tree.forEach(node => {
     result.push(node);
     node.level = level + 1;
-    node.children && treeToList1(node.children, result, level + 1);
+    node.children && treeToList(node.children, result, level + 1);
   });
   return result;
 }
-// ! 循环实现
+// 循环实现
 function treeToList2(tree) {
   let result = [];
   let queue = tree.map(node => ((node.level = 1), node));
@@ -203,7 +199,7 @@ function treeToList3(tree) {
   return result;
 }
 
-// ! 树结构筛选
+// ! 树结构=>筛选
 function treeFilter(tree, func) {
   let treeClone = [...tree];
   return treeClone.filter(node => {
@@ -224,38 +220,52 @@ function treeFilter2(tree, func) {
 }
 const resultTree = treeFilter(treeFilter, node => node.id == '2-1');
 
-// ! 查找节点
-function treeFindNode(tree, func) {
+// ! 树结构=>通过节点id查找节点
+function getFindNode(tree = [], func) {
   for (const data of tree) {
     if (func(data)) return data;
     if (data.children) {
-      const res = treeFindNode(data.children, func);
+      const res = getFindNode(data.children, func);
       if (res) return res;
     }
   }
   return null;
 }
-const resultNode = treeFindNode(tree, node => node.id === '2-1');
+const resultNode = getFindNode(tree, node => node.id === '2-1');
 
-// ! 查找节点路径
-function treeFindPath(tree, func, path = []) {
-  if (!tree) return [];
+// ! 树结构=>通过节点id查找节点路径
+function getFindNodePath(tree = [], func, path = []) {
   for (const data of tree) {
     path.push(data.id);
     if (func(data)) return path;
     if (data.children) {
-      const findChildren = treeFindPath(data.children, func, path);
+      const findChildren = getFindNodePath(data.children, func, path);
       if (findChildren.length) return findChildren;
     }
     path.pop();
   }
   return [];
 }
-const resultPath = treeFindPath(tree, node => node.id === '2-1');
+const resultPath = getFindNodePath(tree, node => node.id === '2-1');
 
-// 查找所有叶子节点(2个方法)
-// ! 循环实现
-function findAllLeafNode(tree) {
+// ! 获取所有父级节点
+function getAllParentNodes(tree) {
+  const parentList = [];
+  tree.forEach(item => {
+    if (item.children) {
+      parentList.push(item);
+      const temp = getAllParentNodes(item.children);
+      if (temp.length) {
+        parentList.push(...temp);
+      }
+    }
+  });
+  return parentList;
+}
+
+// ! 获取所有叶子节点(2个方法)
+// 循环实现
+function getAllLeafNodes(tree) {
   let leafList = [];
   let node;
   let list = [...tree];
@@ -268,14 +278,31 @@ function findAllLeafNode(tree) {
   }
   return leafList;
 }
-// ! 递归实现
-function findAllLeafNode2(tree, list = []) {
+// 递归实现
+function getAllLeafNodes2(tree, list = []) {
   tree.forEach((item: any) => {
-    if (item?.children) {
-      return findAllLeafNode2(item.children, list);
+    if (item.children) {
+      return getAllLeafNodes2(item.children, list);
     } else {
       list.push(item);
     }
   });
   return list;
+}
+
+// ! 获取树全路径列表
+function getAllFullPath(tree) {
+  const paths = []; //记录路径的arr
+  for (let i = 0; i < tree.length; i++) {
+    //遍历同层次所有节点
+    if (tree[i].children && tree[i].children.length) {
+      const list = getAllFullPath(tree[i].children); // 如果有子节点便继续深入，直到到达叶子节点
+      for (let j = 0; j < list.length; j++) {
+        paths.push([tree[i], ...list[j]]); // 子节点返回后将其返回的路径与自身拼接
+      }
+    } else {
+      paths.push([tree[i]]); // 没有子节点的话，直接将自身拼接到paths中
+    }
+  }
+  return paths;
 }
