@@ -426,3 +426,33 @@ function formatTime(time) {
 function formatSeconds(s) {
   return new Date(s * 1000).toISOString().substring(11, 8);
 }
+
+// dayjs常用方法
+// 今天
+// dayjs().format('YYYY-MM-DD')
+// dayjs().format('YYYY-MM-DD HH:mm:ss') // 今天此刻时间
+// dayjs().startOf('day').format('YYYY-MM-DD HH:mm:ss') // 今天 00:00:00
+// dayjs().endOf('day').format('YYYY-MM-DD HH:mm:ss') // 今天 23:59:59
+// 昨天
+// dayjs().subtract(1, 'days').format('YYYY-MM-DD')
+// dayjs().subtract(1, 'days').format('YYYY-MM-DD HH:mm:ss') // 昨天此刻时间
+// dayjs().subtract(1, 'days').startOf('day').format('YYYY-MM-DD HH:mm:ss') // 昨天 00:00:00
+// dayjs().subtract(1, 'days').endOf('day').format('YYYY-MM-DD HH:mm:ss') // 昨天 23:59:59
+
+// 获取本周
+// dayjs().day('1').format('YYYY-MM-DD') // 周一
+// dayjs().day('7').format('YYYY-MM-DD') // 周日
+
+// 获取本月
+// dayjs().startOf('month').format('YYYY-MM-DD') // 本月第一天
+// dayjs().endOf('month').format('YYYY-MM-DD') // 本月最后一天
+// 获取上个月
+// dayjs().subtract(1, 'month').startOf('month').format('YYYY-MM-DD') // 上个月第一天
+// dayjs().subtract(1, 'month').endOf('month').format('YYYY-MM-DD') // 上个月最后一天
+
+// 获取本年
+// dayjs().startOf('year').format('YYYY-MM-DD') // 今年第一天
+// dayjs().endOf('year').format('YYYY-MM-DD') // 今年最后一天
+// 获取上一年
+// dayjs().subtract(1, 'year').startOf('year').format('YYYY-MM-DD') // 上一年第一天
+// dayjs().subtract(1, 'year').endOf('year').format('YYYY-MM-DD') // 上一年最后一天

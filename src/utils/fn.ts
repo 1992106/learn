@@ -278,6 +278,7 @@ Object.values =
   };
 
 // 异步加载script
+// https://github.com/muicss/loadjs
 export function loadScript(url, callback) {
   let script = document.createElement('script') as any;
   if (script.readyState) {
@@ -369,7 +370,7 @@ const importScript = (() => {
   };
 })();
 
-// 方法三：SystemJS【内部使用方法一实现】
+// 方法三：SystemJS【内部使用方法实现】
 const importScript = (() => {
   const cache = {};
   return url => {
@@ -377,7 +378,7 @@ const importScript = (() => {
     if (cache[url]) return Promise.resolve(cache[url]);
 
     // 使用System加载
-    return System.import.then(res => {
+    return System.import(url).then(res => {
       const Com = res.default ? res.default : res;
       cache[url] = Com;
 
