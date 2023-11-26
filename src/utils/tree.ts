@@ -49,6 +49,7 @@ function convertTree(tree, map) {
     }
 
     result.push({
+      ...item,
       label,
       value,
       children
@@ -61,10 +62,12 @@ function formatTree(tree, map) {
   return tree.reduce((arr, item) => {
     const children = item[map.children];
     arr.push({
+      ...item,
       label: item[map.label],
       value: item[map.value],
       ...(children ? { children: formatTree(children, map) } : {})
     });
+    return arr;
   }, []);
 }
 

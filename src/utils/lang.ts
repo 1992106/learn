@@ -341,10 +341,9 @@ function generateRandomIP() {
 function getStartDate(time) {
   const date = new Date(time || null);
   date.setDate(1); // 将当前时间的日期设置成第一天
-  const year = date.getFullYear(); // 得到当前年份
-  let month = date.getMonth() + 1; // 得到当前月份（0-11月份，+1是当前月份）
-  month = month > 10 ? month : '0' + month; // 补零
-  const day = date.getDate(); // 得到当前天数，实际是本月第一天，因为前面setDate(1) 设置过了
+  const year = date.getFullYear().toString().padStart(2, '0'); // 得到当前年份
+  const month = (date.getMonth() + 1).toString().padStart(2, '0'); // 得到当前月份（0-11月份，+1是当前月份）
+  const day = date.getDate().toString().padStart(2, '0'); // 得到当前天数，实际是本月第一天，因为前面setDate(1) 设置过了
   return new Date(year + '-' + month + '-' + day); // 这里传入的是字符串
 }
 function getStartDate(time) {
@@ -385,10 +384,9 @@ function getMonthDay(time) {
 function getDateByDay(d = 0) {
   const date = new Date();
   date.setDate(date.getDate() + d);
-  const year = date.getFullYear();
-  let month = date.getMonth() + 1;
-  month = month > 10 ? month : '0' + month;
-  const day = date.getDate();
+  const year = date.getFullYear().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
   return year + '-' + month + '-' + day;
 }
 // 获取明天的日期  getDateByDay(1)
