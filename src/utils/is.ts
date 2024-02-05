@@ -350,18 +350,20 @@ export function isNaN(value) {
 export function isNative(Ctor: any): boolean {
   return typeof Ctor === 'function' && /native code/.test(Ctor.toString());
 }
-//
+
+// 是否工作日【周一至周五为工作日】
+export const isWeekday = (date: Date) => date.getDay() % 6 !== 0;
+
+// 是否是中文
+export const isChinese = value => {
+  return /[^\u4e00-\u9fa5]/.test(value);
+};
 
 // 匹配URL地址
 export const isUrl = url => {
   return /^https?:\/\/(([a-zA-Z0-9_-])+(\.)?)*(:\d+)?(\/((\.)?(\?)?=?&?[a-zA-Z0-9_-](\?)?)*)*$/i.test(
     url
   );
-};
-
-// 是否是中文
-export const isChinese = value => {
-  return /[^\u4e00-\u9fa5]/.test(url);
 };
 
 // 匹配Email地址

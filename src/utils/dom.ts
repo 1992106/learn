@@ -41,8 +41,6 @@ const getOffset = el => {
     left: left + scrollLeft
   };
 };
-
-// 获取当前元素相对于document的偏移量
 const getOffset = el => {
   let top = 0;
   let left = 0;
@@ -104,6 +102,16 @@ const elementContains = (parent, node) => {
   }
 
   return false;
+};
+
+// 获取元素的所有祖先
+const getAncestors = el => {
+  let ancestors = [];
+  while (el) {
+    ancestors.unshift(el);
+    el = el.parentNode;
+  }
+  return ancestors;
 };
 
 // 查找两个节点的最近的一个共同父节点，可以包括节点自身
@@ -173,6 +181,8 @@ document.addEventListener('copy', event => {
   clipboardData?.setData('text/plain', text);
 });
 
+const addStyles = (el, styles) => Object.assign(el.style, styles);
+
 export const hasClass = (el, cls) => {
   if (!el || !cls) return false;
   if (cls.indexOf(' ') !== -1) throw new Error('className should not contain space.');
@@ -227,6 +237,11 @@ export const removeClass = (el, cls) => {
   }
 };
 
+// 获取URL
+const getBaseURL = url => url.replace(/[?#].*$/, '');
+// 检查URL是否是绝对的
+const isAbsoluteURL = str => /^[a-z][a-z0-9+.-]*:/.test(str);
+
 // 获取查询对象
 export const getQueryParams = (queryString = window.location.search) => {
   const searchParams = new URLSearchParams(queryString);
@@ -245,6 +260,11 @@ export const getQueryParams = url => {
   });
   return params;
 };
+export const getQueryParams = url =>
+  (url.match(/([^?=&]+)(=([^&]*))/g) || []).reduce(
+    (c, v) => ((c[v.slice(0, v.indexOf('='))] = v.slice(v.indexOf('=') + 1)), c),
+    {}
+  );
 
 // 获取查询字符串
 export const getQueryString = (params: Record<string, string>) => {
@@ -482,5 +502,12 @@ export const smoothScroll = (element, block: 'start' | 'end' = 'start') => {
   document.querySelector(element).scrollIntoView({
     behavior: 'smooth',
     block
+  });
+};
+
+// 点击元素之外
+const onClickOutside = (element, callback) => {
+  document.addEventListener('click', e => {
+    if (!element.contains(e.target)) callback();
   });
 };

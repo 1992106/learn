@@ -277,7 +277,7 @@ Object.values =
     return result;
   };
 
-// 异步加载script
+// 动态加载script
 // https://github.com/muicss/loadjs
 export function loadScript(url, callback) {
   let script = document.createElement('script') as any;
@@ -297,7 +297,7 @@ export function loadScript(url, callback) {
   document.body.appendChild(script);
 }
 
-// 动态加载script
+// 动态导入script
 // 方法一：（动态创建一个 script，加载完成后再删掉（和 jsonp 类似））
 const importScript = (() => {
   // 自执行函数，创建一个闭包，保存 cache 结果
