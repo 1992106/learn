@@ -25,39 +25,49 @@ window.cancelAnimationFrame =
 
 // 1、大量数据渲染
 // 比如对十万条数据进行渲染，主要由以下几种方法：
-// requestAnimationFrame用法
-// 插入十万条数据
-const total = 100000;
-// 一次插入的数据
-const once = 20;
-// 插入数据需要的次数
-const loopCount = Math.ceil(total / once);
-let countOfRender = 0;
-const ul = document.querySelector('ul');
-// 添加数据的方法
-function add() {
-  const fragment = document.createDocumentFragment();
-  for (let i = 0; i < once; i++) {
-    const li = document.createElement('li');
-    li.innerText = Math.floor(Math.random() * total);
-    fragment.appendChild(li);
+
+// https://segmentfault.com/a/1190000041415120
+// https://github.com/chenqf/frontEndBlog/issues/15
+// https://github.com/chenqf/frontEndBlog/issues/16
+function plan() {
+  // 插入十万条数据
+  const total = 100000;
+  // 一次插入的数据
+  const once = 20;
+
+  const ul = document.querySelector('ul');
+  function loop(curTotal, curIndex) {
+    if (curTotal <= 0) {
+      return false;
+    }
+
+    const pageCount = Math.min(curTotal, once);
+
+    // setTimeout(() => {
+    //   const fragment = document.createDocumentFragment();
+    //   for (let i = 0; i < pageCount; i++) {
+    //     let li = document.createElement('li');
+    //     li.innerHTML = curIndex + i;
+    //     fragment.appendChild(li);
+    //   }
+    //   ul.appendChild(fragment);
+    //   loop(curTotal - pageCount, curIndex + pageCount);
+    // }, 0);
+
+    requestAnimationFrame(() => {
+      const fragment = document.createDocumentFragment();
+      for (let i = 0; i < pageCount; i++) {
+        let li = document.createElement('li');
+        li.innerHTML = curIndex + i;
+        fragment.appendChild(li);
+      }
+      ul.appendChild(fragment);
+      loop(curTotal - pageCount, curIndex + pageCount);
+    }, 0);
   }
-  ul.appendChild(fragment);
-  countOfRender += 1;
-  loop();
+  loop(total, 0);
 }
 
-function loop() {
-  if (countOfRender < loopCount) {
-    // requestAnimationFrame
-    window.requestAnimationFrame(add);
-    // setTimeout
-    // setTimeout(add, 0);
-  }
-}
-loop();
-
-// https://mp.weixin.qq.com/s/iyc2-QBfa1Ss_yKx4eJ5CQ
 // https://mp.weixin.qq.com/s/oVJs4C-AvCK-phAcAQOCdw
 // 分组分批分堆函数（一堆分10个）
 function averageFn(data, once = 10) {
@@ -75,12 +85,24 @@ let arr = [];
 // setTimeout实现
 function plan(data) {
   let twoDArr = averageFn(data);
-  for (let i = 0; i < twoDArr.length; i++) {
-    // 相当于在很短的时间内创建许多个定时任务去处理
+  // for (let i = 0; i < twoDArr.length; i++) {
+  //   // 相当于在很短的时间内创建许多个定时任务去处理
+  //   setTimeout(() => {
+  //     arr = [...arr, ...twoDArr[i]]; // 赋值渲染
+  //   }, 1000 * i); // 17 * i // 注意设定的时间间隔... 17 = 1000 / 60
+  // }
+  const use2DArrItem = page => {
+    if (page > twoDArr.length - 1) {
+      console.log('每一项都获取完了');
+      return;
+    }
     setTimeout(() => {
-      arr = [...arr, ...twoDArr[i]]; // 赋值渲染
-    }, 1000 * i); // 17 * i // 注意设定的时间间隔... 17 = 1000 / 60
-  }
+      arr = [...arr, ...twoDArr[page]];
+      page = page + 1;
+      use2DArrItem(page);
+    }, 0);
+  };
+  use2DArrItem(0);
 }
 // requestAnimationFrame实现
 function plan(data) {
