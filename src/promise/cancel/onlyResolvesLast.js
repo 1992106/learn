@@ -2,6 +2,7 @@
 // 忽略请求：忽略前面重复的请求，保留最后一次请求
 // 一般用于分页搜索/tab标签切换
 /*
+https://github.com/slorber/awesome-only-resolves-last-promise
 https://mp.weixin.qq.com/s/M2-XXPdLKlTqzGefz7UPvA
 不依赖请求的 API，更加通用，更容易抽象和封装。本质上所有的异步方法都可以使用 onlyResolvesLast 来忽略过期的调用。
  */
@@ -53,6 +54,23 @@ export function onlyResolvesLast(fn) {
     cancelPrevious = cancel;
 
     return promise;
+  };
+
+  return wrappedFn;
+}
+
+// 使用Promise.race实现
+export function onlyResolvesLast2(fn) {
+  let cancel = null;
+
+  const wrappedFn = (...args) => {
+    cancel && cancel();
+
+    // 执行当前请求
+    const result = fn.apply(this, args);
+
+    const cancelPromise = new Promise((_, reject) => (cancel = reject));
+    return Promise.race([result, cancelPromise]);
   };
 
   return wrappedFn;
