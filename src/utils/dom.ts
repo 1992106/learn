@@ -15,7 +15,7 @@ const trim = str => {
   return str.replace(/^\s*(.*?)\s*$/g, '$1');
 };
 
-// 去除所有空
+// 去除所有空格
 export const allTrim = (str = '') => {
   return str.replace(/\s/g, '');
 };
@@ -506,8 +506,24 @@ export const smoothScroll = (element, block: 'start' | 'end' = 'start') => {
 };
 
 // 点击元素之外
-const onClickOutside = (element, callback) => {
+export const onClickOutside = (element, callback) => {
   document.addEventListener('click', e => {
     if (!element.contains(e.target)) callback();
   });
 };
+
+// 当前页面是否处于iframe内嵌
+export function isInlinePage() {
+  return window.parent !== window;
+}
+
+// 打开新窗口【覆盖打开，如果已经打开，直接切换】
+let oldWindow = null;
+export function openWindow(url) {
+  if (oldWindow && oldWindow.closed === false) {
+    oldWindow.location.replace(url); // 重置窗口
+    oldWindow.focus(); // 切换窗口
+  } else {
+    oldWindow = window.open(url);
+  }
+}

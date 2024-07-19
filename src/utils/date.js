@@ -86,7 +86,12 @@ function formatTime(time) {
 }
 // 秒数转换: HH:mm:ss
 function formatSeconds(s) {
-  return new Date(s * 1000).toISOString().substring(11, 8);
+  const h = Math.floor(s / 3600);
+  const m = Math.floor((s % 3600) / 60);
+  const ss = s % 60;
+  return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${ss
+    .toString()
+    .padStart(2, '0')}`;
 }
 
 // dayjs常用方法
@@ -97,13 +102,23 @@ function formatSeconds(s) {
 // dayjs.extend(utc)
 // dayjs.extend(timezone)
 
+// 本地时间 = UTC时间 + 时区  => 北京时间 = UTC时间 + 8时区
+
 // 本地时间
-// dayjs().format() // 获取当前时间
+// 格式化dayjs().format() // 获取当前时间
 // 格式化时间（除UTC以外的时间）【只是把时间转成YYYY-MM-DD格式，没有转成UTC时间】
 const formatDate = (time, format = 'YYYY-MM-DD') => {
   // dayjs(time, format)
   return dayjs(time).format(format);
 };
+
+// 本地时间/某个时区时间 => UTC
+const transformTimeToUTC = (time, format = 'YYYY-MM-DD', timezone) => {
+  return timezone
+    ? dayjs(time).tz(timezone).utc().format(format) // 某个时区时间转UTC
+    : dayjs(time).utc().format(format); // 本地时间转UTC
+};
+// dayjs.tz(time, timezone) === dayjs(time).tz(timezone)
 
 // UTC时间
 // dayjs.utc().format() // 获取当前UTC时间
@@ -117,17 +132,9 @@ const formatUTCDate = (utcTime, format = 'YYYY-MM-DD') => {
 const transformUTCToTime = (utcTime, format = 'YYYY-MM-DD', timezone) => {
   return timezone
     ? dayjs.utc(utcTime).tz(timezone).format(format) // UTC转某个时区时间
-    : dayjs.utc(utcTime).tz().format(format); // UTC转本地时间
+    : dayjs.utc(utcTime).local().format(format); // UTC转本地时间
 };
 // dayjs.utc(utcTime).tz() === dayjs.utc(utcTime).local()
-
-// 本地时间/某个时区时间 => UTC
-const transformTimeToUTC = (time, format = 'YYYY-MM-DD', timezone) => {
-  return timezone
-    ? dayjs(time).tz(timezone).utc().format(format) // 某个时区时间转UTC
-    : dayjs(time).utc().format(format); // 本地时间转UTC
-};
-// dayjs.tz(time, timezone) === dayjs(time).tz(timezone)
 
 // 今天
 // dayjs().format('YYYY-MM-DD')
