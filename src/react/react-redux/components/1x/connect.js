@@ -6,7 +6,7 @@ import shallowEqual from './shallowEqual';
  * mapStateToProps 默认不关联state
  * mapDispatchToProps 默认值为 dispatch => ({dispatch})，将 `store.dispatch` 方法作为属性传递给组件
  */
-const defaultMapStateToProps = state => ({});
+const defaultMapStateToProps = () => ({});
 const defaultMapDispatchToProps = dispatch => ({ dispatch });
 // 获取组件名
 function getDisplayName(WrappedComponent) {
@@ -25,6 +25,9 @@ function connect(mapStateToProps, mapDispatchToProps) {
   return function wrapWithConnect(WrappedComponent) {
     // 返回最终的容器组件
     return class Connect extends Component {
+      static propTypes = {
+        store: storeShape
+      };
       static contextTypes = {
         store: storeShape
       };

@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import storeShape from './storeShape';
 
 class Provider extends Component {
+  static propTypes = {
+    store: storeShape.isRequired,
+    children: PropTypes.element.isRequired
+  }
   static childContextTypes = {
     store: storeShape.isRequired
   };

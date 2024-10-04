@@ -1,5 +1,5 @@
 // 重试函数
-const retry = (fn, delay, times) => {
+const retry = (fn, delay, count = 3) => {
   return new Promise((resolve, reject) => {
     const attempt = () => {
       fn().then(
@@ -7,10 +7,10 @@ const retry = (fn, delay, times) => {
           resolve(res);
         },
         err => {
-          if (times === 0) {
+          if (count === 0) {
             reject(err);
           } else {
-            times--;
+            count--;
             setTimeout(attempt, delay);
           }
         }

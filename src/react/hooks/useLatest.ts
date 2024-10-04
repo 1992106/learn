@@ -4,7 +4,7 @@ import { useRef } from 'react';
 export const useLatest = <T>(value: T) => {
   // 通过 useRef，保持每次获取到的都是最新的值
   const ref = useRef(value);
-  ref.current = value;
+  ref.current = value; // 每次更新最新的值，不会触发重新渲染
 
   return ref;
 };
